@@ -9,22 +9,32 @@ namespace Text_Based_RPG_Shell_Knight
     class Player:CHAR_
     {
         private ConsoleKeyInfo _playerInput;
-        private string DirectionMoved;
+        private string _directionMoving;
+        private bool _facingWall;
+
         //constructor
-        public Player(string name, char avatar) {
+        public Player(string name, char avatar)
+        {
             _name = name;
             _avatar = avatar;
             _posX = Console.WindowWidth / 2;
             _posY = Console.WindowHeight / 2;
+
         }
 
         // ----- Private Methods
         
-        private void DirectionalOutput() {
-            if (_playerInput.Key == ConsoleKey.W) { _posY -= 1; DirectionMoved = "UP"; }
-            else if (_playerInput.Key == ConsoleKey.S) { _posY += 1; DirectionMoved = "DOWN"; }
-            else if (_playerInput.Key == ConsoleKey.A) { _posX -= 1; DirectionMoved = "LEFT"; }
-            else if (_playerInput.Key == ConsoleKey.D) { _posX += 1; DirectionMoved = "RIGHT"; }
+        private void directionalOutput() {
+            
+            if (_playerInput.Key == ConsoleKey.W) { if (_posY > 0) { _posY -= 1; _directionMoving = "UP"; } }
+            else if (_playerInput.Key == ConsoleKey.S) { if (_posY < Console.WindowHeight-1) { _posY += 1; _directionMoving = "DOWN"; } }
+            else if (_playerInput.Key == ConsoleKey.A) { if (_posX > 0) { _posX -= 1; _directionMoving = "LEFT"; } }
+            else if (_playerInput.Key == ConsoleKey.D) { if (_posX < Console.WindowWidth-1) { _posX += 1; _directionMoving = "RIGHT"; } }
+        }
+
+        private void checkForWall() 
+        {
+        
         }
 
         // ----- Public Methods
@@ -41,7 +51,7 @@ namespace Text_Based_RPG_Shell_Knight
 
         public void Update() {
             GetInput();
-            DirectionalOutput();
+            directionalOutput();
         }
     }
 }

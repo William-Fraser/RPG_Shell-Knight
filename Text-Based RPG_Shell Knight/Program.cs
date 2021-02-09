@@ -12,9 +12,9 @@ namespace Text_Based_RPG_Shell_Knight
         static void Main(string[] args)
         {
 
-            Console.CursorVisible = false; 
-            Player player = new Player("John Smith", '@');
+            Console.CursorVisible = turnOffCursor; 
             MapMANAGE MapMAN = new MapMANAGE();
+            Player player = new Player("John Smith", '@');
             
             while (true)
             {
