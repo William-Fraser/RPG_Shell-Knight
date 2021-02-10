@@ -22,8 +22,21 @@ namespace Text_Based_RPG_Shell_Knight
 
         }
 
+        // ----- gets/sets
+        public int getAxisX()
+        {
+            return _posX;
+        }
+        public int getAxisY()
+        {
+            return _posY;
+        }
+        public string getDirectionMoving()
+        {
+            return _directionMoving;
+        }
+
         // ----- Private Methods
-        
         private void directionalOutput() {
             
             if (_playerInput.Key == ConsoleKey.W) { if (_posY > 0) { _posY -= 1; _directionMoving = "UP"; } }
@@ -31,26 +44,30 @@ namespace Text_Based_RPG_Shell_Knight
             else if (_playerInput.Key == ConsoleKey.A) { if (_posX > 0) { _posX -= 1; _directionMoving = "LEFT"; } }
             else if (_playerInput.Key == ConsoleKey.D) { if (_posX < Console.WindowWidth-1) { _posX += 1; _directionMoving = "RIGHT"; } }
         }
-
-        private void checkForWall() 
-        {
-        
+        private void checkForWall(bool wall) {
+            if (wall) {
+                if (_directionMoving == "UP") { _posY++; }
+                else if (_directionMoving == "DOWN") { _posY--; }
+                else if (_directionMoving == "LEFT") { _posX++; }
+                else if (_directionMoving == "RIGHT") { _posX--; }
+            }
         }
 
         // ----- Public Methods
-
         public void GetInput()
         {
             _playerInput = Console.ReadKey(true);
         }
 
         public void Draw() {
-            Console.SetCursorPosition(_posX, _posY);
+            //Console.SetCursorPosition(1, 1);              //
+            //Console.Write($"X: { _posX } Y: { _posY }");  // --- debug / display cursor XY
+            Console.SetCursorPosition(_posX, _posY);      
             Console.Write(_avatar);
         }
 
-        public void Update() {
-            GetInput();
+        public void Update(bool wall) {
+            checkForWall(wall);
             directionalOutput();
         }
     }
