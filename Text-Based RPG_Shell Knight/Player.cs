@@ -10,7 +10,6 @@ namespace Text_Based_RPG_Shell_Knight
     {
         private ConsoleKeyInfo _playerInput;
         private string _directionMoving;
-        private bool _facingWall;
 
         //constructor
         public Player(string name, char avatar)
@@ -31,10 +30,6 @@ namespace Text_Based_RPG_Shell_Knight
         {
             return _posY;
         }
-        public string getDirectionMoving()
-        {
-            return _directionMoving;
-        }
 
         // ----- Private Methods
         private void directionalOutput() {
@@ -44,30 +39,31 @@ namespace Text_Based_RPG_Shell_Knight
             else if (_playerInput.Key == ConsoleKey.A) { if (_posX > 0) { _posX -= 1; _directionMoving = "LEFT"; } }
             else if (_playerInput.Key == ConsoleKey.D) { if (_posX < Console.WindowWidth-1) { _posX += 1; _directionMoving = "RIGHT"; } }
         }
-        private void checkForWall(bool wall) {
-            if (wall) {
-                if (_directionMoving == "UP") { _posY++; }
-                else if (_directionMoving == "DOWN") { _posY--; }
-                else if (_directionMoving == "LEFT") { _posX++; }
-                else if (_directionMoving == "RIGHT") { _posX--; }
-            }
-        }
+       
 
         // ----- Public Methods
         public void GetInput()
         {
             _playerInput = Console.ReadKey(true);
         }
-
+        public void CheckForWall(bool wall)
+        {
+            if (wall)
+            {
+                if (_directionMoving == "UP") { _posY++; }
+                else if (_directionMoving == "DOWN") { _posY--; }
+                else if (_directionMoving == "LEFT") { _posX++; }
+                else if (_directionMoving == "RIGHT") { _posX--; }
+            }
+        }
         public void Draw() {
             //Console.SetCursorPosition(1, 1);              //
             //Console.Write($"X: { _posX } Y: { _posY }");  // --- debug / display cursor XY
             Console.SetCursorPosition(_posX, _posY);      
             Console.Write(_avatar);
         }
-
-        public void Update(bool wall) {
-            checkForWall(wall);
+        public void Update() {
+            GetInput();
             directionalOutput();
         }
     }

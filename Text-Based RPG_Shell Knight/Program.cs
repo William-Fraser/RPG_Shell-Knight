@@ -22,8 +22,8 @@ namespace Text_Based_RPG_Shell_Knight
             {
                 MapMAN.DrawWindowBorder();
                 player.Draw();
-                player.GetInput();
-                player.Update( MapMAN.wallCheck(player.getAxisY(), player.getAxisX()));
+                player.Update();
+                player.CheckForWall(MapMAN.isWall(player.getAxisY(), player.getAxisX()));
             }
         }
     }

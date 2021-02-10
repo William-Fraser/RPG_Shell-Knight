@@ -17,14 +17,13 @@ namespace Text_Based_RPG_Shell_Knight
         private string[,] borderSavedMap = new string [consoleHeight, consoleWidth];
 
         // ----- Manager tools
-        public bool wallCheck(int y, int x ) {
+        public bool isWall(int y, int x ) {
             Console.SetCursorPosition(Console.WindowHeight, 1);
-            Console.Write($"current position: [{borderMap[y,x]}]");
-            for (int i = 0; i >= _walls.Length; i++) {
+            for (int i = 0; i < _walls.Length; i++) {
                 if (borderMap[y, x] == _walls[i].ToString()) {
                     return true;
                 }
-                else { return false; }
+                else { } // do nothing
             }
             return false;
         }
@@ -77,6 +76,7 @@ namespace Text_Based_RPG_Shell_Knight
             //Console.WriteLine($"x: {MapXLength.Length} y: {MapY.Length}");   //debug
             //Console.WriteLine($"Map 0,0: [{borderMap[0, 0]}]"); // --- /debug/
 
+
             Console.SetCursorPosition(0, 0);
             for (int i = 0; i < MapY.Length; i++) // nested loop to write window border
             {
@@ -86,6 +86,7 @@ namespace Text_Based_RPG_Shell_Knight
                     
                 }
             }
+            Console.SetCursorPosition(1, 1);
         }
 
 
