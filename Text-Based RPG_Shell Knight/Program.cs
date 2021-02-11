@@ -16,11 +16,11 @@ namespace Text_Based_RPG_Shell_Knight
             MapMANAGE MapMAN = new MapMANAGE();
             Player player = new Player("John Smith", '@');
             
-            MapMAN.CreateWindowBorder();
+            //MapMAN.CreateWindowBorder();
             
             while (true)
             {
-                MapMAN.DrawWindowBorder();
+                //MapMAN.DrawWindowBorder();
                 player.Draw();
                 player.Update();
                 player.CheckForWall(MapMAN.isWall(player.getAxisY(), player.getAxisX()));
