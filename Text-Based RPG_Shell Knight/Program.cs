@@ -15,15 +15,31 @@ namespace Text_Based_RPG_Shell_Knight
             Console.CursorVisible = turnOffCursor; 
             MapMANAGE MapMAN = new MapMANAGE();
             Player player = new Player("John Smith", '@');
-            
+            Enemy enemy1 = new Enemy("enemy1", '#', 0);
+            bool gameover = false;
             //MapMAN.CreateWindowBorder();
-            
-            while (true)
+
+                MapMAN.SetCurrentMap();
+            while (gameover == false)
             {
+                ///map
                 //MapMAN.DrawWindowBorder();
+                MapMAN.DrawCurrentMap();
+                ///player turn
                 player.Draw();
+                enemy1.Draw();
                 player.Update();
-                player.CheckForWall(MapMAN.isWall(player.getAxisY(), player.getAxisX()));
+                //MapMAN.checkPosition(player.getAxisX(), player.getAxisY()); // debug
+                player.CheckForWall(MapMAN.getdisplayMap(player.getAxisX(), player.getAxisY()), MapMAN.getwallHold());
+                ///enemy turn
+                enemy1.AttackedifAlive(player.attack(enemy1.getAxisX(), enemy1.getAxisY()));
+                Console.ReadKey(true);
+                enemy1.idleMove();
+                player.AttackedifAlive(enemy1.attack(player.getAxisX(), player.getAxisY()));
+                //checks if player is alive
+                if (player.getAliveStatus() == false) {
+                    gameover = true;
+                }
             }
         }
     }

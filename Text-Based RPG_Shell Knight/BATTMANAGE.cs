@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Text_Based_RPG_Shell_Knight
 {
-    class GMANAGE /// GAME MANAGER
+    class BATTMANAGE /// BATTLE MANAGER
     {
     }
 }

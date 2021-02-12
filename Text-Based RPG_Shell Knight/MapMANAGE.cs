@@ -1,27 +1,60 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Text_Based_RPG_Shell_Knight
 {
     class MapMANAGE
     {
-        public char[] _walls = new char[] { '═', '║' };// make into list
-        public string[,] borderMap = new string[40, 120];
+        static int MapDisplay_X = Console.WindowWidth;
+        static int MapDisplay_Y = Console.WindowHeight-2;
+        
+        public List<string> wallHold = new List<string>();
+
+        // Map
+        private string[,] displayMap = new string[MapDisplay_X, MapDisplay_Y];
+
+        // border
+        private string[,] borderMap = new string[MapDisplay_X, MapDisplay_Y];
         private string borderString = "";
 
-        // ----- Manager tools
-        public bool isWall(int y, int x ) {
-            for (int i = 0; i < _walls.Length; i++) {
-                if (borderMap[y, x] == _walls[i].ToString()) {
-                    return true;
-                }
-                else { } // do nothing
-            }
-            return false;
+        // ----- gets sets
+
+        public string getdisplayMap(int x, int y) 
+        {
+            return displayMap[x, y];
         }
+        public string getwallHold()
+        { 
+            string allwalls = string.Join("", wallHold);
+            return allwalls;
+        }
+
+        // ----- Manager tools
+        public void checkPosition(int x, int y) {
+            string allWalls = string.Join("", wallHold);
+            Console.SetCursorPosition(1, 0);
+            Console.Write($"selected map tile: [{displayMap[x, y]}] walls available: [{allWalls}]"); // --- debug
+            Console.ReadKey(true);
+        }
+        //public bool isWall(int y, int x ) {
+        //    string allWalls = string.Join("", wallHold);
+        //    string[] wallgroup = allWalls.Split();
+        //    for (int i = 0; i < wallgroup.Length; i++) {
+        //        if (displayMap[x, y] == wallgroup[i]) {
+        //            return true;
+        //        }
+        //        else { } // do nothing
+        //    }
+        //    return false;
+        //}
+        private void addWall(string walls)
+        {
+            wallHold.Add(walls);   
+        }
+        //remove wall?
+
+        //wall list might clear when entering new area?
 
         // ----- Manager Builders
         public void CreateWindowBorder() // walls ═ ║ 
@@ -83,15 +116,32 @@ namespace Text_Based_RPG_Shell_Knight
         }
         public void SetCurrentMap()//(currently gets Map_test for prototype))
         {
-            string[] MapY = System.IO.File.ReadAllLines("Map_test");// this changes to string input for Maps
-
-            for (int i = 1; i < MapY.Length; i++){ // starts at 1 because line 0 is to pass information
-                string[] MapX = MapY[i].Split();
-                for (int j = 0; j < MapX.Length; j++) { 
-                    //create array and append walls to list
+            string[] MapY = File.ReadAllLines("Map_test.txt");// this changes to string input for Maps is _test for now
+            string walls = MapY[0];// line 0 passes walls
+            if (!File.Exists("Map_test.txt")) {// input same string
+                throw new Exception("File path does not Exist");
+            }
+            for (int y = 1; y < MapDisplay_Y; y++){ // starts at 1 because line 0 is to pass information
+                string[] MapX = new string[MapDisplay_X];
+                MapX[y] = MapY[y];
+                for (int x = 0; x < MapDisplay_X; x++) {
+                    //create array
+                    displayMap[x, y] = MapX[x];
                 }
             }
+            addWall(walls);
         }
+        public void DrawCurrentMap() 
+        {
+            int y;
+            int x;
+            Console.SetCursorPosition(0, 1);
+            for (y = 1; y < MapDisplay_Y; y++) { // line 0 is to pass info,  
+                for (x = 0; x < MapDisplay_X; x++) {
+                    Console.Write(displayMap[x, y]);
+                }
+            }
+        } 
 
 
     }

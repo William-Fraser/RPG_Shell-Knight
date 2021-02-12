@@ -21,16 +21,6 @@ namespace Text_Based_RPG_Shell_Knight
 
         }
 
-        // ----- gets/sets
-        public int getAxisX()
-        {
-            return _posX;
-        }
-        public int getAxisY()
-        {
-            return _posY;
-        }
-
         // ----- Private Methods
         private void directionalOutput() {
             
@@ -40,21 +30,42 @@ namespace Text_Based_RPG_Shell_Knight
             else if (_playerInput.Key == ConsoleKey.D) { if (_posX < Console.WindowWidth-1) { _posX += 1; _directionMoving = "RIGHT"; } }
         }
        
-
         // ----- Public Methods
         public void GetInput()
         {
             _playerInput = Console.ReadKey(true);
         }
-        public void CheckForWall(bool wall)
+        public void CheckForWall(string map, string walls)
         {
-            if (wall)
-            {
-                if (_directionMoving == "UP") { _posY++; }
-                else if (_directionMoving == "DOWN") { _posY--; }
-                else if (_directionMoving == "LEFT") { _posX++; }
-                else if (_directionMoving == "RIGHT") { _posX--; }
+            string[] wallGroup = walls.Split();
+            for (int i = 0; i < wallGroup.Length; i++) {
+                if (map == wallGroup[i]) {
+                    if (_directionMoving == "UP") { _posY++; }
+                    else if (_directionMoving == "DOWN") { _posY--; }
+                    else if (_directionMoving == "LEFT") { _posX++; }
+                    else if (_directionMoving == "RIGHT") { _posX--; }
+                }
             }
+        }
+        public void AttackedifAlive(bool attack) { // if bool false = player died else player lives
+            if (attack) {
+                Console.SetCursorPosition(1, Console.WindowHeight - 2);
+                Console.WriteLine($"Player {_name} has been slain");
+                _alive = false;
+                Console.ReadKey();
+            }
+            else { }
+        }
+        public bool attack(int enemyX, int enemyY)
+        {
+            if (enemyX == _posX)
+            {
+                if (enemyY == _posY)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
         public void Draw() {
             //Console.SetCursorPosition(1, 1);              //
