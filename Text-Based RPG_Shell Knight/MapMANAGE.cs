@@ -52,7 +52,11 @@ namespace Text_Based_RPG_Shell_Knight
         {
             wallHold.Add(walls);   
         }
-        //remove wall?
+        private void removeWall(string walls) 
+        {
+            wallHold.Remove(walls);
+            
+        }
 
         //wall list might clear when entering new area?
 

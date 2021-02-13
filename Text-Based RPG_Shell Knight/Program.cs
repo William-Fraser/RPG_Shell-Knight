@@ -16,6 +16,7 @@ namespace Text_Based_RPG_Shell_Knight
             MapMANAGE MapMAN = new MapMANAGE();
             Player player = new Player("John Smith", '@');
             Enemy enemy1 = new Enemy("enemy1", '#', 0);
+            Enemy enemy2 = new Enemy("enemy2", '#', 1);
             bool gameover = false;
             //MapMAN.CreateWindowBorder();
 
