@@ -24,10 +24,10 @@ namespace Text_Based_RPG_Shell_Knight
         // ----- Private Methods
         private void directionalOutput() {
             
-            if (_playerInput.Key == ConsoleKey.W) { if (_posY > 0) { _posY -= 1; _directionMoving = "UP"; } }
-            else if (_playerInput.Key == ConsoleKey.S) { if (_posY < Console.WindowHeight-1) { _posY += 1; _directionMoving = "DOWN"; } }
-            else if (_playerInput.Key == ConsoleKey.A) { if (_posX > 0) { _posX -= 1; _directionMoving = "LEFT"; } }
-            else if (_playerInput.Key == ConsoleKey.D) { if (_posX < Console.WindowWidth-1) { _posX += 1; _directionMoving = "RIGHT"; } }
+            if (_playerInput.Key == ConsoleKey.S || _playerInput.Key == ConsoleKey.DownArrow) { if (_posY < Console.WindowHeight-1) { _posY += 1; _directionMoving = "DOWN"; } }
+            else if (_playerInput.Key == ConsoleKey.W || _playerInput.Key == ConsoleKey.UpArrow) { if (_posY > 0) { _posY -= 1; _directionMoving = "UP"; } }
+            else if (_playerInput.Key == ConsoleKey.A || _playerInput.Key == ConsoleKey.LeftArrow) { if (_posX > 0) { _posX -= 1; _directionMoving = "LEFT"; } }
+            else if (_playerInput.Key == ConsoleKey.D || _playerInput.Key == ConsoleKey.RightArrow) { if (_posX < Console.WindowWidth-1) { _posX += 1; _directionMoving = "RIGHT"; } }
         }
        
         // ----- Public Methods

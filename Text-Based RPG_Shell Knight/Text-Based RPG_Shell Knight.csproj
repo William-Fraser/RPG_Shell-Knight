@@ -46,6 +46,7 @@
     <Compile Include="BATTMANAGE.cs" />
     <Compile Include="CHAR_.cs" />
     <Compile Include="Enemy.cs" />
+    <Compile Include="GameMANAGE.cs" />
     <Compile Include="MapMANAGE.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />

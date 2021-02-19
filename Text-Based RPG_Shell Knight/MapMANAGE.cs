@@ -12,15 +12,16 @@ namespace Text_Based_RPG_Shell_Knight
         public List<string> wallHold = new List<string>();
 
         // Map
+        private string holdMap;
         private string[,] displayMap = new string[MapDisplay_X, MapDisplay_Y];
 
         // border
-        private string[,] borderMap = new string[MapDisplay_X, MapDisplay_Y];
         private string borderString = "";
+        private string[,] borderMap = new string[MapDisplay_X, MapDisplay_Y];
 
         // ----- gets sets
 
-        public string getdisplayMap(int x, int y) 
+        public string getdisplayMapTile(int x, int y) 
         {
             return displayMap[x, y];
         }
@@ -37,6 +38,7 @@ namespace Text_Based_RPG_Shell_Knight
             Console.Write($"selected map tile: [{displayMap[x, y]}] walls available: [{allWalls}]"); // --- debug
             Console.ReadKey(true);
         }
+
         //public bool isWall(int y, int x ) {
         //    string allWalls = string.Join("", wallHold);
         //    string[] wallgroup = allWalls.Split();
@@ -120,11 +122,14 @@ namespace Text_Based_RPG_Shell_Knight
         }
         public void SetCurrentMap()//(currently gets Map_test for prototype))
         {
-            string[] MapY = File.ReadAllLines("Map_test.txt");// this changes to string input for Maps is _test for now
-            string walls = MapY[0];// line 0 passes walls
+            removeWall(getwallHold());
+            holdMap = File.ReadAllText("Map_test.txt");// this changes to string input for Maps is _test for now
             if (!File.Exists("Map_test.txt")) {// input same string
                 throw new Exception("File path does not Exist");
             }
+
+            string[] MapY = holdMap.Split();
+            string walls = MapY[0];// line 0 passes walls
             for (int y = 1; y < MapDisplay_Y; y++){ // starts at 1 because line 0 is to pass information
                 string[] MapX = new string[MapDisplay_X];
                 MapX[y] = MapY[y];
@@ -137,6 +142,8 @@ namespace Text_Based_RPG_Shell_Knight
         }
         public void DrawCurrentMap() 
         {
+            Console.SetCursorPosition(0,0);
+            Console.Write(displayMap[0,0]);
             int y;
             int x;
             Console.SetCursorPosition(0, 1);
@@ -146,7 +153,6 @@ namespace Text_Based_RPG_Shell_Knight
                 }
             }
         } 
-
 
     }
 }
