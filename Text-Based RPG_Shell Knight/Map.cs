@@ -4,24 +4,22 @@ using System.Collections.Generic;
 
 namespace Text_Based_RPG_Shell_Knight
 {
-    class MapMANAGE
+    class Map
     {
-        static int MapDisplay_X = Console.WindowWidth;
+        static int MapDisplay_X = Console.WindowWidth+8;
         static int MapDisplay_Y = Console.WindowHeight-2;
         
         public List<string> wallHold = new List<string>();
 
         // Map
-        private string holdMap;
-        private string[,] displayMap = new string[MapDisplay_X, MapDisplay_Y];
+        private char[,] displayMap = new char[MapDisplay_X, MapDisplay_Y];
 
         // border
         private string borderString = "";
-        private string[,] borderMap = new string[MapDisplay_X, MapDisplay_Y];
+        private string[,] borderMap = new string[Console.WindowWidth, Console.WindowHeight];
 
         // ----- gets sets
-
-        public string getdisplayMapTile(int x, int y) 
+        public char getMap(int x, int y) 
         {
             return displayMap[x, y];
         }
@@ -39,6 +37,7 @@ namespace Text_Based_RPG_Shell_Knight
             Console.ReadKey(true);
         }
 
+        /// legacy code
         //public bool isWall(int y, int x ) {
         //    string allWalls = string.Join("", wallHold);
         //    string[] wallgroup = allWalls.Split();
@@ -49,7 +48,7 @@ namespace Text_Based_RPG_Shell_Knight
         //        else { } // do nothing
         //    }
         //    return false;
-        //}
+
         private void addWall(string walls)
         {
             wallHold.Add(walls);   
@@ -60,12 +59,10 @@ namespace Text_Based_RPG_Shell_Knight
             
         }
 
-        //wall list might clear when entering new area?
-
         // ----- Manager Builders
         public void CreateWindowBorder() // walls ═ ║ 
         {
-            
+
             Console.SetCursorPosition(0, 0);
             borderString += "╔,"; //Console.Write("╔"); 
             for (int i = 1; i < Console.WindowWidth - 1; i++)
@@ -112,27 +109,28 @@ namespace Text_Based_RPG_Shell_Knight
             Console.SetCursorPosition(0, 0);
             for (int i = 0; i < borderY.Length; i++) // nested loop to write window border
             {
-                for (int j = 0; j < borderXLength.Length; j++)
+                for (int j = 0; j > borderXLength.Length; j++)
                 {
-                    Console.Write(borderMap[i, j]);
-                    
-                }
+                    Console.Write(borderMap[i, j]);                }
             }
             Console.SetCursorPosition(1, 1);
         }
         public void SetCurrentMap()//(currently gets Map_test for prototype))
         {
             removeWall(getwallHold());
-            holdMap = File.ReadAllText("Map_test.txt");// this changes to string input for Maps is _test for now
+            string[] MapY = File.ReadAllLines("Map_test.txt");// this changes to string input for Maps is _test for now
             if (!File.Exists("Map_test.txt")) {// input same string
                 throw new Exception("File path does not Exist");
             }
 
-            string[] MapY = holdMap.Split();
             string walls = MapY[0];// line 0 passes walls
             for (int y = 1; y < MapDisplay_Y; y++){ // starts at 1 because line 0 is to pass information
-                string[] MapX = new string[MapDisplay_X];
-                MapX[y] = MapY[y];
+                char[] MapX = new char[MapDisplay_X];
+                string xHolder =  MapY[y];
+                for (int i = 0; i < xHolder.Length; i++)
+                {
+                    MapX[i] = xHolder[i];
+                }
                 for (int x = 0; x < MapDisplay_X; x++) {
                     //create array
                     displayMap[x, y] = MapX[x];

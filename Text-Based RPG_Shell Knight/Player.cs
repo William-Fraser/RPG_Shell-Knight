@@ -6,28 +6,43 @@ using System.Threading.Tasks;
 
 namespace Text_Based_RPG_Shell_Knight
 {
-    class Player:CHAR_
+    class Player:GameCharacter
     {
         private ConsoleKeyInfo _playerInput;
-        private string _directionMoving;
 
         //constructor
         public Player(string name, char avatar)
         {
             _name = name;
             _avatar = avatar;
+            _health = new int[] { 100, 100 };
+            _damage = new int[] { 75, 50 };
+
             _posX = Console.WindowWidth / 2;
             _posY = Console.WindowHeight / 2;
+        }
 
+        // ----- gets / sets
+        public int[] getDamage() 
+        {
+            return _damage;
         }
 
         // ----- Private Methods
         private void directionalOutput() {
             
-            if (_playerInput.Key == ConsoleKey.S || _playerInput.Key == ConsoleKey.DownArrow) { if (_posY < Console.WindowHeight-1) { _posY += 1; _directionMoving = "DOWN"; } }
-            else if (_playerInput.Key == ConsoleKey.W || _playerInput.Key == ConsoleKey.UpArrow) { if (_posY > 0) { _posY -= 1; _directionMoving = "UP"; } }
-            else if (_playerInput.Key == ConsoleKey.A || _playerInput.Key == ConsoleKey.LeftArrow) { if (_posX > 0) { _posX -= 1; _directionMoving = "LEFT"; } }
-            else if (_playerInput.Key == ConsoleKey.D || _playerInput.Key == ConsoleKey.RightArrow) { if (_posX < Console.WindowWidth-1) { _posX += 1; _directionMoving = "RIGHT"; } }
+            if (_playerInput.Key == ConsoleKey.S || _playerInput.Key == ConsoleKey.DownArrow) 
+                { if (getY() < Console.WindowHeight - 1)    Move(DIRECTION_DOWN); 
+            }
+            else if (_playerInput.Key == ConsoleKey.W || _playerInput.Key == ConsoleKey.UpArrow) 
+                { if (getY() > 0)                           Move(DIRECTION_UP); 
+            }
+            else if (_playerInput.Key == ConsoleKey.A || _playerInput.Key == ConsoleKey.LeftArrow) 
+                { if (getX() > 0)                           Move(DIRECTION_LEFT);
+            }
+            else if (_playerInput.Key == ConsoleKey.D || _playerInput.Key == ConsoleKey.RightArrow) 
+                { if (getX() < Console.WindowWidth - 1)     Move(DIRECTION_RIGHT); 
+            }
         }
        
         // ----- Public Methods
@@ -35,46 +50,10 @@ namespace Text_Based_RPG_Shell_Knight
         {
             _playerInput = Console.ReadKey(true);
         }
-        public void CheckForWall(string map, string walls)
-        {
-            string[] wallGroup = walls.Split();
-            for (int i = 0; i < wallGroup.Length; i++) {
-                if (map == wallGroup[i]) {
-                    if (_directionMoving == "UP") { _posY++; }
-                    else if (_directionMoving == "DOWN") { _posY--; }
-                    else if (_directionMoving == "LEFT") { _posX++; }
-                    else if (_directionMoving == "RIGHT") { _posX--; }
-                }
-            }
-        }
-        public void AttackedifAlive(bool attack) { // if bool false = player died else player lives
-            if (attack) {
-                Console.SetCursorPosition(1, Console.WindowHeight - 2);
-                Console.WriteLine($"Player {_name} has been slain");
-                _alive = false;
-                Console.ReadKey();
-            }
-            else { }
-        }
-        public bool attack(int enemyX, int enemyY)
-        {
-            if (enemyX == _posX)
-            {
-                if (enemyY == _posY)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-        public void Draw() {
-            //Console.SetCursorPosition(1, 1);              //
-            //Console.Write($"X: { _posX } Y: { _posY }");  // --- debug / display cursor XY
-            Console.SetCursorPosition(_posX, _posY);      
-            Console.Write(_avatar);
-        }
         public void Update() {
+            toolkit.DisplayText(toolkit.blank);// clears the text after it's been displayed once
             GetInput();
+            toolkit.SetConsoleSize();
             directionalOutput();
         }
     }

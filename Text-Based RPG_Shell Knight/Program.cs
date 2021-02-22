@@ -10,11 +10,11 @@ namespace Text_Based_RPG_Shell_Knight
     {
         static void Main(string[] args)
         {
-            GameMANAGE GameMAN = new GameMANAGE();
+            GameManager game = new GameManager();
 
             while (true)
             {
-                GameMAN.GameplayMap();
+                game.Map();
             }
         }
     }
