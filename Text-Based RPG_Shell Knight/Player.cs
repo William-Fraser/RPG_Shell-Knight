@@ -31,17 +31,17 @@ namespace Text_Based_RPG_Shell_Knight
         // ----- Private Methods
         private void directionalOutput() {
             
-            if (_playerInput.Key == ConsoleKey.S || _playerInput.Key == ConsoleKey.DownArrow) 
-                { if (getY() < Console.WindowHeight - 1)    Move(DIRECTION_DOWN); 
+            if (_playerInput.Key == ConsoleKey.S || _playerInput.Key == ConsoleKey.DownArrow) {  
+                                            Move(DIRECTION_DOWN); 
+            }   
+            else if (_playerInput.Key == ConsoleKey.W || _playerInput.Key == ConsoleKey.UpArrow) {  
+                                            Move(DIRECTION_UP); 
             }
-            else if (_playerInput.Key == ConsoleKey.W || _playerInput.Key == ConsoleKey.UpArrow) 
-                { if (getY() > 0)                           Move(DIRECTION_UP); 
+            else if (_playerInput.Key == ConsoleKey.A || _playerInput.Key == ConsoleKey.LeftArrow) { 
+                                            Move(DIRECTION_LEFT);
             }
-            else if (_playerInput.Key == ConsoleKey.A || _playerInput.Key == ConsoleKey.LeftArrow) 
-                { if (getX() > 0)                           Move(DIRECTION_LEFT);
-            }
-            else if (_playerInput.Key == ConsoleKey.D || _playerInput.Key == ConsoleKey.RightArrow) 
-                { if (getX() < Console.WindowWidth - 1)     Move(DIRECTION_RIGHT); 
+            else if (_playerInput.Key == ConsoleKey.D || _playerInput.Key == ConsoleKey.RightArrow) { 
+                                            Move(DIRECTION_RIGHT); 
             }
         }
        

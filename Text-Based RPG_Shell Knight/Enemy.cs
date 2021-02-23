@@ -8,9 +8,6 @@ namespace Text_Based_RPG_Shell_Knight
 {
     class Enemy : GameCharacter
     {
-        int idle_movement_timer = 0;
-        int idle_movement_direction = 0;
-
         //constructor
         public Enemy(string name, char avatar, int pos) 
         {
@@ -51,19 +48,92 @@ namespace Text_Based_RPG_Shell_Knight
         }
 
         // ----- public methods
-        public void idleMove()
+        public void MoveChasePlayer(int playerX, int playerY)
         {
-            idle_movement_timer++;
-            if (idle_movement_timer >= 2)
+            bool moveAlongAxis = true; // if /true = x/ else /false = y/
+            int mapQuadrent = 0; // enemy location is 0, 0 /x,-y = 0/x, y = 1/-x, -y = 2/-x, y = 3/ <NW
+
+            if (_posY == playerY)
             {
+                moveAlongAxis = true;
+            }
+            else if (_posX == playerX)
+            {
+                moveAlongAxis = false;
+            }
+            else
+            {
+                // finding the quadrent with the player
+                if (playerX > _posX)
+                {
+                    mapQuadrent = 1; // <NE
+                    if (playerY > _posY)
+                    {
+                        mapQuadrent = 3; // <SE
+                    }
 
-                idle_movement_timer = 0;
+                }
+                else if (playerY > _posY)
+                {
+                    mapQuadrent = 2; // <SW
+                }
 
-                if (idle_movement_direction == 0) { _posX++; idle_movement_direction++; }
-                else if (idle_movement_direction == 1) { _posY++; idle_movement_direction++; }
-                else if (idle_movement_direction == 2) { _posX--; idle_movement_direction++; }
-                else if (idle_movement_direction == 3) { _posY--; idle_movement_direction = 0; }
+                // check quadrent for which axis to move
+                if (mapQuadrent == 0)
+                {
+                    if ((playerX + _posX) > (playerY + _posY))
+                    {
+                        moveAlongAxis = true;
+                    }
+                    else { moveAlongAxis = false; }
+                }
+                else if (mapQuadrent == 1)
+                {
+                    if ((playerY + _posX) > (playerX + _posY))
+                    {
+                        moveAlongAxis = true;
+                    }
+                    else { moveAlongAxis = false; }
+                }
+                else if (mapQuadrent == 2)
+                {
+                    if ((playerY + _posX) < (playerX + _posY))
+                    {
+                        moveAlongAxis = true;
+                    }
+                    else { moveAlongAxis = false; }
+                }
+                else if (mapQuadrent == 3)
+                {
+                    if ((playerX + _posX) < (playerY + _posY))
+                    {
+                        moveAlongAxis = true;
+                    }
+                    else { moveAlongAxis = false; }
+                }
+            }
 
+            // check direction to move axis in
+            if (moveAlongAxis == true)
+            {
+                if (playerX > _posX)
+                {
+                    Move(DIRECTION_RIGHT);
+                }
+                else
+                {
+                    Move(DIRECTION_LEFT);
+                }
+            }
+            else {
+                if (playerY > _posY)
+                {
+                    Move(DIRECTION_DOWN);
+                }
+                else
+                {
+                    Move(DIRECTION_UP);
+                }
             }
         }
     }

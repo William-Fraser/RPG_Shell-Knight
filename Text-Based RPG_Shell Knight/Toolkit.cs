@@ -13,8 +13,8 @@ namespace Text_Based_RPG_Shell_Knight
        
         public void SetConsoleSize()
         {
-            Console.WindowWidth = 32 * 4;
-            Console.WindowHeight = 9 * 4;
+            Console.WindowWidth = 128;
+            Console.WindowHeight = 36;
         }
         public int RandomNumBetween(int lowNumber, int highNumber)
         {
@@ -34,10 +34,19 @@ namespace Text_Based_RPG_Shell_Knight
             Console.Write(message);
             if (message != blank)
             {
-                Thread.Sleep(1000);
-                Console.Write(", Press any key to Continue.");
-                Console.Write(" any");
+                string continueMessage = ", Press any key to Continue.";
+                char[] printContinue = new char[continueMessage.Length];
+
+                for (int j = 0; j < continueMessage.Length; j++) {
+                    printContinue[j] = continueMessage[j];
+                }
+                Thread.Sleep(100);
+                for (int i = 0; i < printContinue.Length; i++) {
+                    Thread.Sleep(7);
+                    Console.Write(printContinue[i]);
+                }
                 Console.ReadKey(true);
+                DisplayText(blank);
             }
             Console.CursorVisible = false;
         }

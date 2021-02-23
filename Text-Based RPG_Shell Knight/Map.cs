@@ -16,9 +16,15 @@ namespace Text_Based_RPG_Shell_Knight
 
         // border
         private string borderString = "";
-        private string[,] borderMap = new string[Console.WindowWidth, Console.WindowHeight];
+        private string[,] borderMap;
 
-        // ----- gets sets
+        // ----- constructor
+        public Map()
+        { 
+            
+        }
+
+        // ----- gets/sets||add/remove
         public char getMap(int x, int y) 
         {
             return displayMap[x, y];
@@ -28,6 +34,14 @@ namespace Text_Based_RPG_Shell_Knight
             string allwalls = string.Join("", wallHold);
             return allwalls;
         }
+        private void addWall(string walls)
+        {
+            wallHold.Add(walls);
+        }
+        private void removeWall(string walls)
+        {
+            wallHold.Remove(walls);
+        }
 
         // ----- Manager tools
         public void checkPosition(int x, int y) {
@@ -36,7 +50,6 @@ namespace Text_Based_RPG_Shell_Knight
             Console.Write($"selected map tile: [{displayMap[x, y]}] walls available: [{allWalls}]"); // --- debug
             Console.ReadKey(true);
         }
-
         /// legacy code
         //public bool isWall(int y, int x ) {
         //    string allWalls = string.Join("", wallHold);
@@ -49,38 +62,31 @@ namespace Text_Based_RPG_Shell_Knight
         //    }
         //    return false;
 
-        private void addWall(string walls)
-        {
-            wallHold.Add(walls);   
-        }
-        private void removeWall(string walls) 
-        {
-            wallHold.Remove(walls);
-            
-        }
+        
 
         // ----- Manager Builders
         public void CreateWindowBorder() // walls ═ ║ 
         {
+            borderMap = new string[Console.WindowWidth, Console.WindowHeight];
 
             Console.SetCursorPosition(0, 0);
             borderString += "╔,"; //Console.Write("╔"); 
-            for (int i = 1; i < Console.WindowWidth - 1; i++)
+            for (int i = 0; i < Console.WindowWidth; i++)
             {
                 borderString += "═,"; //Console.Write("═"); 
             }
             borderString += "╗;"; //Console.Write("╗"); 
-            for (int i = 1; i < Console.WindowHeight - 2; i++)
+            for (int i = 0; i < Console.WindowHeight - 3; i++)
             {
                 borderString += "║,"; //Console.Write("║"); 
-                for (int j = 1; j < Console.WindowWidth - 1; j++)
+                for (int j = 0; j < Console.WindowWidth; j++)
                 {
                     borderString += " ,"; //Console.Write(" "); 
                 }
                 borderString += "║;"; //Console.Write("║"); 
             }
             borderString += "╚,"; //Console.Write("╚"); 
-            for (int i = 1; i < Console.WindowWidth - 1; i++)
+            for (int i = 0; i < Console.WindowWidth; i++)
             {
                 borderString += "═,"; //Console.Write("═"); 
             }
@@ -93,10 +99,12 @@ namespace Text_Based_RPG_Shell_Knight
                 string[] borderX = borderY[i].Split(','); // used for .Length and to Map the Xcoordinates on 
                 for (int j = 0; j < borderX.Length; j++)
                 {
-                    borderMap[i, j] = borderX[j];
+                    borderMap[j, i] = borderX[j];
                 }
             }
+
         }
+
         public void DrawWindowBorder() 
         {
             string[] borderY = borderString.Split(';');
@@ -106,15 +114,21 @@ namespace Text_Based_RPG_Shell_Knight
             //Console.WriteLine($"Map 0,0: [{borderMap[0, 0]}]"); // --- /debug/
 
 
-            Console.SetCursorPosition(0, 0);
+            Console.SetCursorPosition(1, 0);
             for (int i = 0; i < borderY.Length; i++) // nested loop to write window border
             {
                 for (int j = 0; j > borderXLength.Length; j++)
                 {
-                    Console.Write(borderMap[i, j]);                }
+                    Console.Write(borderMap[i, j]);                
+                }
+            }
+            for (int i = 0; i <= borderY.Length; i++)
+            {
+                Console.Write(borderY[i]);
             }
             Console.SetCursorPosition(1, 1);
         }
+
         public void SetCurrentMap()//(currently gets Map_test for prototype))
         {
             removeWall(getwallHold());

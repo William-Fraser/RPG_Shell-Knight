@@ -25,12 +25,12 @@ namespace Text_Based_RPG_Shell_Knight
         protected private int[] _health = new int[2]; // set: current health / max health
         protected private int[] _damage = new int[2]; // set range: Highest / Lowest
         
-        // ----- gets/sets
-        public int getX()
+        // ----- gets
+        public int X()
         {
             return _posX;
         }
-        public int getY()
+        public int Y()
         {
             return _posY;
         }
@@ -85,10 +85,10 @@ namespace Text_Based_RPG_Shell_Knight
         // ----- public methods
         public void Move(int DIRECTION_) //moves the player in the specifyed DICRECTION_ 
         {
-            if (DIRECTION_ == DIRECTION_DOWN) { _posY += 1; _directionMoving = DIRECTION_DOWN; }
-            else if (DIRECTION_ == DIRECTION_UP) { _posY -= 1; _directionMoving = DIRECTION_UP; }
-            else if (DIRECTION_ == DIRECTION_LEFT) { _posX -= 1; _directionMoving = DIRECTION_LEFT; }
-            else if (DIRECTION_ == DIRECTION_RIGHT) { _posX += 1; _directionMoving = DIRECTION_RIGHT; }
+            if (DIRECTION_ == DIRECTION_DOWN) { if (_posY < Console.WindowHeight - 1) { _posY += 1; _directionMoving = DIRECTION_DOWN;} }
+            else if (DIRECTION_ == DIRECTION_UP) { if (Y() > 0) { _posY -= 1; _directionMoving = DIRECTION_UP; } }
+            else if (DIRECTION_ == DIRECTION_LEFT) {  if (X() > 0) { _posX -= 1; _directionMoving = DIRECTION_LEFT; } }
+            else if (DIRECTION_ == DIRECTION_RIGHT) {  if (X() < Console.WindowWidth - 1) { _posX += 1; _directionMoving = DIRECTION_RIGHT; } }
         }
         public void Draw()
         {
