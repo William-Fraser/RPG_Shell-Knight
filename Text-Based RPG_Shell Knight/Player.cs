@@ -30,19 +30,25 @@ namespace Text_Based_RPG_Shell_Knight
 
         // ----- Private Methods
         private void directionalOutput() {
-            
-            if (_playerInput.Key == ConsoleKey.S || _playerInput.Key == ConsoleKey.DownArrow) {  
-                                            Move(DIRECTION_DOWN); 
-            }   
-            else if (_playerInput.Key == ConsoleKey.W || _playerInput.Key == ConsoleKey.UpArrow) {  
-                                            Move(DIRECTION_UP); 
+
+            if (_playerInput.Key == ConsoleKey.S || _playerInput.Key == ConsoleKey.DownArrow)
+            {
+                Move(DIRECTION_DOWN);
             }
-            else if (_playerInput.Key == ConsoleKey.A || _playerInput.Key == ConsoleKey.LeftArrow) { 
-                                            Move(DIRECTION_LEFT);
+            else if (_playerInput.Key == ConsoleKey.W || _playerInput.Key == ConsoleKey.UpArrow)
+            {
+                Move(DIRECTION_UP);
             }
-            else if (_playerInput.Key == ConsoleKey.D || _playerInput.Key == ConsoleKey.RightArrow) { 
-                                            Move(DIRECTION_RIGHT); 
+            else if (_playerInput.Key == ConsoleKey.A || _playerInput.Key == ConsoleKey.LeftArrow)
+            {
+                Move(DIRECTION_LEFT);
             }
+            else if (_playerInput.Key == ConsoleKey.D || _playerInput.Key == ConsoleKey.RightArrow)
+            {
+                Move(DIRECTION_RIGHT);
+            }
+            else 
+            { _directionMoving = DIRECTION_NULL; }
         }
        
         // ----- Public Methods
@@ -50,11 +56,13 @@ namespace Text_Based_RPG_Shell_Knight
         {
             _playerInput = Console.ReadKey(true);
         }
-        public void Update() {
+        public void Update(int enemyX, int enemyY, char[] map, string walls, int[] damage) {
             toolkit.DisplayText(toolkit.blank);// clears the text after it's been displayed once
+            ChecktoTakeDamage(enemyX, enemyY, damage);
             GetInput();
             toolkit.SetConsoleSize();
             directionalOutput();
+            CheckForWall(map, walls); 
         }
     }
 }

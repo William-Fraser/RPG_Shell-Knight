@@ -20,14 +20,19 @@ namespace Text_Based_RPG_Shell_Knight
 
         // ----- constructor
         public Map()
-        { 
-            
+        {
+
         }
 
         // ----- gets/sets||add/remove
-        public char getMap(int x, int y) 
+        public char[] getTile(int x, int y) 
         {
-            return displayMap[x, y];
+            char[] directions = new char[5];
+            directions[1] = displayMap[x, y-1];
+            directions[2] = displayMap[x+1, y];
+            directions[3] = displayMap[x, y+1];
+            directions[4] = displayMap[x-1, y];
+            return directions;
         }
         public string getwallHold()
         { 
@@ -44,7 +49,7 @@ namespace Text_Based_RPG_Shell_Knight
         }
 
         // ----- Manager tools
-        public void checkPosition(int x, int y) {
+        public void checkPosition(int x, int y) { // debug
             string allWalls = string.Join("", wallHold);
             Console.SetCursorPosition(1, 0);
             Console.Write($"selected map tile: [{displayMap[x, y]}] walls available: [{allWalls}]"); // --- debug
@@ -71,7 +76,7 @@ namespace Text_Based_RPG_Shell_Knight
 
             Console.SetCursorPosition(0, 0);
             borderString += "╔,"; //Console.Write("╔"); 
-            for (int i = 0; i < Console.WindowWidth; i++)
+            for (int i = 0; i < Console.WindowWidth -2; i++)
             {
                 borderString += "═,"; //Console.Write("═"); 
             }
@@ -79,14 +84,14 @@ namespace Text_Based_RPG_Shell_Knight
             for (int i = 0; i < Console.WindowHeight - 3; i++)
             {
                 borderString += "║,"; //Console.Write("║"); 
-                for (int j = 0; j < Console.WindowWidth; j++)
+                for (int j = 0; j < Console.WindowWidth - 2; j++)
                 {
                     borderString += " ,"; //Console.Write(" "); 
                 }
                 borderString += "║;"; //Console.Write("║"); 
             }
             borderString += "╚,"; //Console.Write("╚"); 
-            for (int i = 0; i < Console.WindowWidth; i++)
+            for (int i = 0; i < Console.WindowWidth -2; i++)
             {
                 borderString += "═,"; //Console.Write("═"); 
             }
@@ -104,7 +109,6 @@ namespace Text_Based_RPG_Shell_Knight
             }
 
         }
-
         public void DrawWindowBorder() 
         {
             string[] borderY = borderString.Split(';');
@@ -122,21 +126,20 @@ namespace Text_Based_RPG_Shell_Knight
                     Console.Write(borderMap[i, j]);                
                 }
             }
-            for (int i = 0; i <= borderY.Length; i++)
-            {
-                Console.Write(borderY[i]);
-            }
+            //for (int i = 0; i <= borderY.Length; i++)
+            //{
+            //    Console.Write(borderY[i]);
+            //}
             Console.SetCursorPosition(1, 1);
         }
-
-        public void SetCurrentMap()//(currently gets Map_test for prototype))
+        public void SetCurrent()//(currently gets Map_test for prototype))
         {
             removeWall(getwallHold());
             string[] MapY = File.ReadAllLines("Map_test.txt");// this changes to string input for Maps is _test for now
             if (!File.Exists("Map_test.txt")) {// input same string
                 throw new Exception("File path does not Exist");
             }
-
+            
             string walls = MapY[0];// line 0 passes walls
             for (int y = 1; y < MapDisplay_Y; y++){ // starts at 1 because line 0 is to pass information
                 char[] MapX = new char[MapDisplay_X];
@@ -152,10 +155,10 @@ namespace Text_Based_RPG_Shell_Knight
             }
             addWall(walls);
         }
-        public void DrawCurrentMap() 
+        public void DrawCurrent() 
         {
-            Console.SetCursorPosition(0,0);
-            Console.Write(displayMap[0,0]);
+            //Console.SetCursorPosition(0,0);
+            //Console.Write(displayMap[0,0]);
             int y;
             int x;
             Console.SetCursorPosition(0, 1);

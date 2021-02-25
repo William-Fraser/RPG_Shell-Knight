@@ -50,16 +50,16 @@ namespace Text_Based_RPG_Shell_Knight
         // ----- public methods
         public void MoveChasePlayer(int playerX, int playerY)
         {
-            bool moveAlongAxis = true; // if /true = x/ else /false = y/
+            bool moveAlongAxis = false; // if /true = y/ else /false = x/
             int mapQuadrent = 0; // enemy location is 0, 0 /x,-y = 0/x, y = 1/-x, -y = 2/-x, y = 3/ <NW
 
             if (_posY == playerY)
             {
-                moveAlongAxis = true;
+                moveAlongAxis = false;
             }
             else if (_posX == playerX)
             {
-                moveAlongAxis = false;
+                moveAlongAxis = true;
             }
             else
             {
@@ -81,7 +81,7 @@ namespace Text_Based_RPG_Shell_Knight
                 // check quadrent for which axis to move
                 if (mapQuadrent == 0)
                 {
-                    if ((playerX + _posX) > (playerY + _posY))
+                    if ((_posX - playerX) < (_posY - playerY))
                     {
                         moveAlongAxis = true;
                     }
@@ -89,7 +89,7 @@ namespace Text_Based_RPG_Shell_Knight
                 }
                 else if (mapQuadrent == 1)
                 {
-                    if ((playerY + _posX) > (playerX + _posY))
+                    if ((playerX - _posX) < (playerY - _posY))
                     {
                         moveAlongAxis = true;
                     }
@@ -97,7 +97,7 @@ namespace Text_Based_RPG_Shell_Knight
                 }
                 else if (mapQuadrent == 2)
                 {
-                    if ((playerY + _posX) < (playerX + _posY))
+                    if ((_posX - playerX) < (playerY - _posY))
                     {
                         moveAlongAxis = true;
                     }
@@ -105,7 +105,7 @@ namespace Text_Based_RPG_Shell_Knight
                 }
                 else if (mapQuadrent == 3)
                 {
-                    if ((playerX + _posX) < (playerY + _posY))
+                    if ((playerX - _posX) < (playerY - _posY))
                     {
                         moveAlongAxis = true;
                     }
@@ -114,7 +114,7 @@ namespace Text_Based_RPG_Shell_Knight
             }
 
             // check direction to move axis in
-            if (moveAlongAxis == true)
+            if (moveAlongAxis == false)
             {
                 if (playerX > _posX)
                 {
@@ -135,6 +135,12 @@ namespace Text_Based_RPG_Shell_Knight
                     Move(DIRECTION_UP);
                 }
             }
+        }
+        public void Update(int playerX, int playerY, char[] mapMovement, string walls, int[] damage)
+        {
+            ChecktoTakeDamage(playerX, playerY, damage);
+            MoveChasePlayer(playerX, playerY);
+            CheckForWall(mapMovement, walls);
         }
     }
 }

@@ -28,7 +28,7 @@ namespace Text_Based_RPG_Shell_Knight
         {
             toolkit.SetConsoleSize();
             Console.CursorVisible = false;
-            //map.CreateWindowBorder();     //<<<<<<<<<<<<  FIX THIS
+            map.CreateWindowBorder();     //<<<<<<<<<<<<  FIX THIS
 
             CONSOLE_HEIGHT = Console.WindowHeight;
             CONSOLE_WIDTH = Console.WindowWidth;
@@ -46,22 +46,17 @@ namespace Text_Based_RPG_Shell_Knight
         // Manager Methods
         public void Draw()
         {
-            map.DrawCurrentMap();
+            map.DrawWindowBorder();
+            //map.DrawCurrent();
             enemy1.Draw();
             enemy2.Draw();
             player.Draw();
         }
         public void Update()
         {
-            player.Update();
-            //MapMAN.checkPosition(player.getAxisX(), player.getAxisY()); // debug
-            player.CheckForWall(map.getMap(player.X(), player.Y()), map.getwallHold());
-
-            enemy1.ChecktoTakeDamage(player.Attack(enemy1.X(), enemy1.Y()), player.getDamage());
-            enemy2.ChecktoTakeDamage(player.Attack(enemy1.X(), enemy1.Y()), player.getDamage());
-            enemy1.MoveChasePlayer(player.X(), player.Y());
-            enemy2.MoveChasePlayer(player.X(), player.Y());
-            player.ChecktoTakeDamage(enemy1.Attack(player.X(), player.Y()), enemy1.getDamage());
+            player.Update(enemy1.X(), enemy1.Y(), map.getTile(player.X(), player.Y()), map.getwallHold(), enemy1.getDamage());
+            enemy1.Update(player.X(), player.Y(), map.getTile(enemy1.X(), enemy1.Y()), map.getwallHold(), player.getDamage());
+            enemy2.Update(player.X(), player.Y(), map.getTile(enemy2.X(), enemy2.Y()), map.getwallHold(), player.getDamage());
         }
 
         // game loop
@@ -70,9 +65,9 @@ namespace Text_Based_RPG_Shell_Knight
             _gameState = GAMESTATE_MAP;
             if (_gameState == GAMESTATE_MAP)
             {
-                map.SetCurrentMap();
-                //map.DrawWindowBorder();
+                map.SetCurrent();
 
+                Update();
                 Draw();
 
                 if (player.getAlive() == false) { setGameState(GAMESTATE_GAMEOVER); }
