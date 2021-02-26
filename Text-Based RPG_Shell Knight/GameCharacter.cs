@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Text_Based_RPG_Shell_Knight
 {
-    abstract class GameCharacter
+    abstract class GameCharacter : GameObject
     {
         protected Toolkit toolkit = new Toolkit();
 
@@ -17,16 +17,11 @@ namespace Text_Based_RPG_Shell_Knight
         protected static int DIRECTION_LEFT = 4;
         protected private int _directionMoving;
 
-        protected int _posX;
-        protected int _posY;
-
-        protected string _name;
-        protected char _avatar;
-        protected private bool aliveInWorld = true;
-        private int displayDeath = 0; //used in draw to show death once
         protected private int[] _health = new int[2]; // set: current health / max health
-        protected private int[] _damage = new int[2]; // set range: Highest / Lowest
-        
+        protected private int[] _damage = new int[2]; // set range: Lowest / Highest
+
+        private int displayDeath = 0; //used in draw to show death once
+
         // ----- gets
         public int X()
         {
@@ -36,39 +31,43 @@ namespace Text_Based_RPG_Shell_Knight
         {
             return _posY;
         }
-        public int getDirection() { 
+        public int getDirection() {
             return _directionMoving;
         }
-        public bool getAlive() 
+        public int[] getHealth()
         {
-            return aliveInWorld;
+            return _health;
+        }
+        public int[] getDamage()
+        {
+            return _damage;
         }
 
         // ----- private sets
-        private int setToLimits(int currentStatus, int maxStatus)
+        protected private int setStatToLimits(int currentStatus, int maxStatus)
         {
             int fixedStatus = currentStatus;
             if (currentStatus <= 0)
             {
                 fixedStatus = 0;
-            }else if (currentStatus >= maxStatus)
+            } else if (currentStatus >= maxStatus)
             {
                 fixedStatus = maxStatus;
-            }return fixedStatus;
+            } return fixedStatus;
         }
-        
+
         // ----- private methods
-        private void moveBack() // moves player back if they're supposed to collide with something
+        protected private void moveBack() // moves player back if they're supposed to collide with something
         {
             if (_directionMoving == DIRECTION_UP) { Move(DIRECTION_DOWN); }
             else if (_directionMoving == DIRECTION_DOWN) { Move(DIRECTION_UP); }
             else if (_directionMoving == DIRECTION_LEFT) { Move(DIRECTION_RIGHT); }
             else if (_directionMoving == DIRECTION_RIGHT) { Move(DIRECTION_LEFT); }
             else { }
-        }
+        }   
         private void killCharacter()
         {
-            if (_health[1] <= 0) {
+            if (_health[0] <= 0) {
                 string deathMessage = $"< {_name} has been slain >";
                 aliveInWorld = false;
                 toolkit.DisplayText(deathMessage);
@@ -76,13 +75,17 @@ namespace Text_Based_RPG_Shell_Knight
                 _avatar = 'X';
             }
         }
-        private void takeDamage(int[] damage) 
+        private int takeDamage(int[] _damage)
         {
-            int finalDamage = toolkit.RandomNumBetween(damage[1], damage[0]);
+            int finalDamage = toolkit.RandomNumBetween(_damage[0], _damage[1]);
+            _health[0] -= finalDamage;
+            setStatToLimits(_health[0], _health[1]);
+            return finalDamage;
+        }
+        protected private void displayDamage(int finalDamage, UI ui)
+        {
             string damageMessage = $"< {_name} taking {finalDamage} points of Damage >";
-            _health[1] -= finalDamage;
             toolkit.DisplayText(damageMessage);
-            setToLimits(_health[0],_health[1]);
             moveBack();
         }
 
@@ -97,15 +100,12 @@ namespace Text_Based_RPG_Shell_Knight
                 else if (DIRECTION_ == DIRECTION_RIGHT) { if (X() < Console.WindowWidth - 1) { _posX += 1; _directionMoving = DIRECTION_RIGHT; } }
             }
         }
-        public void Draw()
+        new public void Draw()
         {
             if (displayDeath == 0)
             {
                 if (!aliveInWorld) displayDeath++; // displays death once
-                //Console.SetCursorPosition(1, 1);              //
-                //Console.Write($"X: { _posX } Y: { _posY }");  // --- debug / display cursor XY
-                Console.SetCursorPosition(_posX, _posY);
-                Console.Write(_avatar);
+                base.Draw();
             }
         }
         public void CheckForWall(char[] map, string walls)
@@ -127,16 +127,16 @@ namespace Text_Based_RPG_Shell_Knight
                 }
             }
         }
-        public void ChecktoTakeDamage(int enemyX, int enemyY, int[] damage)
+        public void ChecktoTakeDamage(int enemyX, int enemyY, bool alive, int[] health, UI ui)
         {
-            if (aliveInWorld)
+            if (alive)
             {
                 if (enemyX == _posX)
                 {
                     if (enemyY == _posY)
                     {
                         moveBack();
-                        takeDamage(damage);
+                        displayDamage(takeDamage(health), ui);
                         killCharacter();
                     }
                 }

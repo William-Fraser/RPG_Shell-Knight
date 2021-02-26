@@ -8,10 +8,11 @@ namespace Text_Based_RPG_Shell_Knight
 {
     class GameManager
     {
-        private int _gameState;
+        private int _gameState = GAMESTATE_CHANGEMAP;
         private static int GAMESTATE_GAMEOVER = 0;
         private static int GAMESTATE_MAP = 1;
-        private static int GAMESTATE_BATTLE = 2;
+        private static int GAMESTATE_CHANGEMAP = 2;
+        private static int GAMESTATE_BATTLE = 3;
 
         static int CONSOLE_HEIGHT;
         static int CONSOLE_WIDTH;
@@ -19,16 +20,17 @@ namespace Text_Based_RPG_Shell_Knight
         Toolkit toolkit = new Toolkit();
         
         Map map = new Map();
+        UI ui = new UI();
         Player player = new Player("John Smith", '@');
-        Enemy enemy1 = new Enemy("enemy1", '#', 0);
-        Enemy enemy2 = new Enemy("enemy2", '#', 1);
+        Item item = new Item("Key", 'k');
+        Enemy enemy;
 
         // constructor
         public GameManager()
         {
             toolkit.SetConsoleSize();
             Console.CursorVisible = false;
-            map.CreateWindowBorder();     //<<<<<<<<<<<<  FIX THIS
+            map.CreateWindowBorder();
 
             CONSOLE_HEIGHT = Console.WindowHeight;
             CONSOLE_WIDTH = Console.WindowWidth;
@@ -43,35 +45,61 @@ namespace Text_Based_RPG_Shell_Knight
         {
             _gameState = GAMESTATE_;
         }
-        // Manager Methods
+        public void setGameOver()
+        {
+            if (player.getAlive() == false) { setGameState(GAMESTATE_GAMEOVER); }
+            else { }
+        }
+
+        // ----- Manager Methods
+        public void UpdateDisplay()
+        {
+            map.SetCurrent();
+            enemy = new Enemy(map.getEnemyHold());
+            map.DrawWindowBorder();
+            ui.getHUDvalues(player.getHealth());
+            Draw();
+        }
         public void Draw()
         {
-            map.DrawWindowBorder();
-            //map.DrawCurrent();
-            enemy1.Draw();
-            enemy2.Draw();
+            ui.HUD();
+            map.DrawCurrent();
+            item.Draw();
+            enemy.Draw();
             player.Draw();
         }
         public void Update()
         {
-            player.Update(enemy1.X(), enemy1.Y(), map.getTile(player.X(), player.Y()), map.getwallHold(), enemy1.getDamage());
-            enemy1.Update(player.X(), player.Y(), map.getTile(enemy1.X(), enemy1.Y()), map.getwallHold(), player.getDamage());
-            enemy2.Update(player.X(), player.Y(), map.getTile(enemy2.X(), enemy2.Y()), map.getwallHold(), player.getDamage());
+            //map.checkPosition( 0, 0, map.getEnemyHold());
+            player.Update(enemy.X(), enemy.Y(), map.getTile(toolkit, player.getName(), player.X(), player.Y()), map.getWallHold(), enemy.getAlive(), enemy.getDamage(player.X(),player.Y()), ui);
+            player.GetKey(item.pickupItem(player.X(), player.Y()));
+            if (player.GethasKey())
+            {
+                map.openDoor();
+            }
+            enemy.Update(player.X(), player.Y(), map.getTile(toolkit, player.getName(), enemy.X(), enemy.Y()), map.getWallHold(), player.getAlive(), player.getDamage(), ui);
+            ui.getHUDvalues(player.getHealth());
         }
 
-        // game loop
+        // ----- game loop
         public void Game()
         {
-            _gameState = GAMESTATE_MAP;
-            if (_gameState == GAMESTATE_MAP)
+            if (_gameState == GAMESTATE_CHANGEMAP)
             {
-                map.SetCurrent();
+                UpdateDisplay();
+                _gameState = GAMESTATE_MAP;
+            }
+            else if (_gameState == GAMESTATE_MAP)
+            {
 
                 Update();
                 Draw();
 
-                if (player.getAlive() == false) { setGameState(GAMESTATE_GAMEOVER); }
-                else { }
+                setGameOver();
+            }
+            else if (_gameState == GAMESTATE_GAMEOVER)
+            {
+                
             }
         }
     }

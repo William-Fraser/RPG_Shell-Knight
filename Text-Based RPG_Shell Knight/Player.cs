@@ -6,26 +6,21 @@ using System.Threading.Tasks;
 
 namespace Text_Based_RPG_Shell_Knight
 {
-    class Player:GameCharacter
+    class Player : GameCharacter
     {
         private ConsoleKeyInfo _playerInput;
+        private bool hasKey = false;
 
         //constructor
         public Player(string name, char avatar)
         {
             _name = name;
             _avatar = avatar;
-            _health = new int[] { 100, 100 };
-            _damage = new int[] { 75, 50 };
+            _health = new int[] { 999, 999 };
+            _damage = new int[] { 50, 75 };
 
             _posX = Console.WindowWidth / 2;
             _posY = Console.WindowHeight / 2;
-        }
-
-        // ----- gets / sets
-        public int[] getDamage() 
-        {
-            return _damage;
         }
 
         // ----- Private Methods
@@ -47,22 +42,37 @@ namespace Text_Based_RPG_Shell_Knight
             {
                 Move(DIRECTION_RIGHT);
             }
-            else 
+            else
             { _directionMoving = DIRECTION_NULL; }
         }
-       
+        new private void displayDamage(int finalDamage, UI ui)
+        {
+            ui.getHUDvalues(_health);
+            ui.HUD();
+            base.displayDamage(finalDamage, ui);
+        }
+
         // ----- Public Methods
+        public bool GethasKey()
+        {
+            return hasKey;
+        }
         public void GetInput()
         {
             _playerInput = Console.ReadKey(true);
         }
-        public void Update(int enemyX, int enemyY, char[] map, string walls, int[] damage) {
-            toolkit.DisplayText(toolkit.blank);// clears the text after it's been displayed once
-            ChecktoTakeDamage(enemyX, enemyY, damage);
+        public void GetKey(bool pickupitem)
+        {
+            hasKey = pickupitem;
+        }
+        public void Update(int enemyX, int enemyY, char[] map, string walls, bool alive, int[] health, UI ui) {
+            //toolkit.DisplayText(toolkit.blank);// clears the text after it's been displayed once
+            ChecktoTakeDamage(enemyX, enemyY, alive, health, ui);
             GetInput();
             toolkit.SetConsoleSize();
             directionalOutput();
-            CheckForWall(map, walls); 
+            CheckForWall(map, walls);
+            
         }
     }
 }

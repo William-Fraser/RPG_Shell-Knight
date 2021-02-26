@@ -11,6 +11,8 @@ namespace Text_Based_RPG_Shell_Knight
         
         public List<string> wallHold = new List<string>();
 
+        public List<string> enemyHold = new List<string>();
+
         // Map
         private char[,] displayMap = new char[MapDisplay_X, MapDisplay_Y];
 
@@ -24,37 +26,55 @@ namespace Text_Based_RPG_Shell_Knight
 
         }
 
-        // ----- gets/sets||add/remove
-        public char[] getTile(int x, int y) 
+        // ----- gets & manager tools
+        public char[] getTile(Toolkit toolkit, string _name, int x = 2, int y = 2) 
         {
+            //toolkit.DisplayText($"checking {_name}");
             char[] directions = new char[5];
-            directions[1] = displayMap[x, y-1];
+            directions[0] = displayMap[x, y];
+            if (y > 0)
+            {
+                directions[1] = displayMap[x, y - 1];
+            }
+            else {
+                directions[1] = displayMap[x, y];
+            }
             directions[2] = displayMap[x+1, y];
             directions[3] = displayMap[x, y+1];
-            directions[4] = displayMap[x-1, y];
+            if (x > 0)
+            {
+                directions[4] = displayMap[x-1, y];
+            }
+            else
+            {
+                directions[1] = displayMap[x, y];
+            }
             return directions;
         }
-        public string getwallHold()
+        public string getWallHold()
         { 
             string allwalls = string.Join("", wallHold);
             return allwalls;
         }
-        private void addWall(string walls)
+        public string[] getEnemyHold()
         {
-            wallHold.Add(walls);
+            string[] allenemies = new string[enemyHold.Count];
+            for (int i = 0; i < enemyHold.Count; i++)
+            { allenemies[i] = enemyHold[i]; }
+            return allenemies;
         }
-        private void removeWall(string walls)
+        public void openDoor()
         {
-            wallHold.Remove(walls);
+            enemyHold.Remove("D");
         }
 
-        // ----- Manager tools
-        public void checkPosition(int x, int y) { // debug
+        // ----- public methods
+        public void checkPosition(int x, int y, string[] enemyInfo) { // debug
             string allWalls = string.Join("", wallHold);
             Console.SetCursorPosition(1, 0);
-            Console.Write($"selected map tile: [{displayMap[x, y]}] walls available: [{allWalls}]"); // --- debug
+            Console.Write($"selected map tile: [{displayMap[x, y]}] walls available: [{allWalls}] enemy check: [{enemyInfo[2]}]"); // --- debug
             Console.ReadKey(true);
-        }
+        } //debug
         /// legacy code
         //public bool isWall(int y, int x ) {
         //    string allWalls = string.Join("", wallHold);
@@ -81,7 +101,7 @@ namespace Text_Based_RPG_Shell_Knight
                 borderString += "═,"; //Console.Write("═"); 
             }
             borderString += "╗;"; //Console.Write("╗"); 
-            for (int i = 0; i < Console.WindowHeight - 3; i++)
+            for (int i = 0; i < Console.WindowHeight - 4; i++)
             {
                 borderString += "║,"; //Console.Write("║"); 
                 for (int j = 0; j < Console.WindowWidth - 2; j++)
@@ -95,7 +115,7 @@ namespace Text_Based_RPG_Shell_Knight
             {
                 borderString += "═,"; //Console.Write("═"); 
             }
-            borderString += "╝;"; //Console.Write("╝");
+            borderString += "╝"; //Console.Write("╝");
 
             string[] borderY = borderString.Split(';');
             
@@ -118,12 +138,12 @@ namespace Text_Based_RPG_Shell_Knight
             //Console.WriteLine($"Map 0,0: [{borderMap[0, 0]}]"); // --- /debug/
 
 
-            Console.SetCursorPosition(1, 0);
+            Console.SetCursorPosition(0, 1);
             for (int i = 0; i < borderY.Length; i++) // nested loop to write window border
             {
-                for (int j = 0; j > borderXLength.Length; j++)
+                for (int j = 0; j < borderXLength.Length; j++)
                 {
-                    Console.Write(borderMap[i, j]);                
+                    Console.Write(borderMap[j, i]);                
                 }
             }
             //for (int i = 0; i <= borderY.Length; i++)
@@ -134,13 +154,29 @@ namespace Text_Based_RPG_Shell_Knight
         }
         public void SetCurrent()//(currently gets Map_test for prototype))
         {
-            removeWall(getwallHold());
+            wallHold.Remove(getWallHold());
+            string[] removingHold = enemyHold.ToArray();
+            for (int i = 0; i < enemyHold.Count; i++)
+            { 
+                enemyHold.Remove(removingHold[i]);
+            }
             string[] MapY = File.ReadAllLines("Map_test.txt");// this changes to string input for Maps is _test for now
             if (!File.Exists("Map_test.txt")) {// input same string
                 throw new Exception("File path does not Exist");
             }
-            
-            string walls = MapY[0];// line 0 passes walls
+
+            ///read map info
+            string info = MapY[0];// line 0 passes info
+            string[] readInfo = info.Split(';');
+            string walls = readInfo[0]; //value 0 of info is walls
+            string[] enemyInfo = readInfo[1].ToString().Split('.');
+            string[] enemies = new string[enemyInfo.Length];
+            for (int i = 0; i < (enemyInfo.Length); i++)
+            {
+                enemies[i] = enemyInfo[i];
+            }
+
+            ///read map
             for (int y = 1; y < MapDisplay_Y; y++){ // starts at 1 because line 0 is to pass information
                 char[] MapX = new char[MapDisplay_X];
                 string xHolder =  MapY[y];
@@ -153,7 +189,11 @@ namespace Text_Based_RPG_Shell_Knight
                     displayMap[x, y] = MapX[x];
                 }
             }
-            addWall(walls);
+            wallHold.Add(walls);
+            for (int i = 0; i < enemies.Length; i++)
+            {
+                enemyHold.Add(enemies[i]);
+            }
         }
         public void DrawCurrent() 
         {
