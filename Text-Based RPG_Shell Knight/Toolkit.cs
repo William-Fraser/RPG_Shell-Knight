@@ -11,11 +11,13 @@ namespace Text_Based_RPG_Shell_Knight
     {
         public string blank = "                                                                                                                              ";
 
-        string recentMessage;
+        string currentMessage;
+        string recentMessage = "";
         string middleMessage = "";
         string decayingMessage = "";
         public void SetConsoleSize()
         {
+            Console.SetWindowSize(128, 36);
             Console.WindowWidth = 128;
             Console.WindowHeight = 36;
         }
@@ -32,27 +34,47 @@ namespace Text_Based_RPG_Shell_Knight
             //    string PaktC = ", Press any key to Continue.";
             //    message += PaktC;
             //}
+
+            if (message != blank)
+            {
+                saveMessage(currentMessage);
+                DisplayText(blank);
+            }
             Console.SetCursorPosition(1, Console.WindowHeight - 3);
             Console.Write(message);
             if (message != blank)
             {
+                Console.CursorVisible = true;
                 Console.Write(", press any key to continue");
-                saveMessage(message);
-                DisplayText(blank);
                 Console.ReadKey(true);
+                Console.CursorVisible = false;
+                DisplayText(blank);
+                currentMessage = message;
+                Console.SetCursorPosition(1, Console.WindowHeight - 3);
+                Console.Write(currentMessage);
             }
         }
         public void saveMessage(string message)
         {
-            decayingMessage = middleMessage;
-            middleMessage = recentMessage;
-            recentMessage = message;
-            Console.SetCursorPosition(1, Console.WindowHeight - 4);
-            Console.Write(recentMessage);
-            Console.SetCursorPosition(1, Console.WindowHeight - 5);
-            Console.Write(middleMessage);
-            Console.SetCursorPosition(1, Console.WindowHeight - 6);
-            Console.Write(decayingMessage);
+            if (message != "")
+            {
+                decayingMessage = middleMessage;
+                middleMessage = recentMessage;
+                recentMessage = currentMessage;
+                
+                Console.SetCursorPosition(1, Console.WindowHeight - 4);
+                Console.Write(blank);
+                Console.SetCursorPosition(1, Console.WindowHeight - 4);
+                Console.Write(recentMessage);
+                Console.SetCursorPosition(1, Console.WindowHeight - 5);
+                Console.Write(blank);
+                Console.SetCursorPosition(1, Console.WindowHeight - 5);
+                Console.Write(middleMessage);
+                Console.SetCursorPosition(1, Console.WindowHeight - 6);
+                Console.Write(blank);
+                Console.SetCursorPosition(1, Console.WindowHeight - 6);
+                Console.Write(decayingMessage);
+            }
         }
         //scrolling text
 

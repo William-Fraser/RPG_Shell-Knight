@@ -65,7 +65,18 @@ namespace Text_Based_RPG_Shell_Knight
         }
         public void openDoor()
         {
-            enemyHold.Remove("D");
+            string[] allwalls = wallHold.ToArray();
+            for (int i = 0; i < wallHold.Count; i++)
+            {
+                wallHold.Remove(allwalls[i]);
+            }
+            for (int i = 0; i < allwalls.Length; i++)
+                if (allwalls[i] != "D")
+                {
+                    wallHold.Add(allwalls[i]);
+                }
+            
+
         }
 
         // ----- public methods

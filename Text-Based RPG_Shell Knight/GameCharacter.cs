@@ -42,16 +42,18 @@ namespace Text_Based_RPG_Shell_Knight
         {
             return _damage;
         }
+        public char getAvatar()
+        {
+            return _avatar;
+        }
 
-        // ----- private sets
+        // ----- internal sets
         protected private int setStatToLimits(int currentStatus, int maxStatus)
         {
             int fixedStatus = currentStatus;
-            if (currentStatus <= 0)
-            {
+            if (currentStatus < 0){
                 fixedStatus = 0;
-            } else if (currentStatus >= maxStatus)
-            {
+            } else if (currentStatus >= maxStatus){
                 fixedStatus = maxStatus;
             } return fixedStatus;
         }
@@ -64,7 +66,7 @@ namespace Text_Based_RPG_Shell_Knight
             else if (_directionMoving == DIRECTION_LEFT) { Move(DIRECTION_RIGHT); }
             else if (_directionMoving == DIRECTION_RIGHT) { Move(DIRECTION_LEFT); }
             else { }
-        }   
+        }
         private void killCharacter()
         {
             if (_health[0] <= 0) {
@@ -86,10 +88,17 @@ namespace Text_Based_RPG_Shell_Knight
         {
             string damageMessage = $"< {_name} taking {finalDamage} points of Damage >";
             toolkit.DisplayText(damageMessage);
-            moveBack();
         }
 
         // ----- public methods
+        new public void Draw()
+        {
+            if (displayDeath == 0)
+            {
+                if (!aliveInWorld) displayDeath++; // displays death once
+                base.Draw();
+            }
+        }
         public void Move(int DIRECTION_) //moves the player in the specifyed DICRECTION_ 
         {
             if (aliveInWorld)
@@ -98,14 +107,6 @@ namespace Text_Based_RPG_Shell_Knight
                 else if (DIRECTION_ == DIRECTION_UP) { if (Y() > 0) { _posY -= 1; _directionMoving = DIRECTION_UP; } }
                 else if (DIRECTION_ == DIRECTION_LEFT) { if (X() > 0) { _posX -= 1; _directionMoving = DIRECTION_LEFT; } }
                 else if (DIRECTION_ == DIRECTION_RIGHT) { if (X() < Console.WindowWidth - 1) { _posX += 1; _directionMoving = DIRECTION_RIGHT; } }
-            }
-        }
-        new public void Draw()
-        {
-            if (displayDeath == 0)
-            {
-                if (!aliveInWorld) displayDeath++; // displays death once
-                base.Draw();
             }
         }
         public void CheckForWall(char[] map, string walls)
@@ -127,6 +128,25 @@ namespace Text_Based_RPG_Shell_Knight
                 }
             }
         }
+        public bool CheckForCharacterCollision(int playerX, int playerY, bool alive)
+        {
+            if (alive)
+            {
+                if (_directionMoving == DIRECTION_UP) { playerY--; }
+                else if (_directionMoving == DIRECTION_DOWN) { playerY++; }
+                else if (_directionMoving == DIRECTION_LEFT) { playerX--; }
+                else if (_directionMoving == DIRECTION_RIGHT) { playerX++; }
+                else { }
+                if (_posX == playerX)
+                {
+                    if (_posY == playerY)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
         public void ChecktoTakeDamage(int enemyX, int enemyY, bool alive, int[] health, UI ui)
         {
             if (alive)
@@ -135,7 +155,6 @@ namespace Text_Based_RPG_Shell_Knight
                 {
                     if (enemyY == _posY)
                     {
-                        moveBack();
                         displayDamage(takeDamage(health), ui);
                         killCharacter();
                     }

@@ -45,12 +45,7 @@ namespace Text_Based_RPG_Shell_Knight
             else
             { _directionMoving = DIRECTION_NULL; }
         }
-        new private void displayDamage(int finalDamage, UI ui)
-        {
-            ui.getHUDvalues(_health);
-            ui.HUD();
-            base.displayDamage(finalDamage, ui);
-        }
+        
 
         // ----- Public Methods
         public bool GethasKey()
@@ -66,11 +61,18 @@ namespace Text_Based_RPG_Shell_Knight
             hasKey = pickupitem;
         }
         public void Update(int enemyX, int enemyY, char[] map, string walls, bool alive, int[] health, UI ui) {
-            //toolkit.DisplayText(toolkit.blank);// clears the text after it's been displayed once
+            //toolkit.DisplayText(toolkit.blank);// clears the text after it's been displayed once - changed
             ChecktoTakeDamage(enemyX, enemyY, alive, health, ui);
             GetInput();
             toolkit.SetConsoleSize();
             directionalOutput();
+                    Console.ReadKey(true);
+            if (CheckForCharacterCollision(enemyX, enemyY, alive) == true) // enemy values read as zero on firstcontact, needs enemy locate to read adjesent tile's
+            { 
+                moveBack();
+                Console.SetCursorPosition(1, 0);
+                Console.Write("Contact");
+            }
             CheckForWall(map, walls);
             
         }

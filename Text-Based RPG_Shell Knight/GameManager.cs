@@ -71,7 +71,7 @@ namespace Text_Based_RPG_Shell_Knight
         public void Update()
         {
             //map.checkPosition( 0, 0, map.getEnemyHold());
-            player.Update(enemy.X(), enemy.Y(), map.getTile(toolkit, player.getName(), player.X(), player.Y()), map.getWallHold(), enemy.getAlive(), enemy.getDamage(player.X(),player.Y()), ui);
+            player.Update(enemy.X(player.X(), player.Y()), enemy.Y(player.X(), player.Y()), map.getTile(toolkit, player.getName(), player.X(), player.Y()), map.getWallHold(), enemy.getAlive(), enemy.getDamage(player.X(),player.Y()), ui);
             player.GetKey(item.pickupItem(player.X(), player.Y()));
             if (player.GethasKey())
             {
