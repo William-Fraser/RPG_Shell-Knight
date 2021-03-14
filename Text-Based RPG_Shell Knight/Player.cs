@@ -19,10 +19,13 @@ namespace Text_Based_RPG_Shell_Knight
             _health = new int[] { 999, 999 };
             _damage = new int[] { 50, 75 };
 
-            _posX = Console.WindowWidth / 2;
-            _posY = Console.WindowHeight / 2;
+            x = Console.WindowWidth / 2;
+            y = Console.WindowHeight / 2;
         }
 
+        // ----- gets sets
+        public bool HasKey { get; set; }
+        
         // ----- Private Methods
         private void directionalOutput() {
 
@@ -46,34 +49,26 @@ namespace Text_Based_RPG_Shell_Knight
             { _directionMoving = DIRECTION_NULL; }
         }
         
-
         // ----- Public Methods
-        public bool GethasKey()
-        {
-            return hasKey;
-        }
         public void GetInput()
         {
             _playerInput = Console.ReadKey(true);
         }
-        public void GetKey(bool pickupitem)
-        {
-            hasKey = pickupitem;
-        }
-        public void Update(int enemyX, int enemyY, char[] map, string walls, bool alive, int[] health, UI ui) {
+        
+        //  map.getWallHold(), enemy.getAlive(), enemy.getDamage(player.X(),player.Y()), ui
+        public void Update(Enemy enemy, Map map, UI ui) {
             //toolkit.DisplayText(toolkit.blank);// clears the text after it's been displayed once - changed
-            ChecktoTakeDamage(enemyX, enemyY, alive, health, ui);
             GetInput();
             toolkit.SetConsoleSize();
             directionalOutput();
                     Console.ReadKey(true);
-            if (CheckForCharacterCollision(enemyX, enemyY, alive) == true) // enemy values read as zero on firstcontact, needs enemy locate to read adjesent tile's
+            if (CheckForCharacterCollision(enemy.X, enemy.Y, enemy.Alive == true)) // enemy values read as zero on firstcontact, needs enemy locate to read adjesent tile's
             { 
-                moveBack();
+                MoveBack();
                 Console.SetCursorPosition(1, 0);
                 Console.Write("Contact");
             }
-            CheckForWall(map, walls);
+            CheckForWall(map.getTile(toolkit, _name, X, Y), map.getWallHold());
             
         }
     }

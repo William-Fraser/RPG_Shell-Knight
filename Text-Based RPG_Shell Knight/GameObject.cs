@@ -8,22 +8,19 @@ namespace Text_Based_RPG_Shell_Knight
 {
     abstract class GameObject
     {
-        protected int _posX;
-        protected int _posY;
+        //
+        protected Toolkit toolkit = new Toolkit();
+
+        protected int x;
+        protected int y;
 
         protected string _name;
         protected char _avatar;
         protected private bool aliveInWorld = true;
 
         // ----- gets / sets
-        public string getName()
-        {
-            return _name;
-        }
-        public bool getAlive()
-        {
-            return aliveInWorld;
-        }
+        public string Name { get; }
+        public bool Alive { get; }
 
         // ----- public methods
         public void Draw()
@@ -32,7 +29,7 @@ namespace Text_Based_RPG_Shell_Knight
             {
                 //Console.SetCursorPosition(1, 1);              //
                 //Console.Write($"X: { _posX } Y: { _posY }");  // --- debug / display cursor XY
-                Console.SetCursorPosition(_posX, _posY);
+                Console.SetCursorPosition(x, y);
                 Console.Write(_avatar);
             }
         }

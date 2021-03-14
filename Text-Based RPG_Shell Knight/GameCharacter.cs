@@ -8,44 +8,35 @@ namespace Text_Based_RPG_Shell_Knight
 {
     abstract class GameCharacter : GameObject
     {
-        protected Toolkit toolkit = new Toolkit();
-
+        ///INIT
+        //directional States
+        protected private int _directionMoving;
         protected static int DIRECTION_NULL = 0;
         protected static int DIRECTION_UP = 1;
         protected static int DIRECTION_RIGHT = 2;
         protected static int DIRECTION_DOWN = 3;
         protected static int DIRECTION_LEFT = 4;
-        protected private int _directionMoving;
 
+        //character fields.
         protected private int[] _health = new int[2]; // set: current health / max health
         protected private int[] _damage = new int[2]; // set range: Lowest / Highest
 
+        //death animation
         private int displayDeath = 0; //used in draw to show death once
 
         // ----- gets
-        public int X()
+        public int X { get; }
+        public int Y { get; }
+        public int Direction { get; }
+        public int[] getHealth() 
         {
-            return _posX;
-        }
-        public int Y()
-        {
-            return _posY;
-        }
-        public int getDirection() {
-            return _directionMoving;
-        }
-        public int[] getHealth()
-        {
-            return _health;
+            return _health; 
         }
         public int[] getDamage()
         {
             return _damage;
         }
-        public char getAvatar()
-        {
-            return _avatar;
-        }
+        public char Avatar { get; }
 
         // ----- internal sets
         protected private int setStatToLimits(int currentStatus, int maxStatus)
@@ -59,7 +50,7 @@ namespace Text_Based_RPG_Shell_Knight
         }
 
         // ----- private methods
-        protected private void moveBack() // moves player back if they're supposed to collide with something
+        protected private void MoveBack() // moves player back if they're supposed to collide with something
         {
             if (_directionMoving == DIRECTION_UP) { Move(DIRECTION_DOWN); }
             else if (_directionMoving == DIRECTION_DOWN) { Move(DIRECTION_UP); }
@@ -67,7 +58,7 @@ namespace Text_Based_RPG_Shell_Knight
             else if (_directionMoving == DIRECTION_RIGHT) { Move(DIRECTION_LEFT); }
             else { }
         }
-        private void killCharacter()
+        private void KillCharacter()
         {
             if (_health[0] <= 0) {
                 string deathMessage = $"< {_name} has been slain >";
@@ -77,14 +68,14 @@ namespace Text_Based_RPG_Shell_Knight
                 _avatar = 'X';
             }
         }
-        private int takeDamage(int[] _damage)
+        private int TakeDamage(int[] _damage)
         {
             int finalDamage = toolkit.RandomNumBetween(_damage[0], _damage[1]);
             _health[0] -= finalDamage;
             setStatToLimits(_health[0], _health[1]);
             return finalDamage;
         }
-        protected private void displayDamage(int finalDamage, UI ui)
+        protected private void DisplayDamageToHUD(int finalDamage, UI ui)
         {
             string damageMessage = $"< {_name} taking {finalDamage} points of Damage >";
             toolkit.DisplayText(damageMessage);
@@ -103,10 +94,10 @@ namespace Text_Based_RPG_Shell_Knight
         {
             if (aliveInWorld)
             {
-                if (DIRECTION_ == DIRECTION_DOWN) { if (_posY < Console.WindowHeight - 1) { _posY += 1; _directionMoving = DIRECTION_DOWN; } }
-                else if (DIRECTION_ == DIRECTION_UP) { if (Y() > 0) { _posY -= 1; _directionMoving = DIRECTION_UP; } }
-                else if (DIRECTION_ == DIRECTION_LEFT) { if (X() > 0) { _posX -= 1; _directionMoving = DIRECTION_LEFT; } }
-                else if (DIRECTION_ == DIRECTION_RIGHT) { if (X() < Console.WindowWidth - 1) { _posX += 1; _directionMoving = DIRECTION_RIGHT; } }
+                if (DIRECTION_ == DIRECTION_DOWN) { if (y < Console.WindowHeight - 1) { y += 1; _directionMoving = DIRECTION_DOWN; } }
+                else if (DIRECTION_ == DIRECTION_UP) { if (Y > 0) { y -= 1; _directionMoving = DIRECTION_UP; } }
+                else if (DIRECTION_ == DIRECTION_LEFT) { if (X > 0) { x -= 1; _directionMoving = DIRECTION_LEFT; } }
+                else if (DIRECTION_ == DIRECTION_RIGHT) { if (X < Console.WindowWidth - 1) { x += 1; _directionMoving = DIRECTION_RIGHT; } }
             }
         }
         public void CheckForWall(char[] map, string walls)
@@ -123,40 +114,40 @@ namespace Text_Based_RPG_Shell_Knight
 
                     if (map[_directionMoving] == wallGroup[i])
                     { 
-                        moveBack();
+                        MoveBack();
                     }
                 }
             }
         }
-        public bool CheckForCharacterCollision(int playerX, int playerY, bool alive)
-        {
+        public bool CheckForCharacterCollision(int collidingX, int collidingY, bool alive)
+        {// collides with objects, seperate from map wall collision
             if (alive)
             {
-                if (_directionMoving == DIRECTION_UP) { playerY--; }
-                else if (_directionMoving == DIRECTION_DOWN) { playerY++; }
-                else if (_directionMoving == DIRECTION_LEFT) { playerX--; }
-                else if (_directionMoving == DIRECTION_RIGHT) { playerX++; }
-                else { }
-                if (_posX == playerX)
+                //if (_directionMoving == DIRECTION_UP) { playerY--; }
+                //else if (_directionMoving == DIRECTION_DOWN) { playerY++; }
+                //else if (_directionMoving == DIRECTION_LEFT) { playerX--; }
+                //else if (_directionMoving == DIRECTION_RIGHT) { playerX++; }
+                //else { }
+                if (x == collidingX)
                 {
-                    if (_posY == playerY)
+                    if (y == collidingY)
                     {
                         return true;
                     }
                 }
             }
             return false;
-        }
-        public void ChecktoTakeDamage(int enemyX, int enemyY, bool alive, int[] health, UI ui)
+        }// collides with objects
+        public void ChangetoDealDamage(int enemyX, int enemyY, bool alive, int[] health, UI ui)
         {
             if (alive)
             {
-                if (enemyX == _posX)
+                if (enemyX == x)
                 {
-                    if (enemyY == _posY)
+                    if (enemyY == y)
                     {
-                        displayDamage(takeDamage(health), ui);
-                        killCharacter();
+                        DisplayDamageToHUD(TakeDamage(health), ui);
+                        KillCharacter();
                     }
                 }
             }

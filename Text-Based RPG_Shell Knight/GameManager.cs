@@ -18,36 +18,36 @@ namespace Text_Based_RPG_Shell_Knight
         static int CONSOLE_WIDTH;
 
         Toolkit toolkit = new Toolkit();
-        
-        Map map = new Map();
-        UI ui = new UI();
-        Player player = new Player("John Smith", '@');
-        Item item = new Item("Key", 'k');
-        Enemy enemy;
+
+        Map map;
+        UI ui;
+        Player player;
+        Item item;
+        Enemy[] enemies;
 
         // constructor
         public GameManager()
         {
             toolkit.SetConsoleSize();
             Console.CursorVisible = false;
-            map.CreateWindowBorder();
 
             CONSOLE_HEIGHT = Console.WindowHeight;
             CONSOLE_WIDTH = Console.WindowWidth;
+
+            map = new Map();
+            ui = new UI();
+            player = new Player("John Smith", '@');
+            item = new Item("Key", 'k');
+            
+            map.CreateWindowBorder();
+            
         }
 
         // ----- gets/sets
-        public int getGameState()
-        {
-            return _gameState;
-        }
-        public void setGameState(int GAMESTATE_)
-        {
-            _gameState = GAMESTATE_;
-        }
+        public int GameState { get; set; }
         public void setGameOver()
         {
-            if (player.getAlive() == false) { setGameState(GAMESTATE_GAMEOVER); }
+            if (player.Alive == false) { GameState = GAMESTATE_GAMEOVER; }
             else { }
         }
 
@@ -55,7 +55,15 @@ namespace Text_Based_RPG_Shell_Knight
         public void UpdateDisplay()
         {
             map.SetCurrent();
-            enemy = new Enemy(map.getEnemyHold());
+            enemies = new Enemy[map.readEnemyHold().Length]; // because enemies.length makes more sense
+
+            string[] enemyInfo = map.getEnemyHold().Split('|');
+            for (int i = 0; i < enemyInfo.Length; i++) // nested loop to write window border
+            {
+                Enemy enemy = new Enemy(enemyInfo[i]);
+                enemies[i] = enemy;
+            }
+
             map.DrawWindowBorder();
             ui.getHUDvalues(player.getHealth());
             Draw();
@@ -65,19 +73,20 @@ namespace Text_Based_RPG_Shell_Knight
             ui.HUD();
             map.DrawCurrent();
             item.Draw();
-            enemy.Draw();
+            for (int i = 0; i < enemies.Length; i++)
+            {
+                enemies[i].Draw();
+            }
             player.Draw();
         }
         public void Update()
         {
             //map.checkPosition( 0, 0, map.getEnemyHold());
-            player.Update(enemy.X(player.X(), player.Y()), enemy.Y(player.X(), player.Y()), map.getTile(toolkit, player.getName(), player.X(), player.Y()), map.getWallHold(), enemy.getAlive(), enemy.getDamage(player.X(),player.Y()), ui);
-            player.GetKey(item.pickupItem(player.X(), player.Y()));
-            if (player.GethasKey())
+            for (int i = 0; i < enemies.Length; i++)
             {
-                map.openDoor();
+                player.Update(enemies[i], map, ui);
+                enemies[i].Update(player, map, ui);
             }
-            enemy.Update(player.X(), player.Y(), map.getTile(toolkit, player.getName(), enemy.X(), enemy.Y()), map.getWallHold(), player.getAlive(), player.getDamage(), ui);
             ui.getHUDvalues(player.getHealth());
         }
 

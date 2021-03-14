@@ -13,17 +13,17 @@ namespace Text_Based_RPG_Shell_Knight
             _name = name;
             _avatar = avatar;
 
-            _posX = 26;
-            _posY = 8;
+            x = 26;
+            y = 8;
             aliveInWorld = true;
 
         }
 
         public bool pickupItem(int playerX, int playerY)
         {
-            if (_posX == playerX)
+            if (x == playerX)
             {
-                if (_posY == playerY)
+                if (y == playerY)
                 {
                     aliveInWorld = false;
                     return true;

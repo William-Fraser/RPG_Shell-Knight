@@ -20,7 +20,7 @@ namespace Text_Based_RPG_Shell_Knight
             while (_state != PROGRAMSTATE_ENDING)
             {
                 if (_state == PROGRAMSTATE_PLAYMENU)
-                { 
+                {
                     
                 }
                 while (_state != PROGRAMSTATE_GAMEOVER)
@@ -28,7 +28,8 @@ namespace Text_Based_RPG_Shell_Knight
                     if (_state == PROGRAMSTATE_PLAYGAME)
                     {
                         game.Game();
-                        if (game.getGameState() == PROGRAMSTATE_GAMEOVER){
+                        if (game.GameState == PROGRAMSTATE_GAMEOVER)
+                        {
                             _state = PROGRAMSTATE_GAMEOVER;
                         }
                     }

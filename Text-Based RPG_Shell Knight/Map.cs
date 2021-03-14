@@ -6,48 +6,69 @@ namespace Text_Based_RPG_Shell_Knight
 {
     class Map
     {
-        static int MapDisplay_X = Console.WindowWidth+8;
-        static int MapDisplay_Y = Console.WindowHeight-2;
-        
-        public List<string> wallHold = new List<string>();
+        // Map File Lines/Info Readers
+        string[] allRowsAndInfo = File.ReadAllLines("Map_test.txt");// this changes to string constant is _test for now
+        string[] allRows;
+        char[] row;
 
+        // height and width of the Map
+        static int height;
+        static int width;
+        
+        // lists containing Map Information for the game system to read
+        public List<string> wallHold = new List<string>();
         public List<string> enemyHold = new List<string>();
 
         // Map
-        private char[,] displayMap = new char[MapDisplay_X, MapDisplay_Y];
+        private char[,] map;
 
-        // border
+        // border -- part of the HUD, HUD perhaps should be renamed to Camera?
         private string borderString = "";
-        private string[,] borderMap;
+        private string[,] borderArray;
 
         // ----- constructor
         public Map()
         {
+            //init length of rows and columns
+            allRows = new string[allRowsAndInfo.Length - 1]; // -1 removing Info
+            for (int i = 0; i < allRowsAndInfo.Length - 1; i++) {
+                allRows[i] = allRowsAndInfo[i + 1];
+            }
+            
+            row = new char[allRows[0].Length];
+            string holder = allRows[0];// used in loop to convert string to char
+            for (int i = 0; i < holder.Length - 1; i++){
+                row[i] = holder[i];
+            }
 
+            //init bounds
+            height = allRows.Length;
+            width = row.Length;
+
+            map = new char[width, height];
         }
-
         // ----- gets & manager tools
         public char[] getTile(Toolkit toolkit, string _name, int x = 2, int y = 2) 
         {
             //toolkit.DisplayText($"checking {_name}");
             char[] directions = new char[5];
-            directions[0] = displayMap[x, y];
+            directions[0] = map[x, y];
             if (y > 0)
             {
-                directions[1] = displayMap[x, y - 1];
+                directions[1] = map[x, y - 1];
             }
             else {
-                directions[1] = displayMap[x, y];
+                directions[1] = map[x, y];
             }
-            directions[2] = displayMap[x+1, y];
-            directions[3] = displayMap[x, y+1];
+            directions[2] = map[x+1, y];
+            directions[3] = map[x, y+1];
             if (x > 0)
             {
-                directions[4] = displayMap[x-1, y];
+                directions[4] = map[x-1, y];
             }
             else
             {
-                directions[1] = displayMap[x, y];
+                directions[1] = map[x, y];
             }
             return directions;
         }
@@ -56,7 +77,12 @@ namespace Text_Based_RPG_Shell_Knight
             string allwalls = string.Join("", wallHold);
             return allwalls;
         }
-        public string[] getEnemyHold()
+        public string getEnemyHold() 
+        {
+            string allEnemies = string.Join("", enemyHold);
+            return allEnemies;
+        }
+        public string[] readEnemyHold()
         {
             string[] allenemies = new string[enemyHold.Count];
             for (int i = 0; i < enemyHold.Count; i++)
@@ -83,7 +109,7 @@ namespace Text_Based_RPG_Shell_Knight
         public void checkPosition(int x, int y, string[] enemyInfo) { // debug
             string allWalls = string.Join("", wallHold);
             Console.SetCursorPosition(1, 0);
-            Console.Write($"selected map tile: [{displayMap[x, y]}] walls available: [{allWalls}] enemy check: [{enemyInfo[2]}]"); // --- debug
+            Console.Write($"selected map tile: [{map[x, y]}] walls available: [{allWalls}] enemy check: [{enemyInfo[2]}]"); // --- debug
             Console.ReadKey(true);
         } //debug
         /// legacy code
@@ -103,7 +129,7 @@ namespace Text_Based_RPG_Shell_Knight
         // ----- Manager Builders
         public void CreateWindowBorder() // walls ═ ║ 
         {
-            borderMap = new string[Console.WindowWidth, Console.WindowHeight];
+            borderArray = new string[Console.WindowWidth, Console.WindowHeight];
 
             Console.SetCursorPosition(0, 0);
             borderString += "╔,"; //Console.Write("╔"); 
@@ -135,7 +161,7 @@ namespace Text_Based_RPG_Shell_Knight
                 string[] borderX = borderY[i].Split(','); // used for .Length and to Map the Xcoordinates on 
                 for (int j = 0; j < borderX.Length; j++)
                 {
-                    borderMap[j, i] = borderX[j];
+                    borderArray[j, i] = borderX[j];
                 }
             }
 
@@ -154,7 +180,7 @@ namespace Text_Based_RPG_Shell_Knight
             {
                 for (int j = 0; j < borderXLength.Length; j++)
                 {
-                    Console.Write(borderMap[j, i]);                
+                    Console.Write(borderArray[j, i]);                
                 }
             }
             //for (int i = 0; i <= borderY.Length; i++)
@@ -166,20 +192,24 @@ namespace Text_Based_RPG_Shell_Knight
         public void SetCurrent()//(currently gets Map_test for prototype))
         {
             wallHold.Remove(getWallHold());
+            enemyHold.Remove(getEnemyHold());
             string[] removingHold = enemyHold.ToArray();
             for (int i = 0; i < enemyHold.Count; i++)
             { 
                 enemyHold.Remove(removingHold[i]);
             }
-            string[] MapY = File.ReadAllLines("Map_test.txt");// this changes to string input for Maps is _test for now
+            
             if (!File.Exists("Map_test.txt")) {// input same string
                 throw new Exception("File path does not Exist");
             }
 
             ///read map info
-            string info = MapY[0];// line 0 passes info
+            string info = allRowsAndInfo[0];// line 0 passes info
             string[] readInfo = info.Split(';');
+
             string walls = readInfo[0]; //value 0 of info is walls
+            
+            // value 1 is for enemys
             string[] enemyInfo = readInfo[1].ToString().Split('.');
             string[] enemies = new string[enemyInfo.Length];
             for (int i = 0; i < (enemyInfo.Length); i++)
@@ -188,22 +218,22 @@ namespace Text_Based_RPG_Shell_Knight
             }
 
             ///read map
-            for (int y = 1; y < MapDisplay_Y; y++){ // starts at 1 because line 0 is to pass information
-                char[] MapX = new char[MapDisplay_X];
-                string xHolder =  MapY[y];
+            for (int y = 0; y < height; y++){ 
+                string xHolder = allRows[y];
                 for (int i = 0; i < xHolder.Length; i++)
                 {
-                    MapX[i] = xHolder[i];
+                    row[i] = xHolder[i];
                 }
-                for (int x = 0; x < MapDisplay_X; x++) {
+                for (int x = 0; x < width; x++) {
                     //create array
-                    displayMap[x, y] = MapX[x];
+                    map[x, y] = row[x];
                 }
             }
-            wallHold.Add(walls);
-            for (int i = 0; i < enemies.Length; i++)
+            //two ways to handle it
+            wallHold.Add(walls); // walls are in one listing: 0
+            for (int i = 0; i < enemies.Length; i++) // enemies are in incremental listings: 0, 1, 2
             {
-                enemyHold.Add(enemies[i]);
+                enemyHold.Add(enemies[i]); 
             }
         }
         public void DrawCurrent() 
@@ -213,9 +243,9 @@ namespace Text_Based_RPG_Shell_Knight
             int y;
             int x;
             Console.SetCursorPosition(0, 1);
-            for (y = 1; y < MapDisplay_Y; y++) { // line 0 is to pass info,  
-                for (x = 0; x < MapDisplay_X; x++) {
-                    Console.Write(displayMap[x, y]);
+            for (y = 1; y < height; y++) { // line 0 is to pass info,  
+                for (x = 0; x < width; x++) {
+                    Console.Write(map[x, y]);
                 }
             }
         } 

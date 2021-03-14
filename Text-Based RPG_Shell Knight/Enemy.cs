@@ -16,66 +16,40 @@ namespace Text_Based_RPG_Shell_Knight
 {
     class Enemy : GameCharacter
     {
-
-
-        int _enemyNumber;
-        static int _totalEnemyNumber;
-        new string[] _name;
-        new char[] _avatar;
-        new int[,] _health;
-        new int[,] _damage;
-        new int[] _posX;
-        new int[] _posY;
-        private bool[] _aliveInWorld;
-        new private int[] _directionMoving;
-
         //constructor
-        public Enemy(string[] enemyInfo) 
+        public Enemy(string enemyInfo) 
         {
-            //Console.SetCursorPosition(1, 0);
-            //Console.Write($"displaying :{enemyInfo.Length}:"); // --- debug
-            //Console.ReadKey(true);
-            // reinitializes new enemy group for every map change, because enemies change with map
-            _totalEnemyNumber = enemyInfo.Length;
-            _name = new string[enemyInfo.Length]; 
-            _avatar = new char[enemyInfo.Length]; // used to identify the enemy
-            _health = new int[enemyInfo.Length, 2];
-            _damage = new int[enemyInfo.Length, 2];
-            _posX = new int[enemyInfo.Length];
-            _posY = new int[enemyInfo.Length];
-            _aliveInWorld = new bool[enemyInfo.Length];
-            _directionMoving = new int[enemyInfo.Length];
+            
             readEnemyInfo(enemyInfo);
         }
 
         //read info
-        private void readEnemyInfo(string[] enemyInfo) // Constructor child: reads all enemies available to print on map
+        private void readEnemyInfo(string enemyInfo) // Constructor child: reads all enemies available to print on map
         {
 
-            for (int i = 0; i < enemyInfo.Length; i++)
-            {
-                string[] avatarAndPos = enemyInfo[i].Split(':');
+
+            string[] avatarAndPos = enemyInfo.Split(':');
 
                 string avatarHold = avatarAndPos[0];
                 string posHold = avatarAndPos[1];
                 char identity = avatarHold[0];
                 string[] identifyed = recognizeInfo(identity).Split(';');
-                _name[i] = identifyed[0];
-                _avatar[i] = avatarHold[0];
+                
+            // creating enemy with recognized information
+                _avatar = avatarHold[0];
+                _name = identifyed[0];
                 string[] setHealth = identifyed[1].Split(',');
                 string[] setDamage = identifyed[2].Split(',');
-                for (int t = 0; t < 2; t++)
+                for (int i = 0; i < 2; i++)
                 {
-                    _health[i, t] = Int32.Parse(setHealth[t]);
-                    _damage[i, t] = Int32.Parse(setDamage[t]);
+                    _health[i] = Int32.Parse(setHealth[i]);
+                    _damage[i] = Int32.Parse(setDamage[i]);
                 }
                 string[] setPos = posHold.Split(',');
-                _posX[i] = Int32.Parse(setPos[0]);
-                _posY[i] = Int32.Parse(setPos[1]);
-                _aliveInWorld[i] = true;
-                _directionMoving[i] = DIRECTION_NULL;
-            }
-            _totalEnemyNumber = enemyInfo.Length;
+                x = Int32.Parse(setPos[0]);
+                y = Int32.Parse(setPos[1]);
+                aliveInWorld = true;
+                _directionMoving = DIRECTION_NULL;
 
         }// Constructor child: reads all enemies available to print on map
         private string recognizeInfo(char identity) ///holds stats for enemys found in ^EnemyAvatars^
@@ -103,140 +77,6 @@ namespace Text_Based_RPG_Shell_Knight
             return identifyed;
         } // read enemy info child
 
-        // ----- gets / sets
-        public int X(int playerX, int playerY) // used to return value of X for selected enemy
-        {
-            if (locateEnemyNumber(playerX, playerY) > 0)
-            {
-                return _posX[locateEnemyNumber(playerX, playerY)];
-            }
-            else 
-            {
-                return 0;
-            }
-        }
-        public int Y(int playerX, int playerY)// used to return value of Y for selected enemy
-        {
-            if (locateEnemyNumber(playerX, playerY) > 0)
-            {
-                return _posY[locateEnemyNumber(playerX, playerY)];
-            }
-            else 
-            {
-                return 0;
-            }
-        }
-        new public string getName()
-        {
-            return _name[_enemyNumber];
-        }
-        ///public void setEnemyPos(int pos) //legacy Enemy positioning
-        //{
-        //    if (pos == 0) {
-        //        _posX = Console.WindowWidth / 4;
-        //        _posY = Console.WindowHeight / 4;
-        //    }
-        //    else if (pos == 1)
-        //    {
-        //        _posX = (Console.WindowWidth / 4) * 3;
-        //        _posY = Console.WindowHeight / 4;
-        //    }
-        //    else if (pos == 2)
-        //    {
-        //        _posX = Console.WindowWidth / 4;
-        //        _posY = (Console.WindowHeight / 4) * 3;
-        //    }
-        //    else if (pos == 3)
-        //    {
-        //        _posX = (Console.WindowWidth / 4) * 3;
-        //        _posY = (Console.WindowHeight / 4) * 3;
-        //    }
-        //}
-        public int[] getDamage(int playerX, int playerY)
-        {
-            int[] _damageNumber = new int[base._damage.Length]; // used to hold damage info from string to int
-
-            if (locateEnemyNumber(playerX, playerY) > 0)
-            {
-                for (int i = 0; i < _damageNumber.Length; i++)
-                {
-
-                    _damageNumber[i] = _damage[locateEnemyNumber(playerX, playerY), i];
-                }
-            }
-            else { _damageNumber[0] = 0; _damageNumber[1] = 1; }
-            return _damageNumber;
-        }
-        public int[] getHealth(int playerX, int playerY)
-        {
-            int[] _healthNumber = new int[base._health.Length]; // used to hold damage info from string to int
-            if (locateEnemyNumber(playerX, playerY) > 0)
-            {
-                for (int i = 0; i < _healthNumber.Length; i++)
-                {
-                    _healthNumber[i] = _health[locateEnemyNumber(playerX, playerY), i];
-                }
-            }
-            else { _healthNumber[0] = 0; _healthNumber[1] = 1; }
-            return _healthNumber;
-        }
-        public bool getAlive(int playerX, int playerY)
-        { 
-            return _aliveInWorld[locateEnemyNumber(playerX, playerY)];
-        }
-        public char getAvatar(int playerX, int playerY)
-        {
-            return _avatar[locateEnemyNumber(playerX, playerY)];
-        }
-
-        // ----- private methods
-        private int locateEnemyNumber(int playerX, int playerY)
-        {
-            int enemyNumber = -7;
-            for (int i = 0; i < _totalEnemyNumber; i++)
-            {
-                if (playerX == _posX[i])
-                {
-                    if (playerY == _posY[i])
-                    {
-                        enemyNumber = i;
-                    }
-                }
-            }
-            return enemyNumber;
-        }// returns the nuber of an enemy if the player is colliding with one
-        new private void moveBack() // moves player back if they're supposed to collide with something
-        {
-            if (_directionMoving[_enemyNumber] == DIRECTION_UP) { Move(DIRECTION_DOWN); }
-            else if (_directionMoving[_enemyNumber] == DIRECTION_DOWN) { Move(DIRECTION_UP); }
-            else if (_directionMoving[_enemyNumber] == DIRECTION_LEFT) { Move(DIRECTION_RIGHT); }
-            else if (_directionMoving[_enemyNumber] == DIRECTION_RIGHT) { Move(DIRECTION_LEFT); }
-            else { }
-        }
-        private void killCharacter()
-        {
-            if (_health[_enemyNumber,0] <= 0)
-            {
-                string deathMessage = $"< {_name[_enemyNumber]} has been slain >";
-                _aliveInWorld[_enemyNumber] = false;
-                toolkit.DisplayText(deathMessage);
-                _avatar[_enemyNumber] = 'X';
-            }
-        }
-        private int takeDamage(int[] _damage)
-        {
-            int finalDamage = toolkit.RandomNumBetween(_damage[0], _damage[1]);
-            _health[_enemyNumber, 0] -= finalDamage;
-            _health[_enemyNumber, 0] = setStatToLimits(_health[_enemyNumber, 0], _health[_enemyNumber, 1]);
-            return finalDamage;
-        }
-        new private void displayDamage(int finalDamage, UI ui)
-        {
-            
-            string damageMessage = $"< {_name[_enemyNumber]} taking {finalDamage} points of Damage, {_health[_enemyNumber, 0]}/{_health[_enemyNumber, 1]} Health Remaining>";
-            toolkit.DisplayText(damageMessage);
-        }
-
         // ----- public methods
 
         //AI
@@ -245,33 +85,33 @@ namespace Text_Based_RPG_Shell_Knight
             bool moveAlongAxis = false; // if /true = y/ else /false = x/
             int mapQuadrent = 0; // enemy location is 0, 0 /x,-y = 0/x, y = 1/-x, -y = 2/-x, y = 3/ <NW
 
-            if (_posX[_enemyNumber] == playerX && _posY[_enemyNumber] == playerY)
+            if (x == playerX && y == playerY)
             {
-                _directionMoving[_enemyNumber] = DIRECTION_NULL;
+                _directionMoving = DIRECTION_NULL;
             }
             else 
             {
-                    if (_posY[_enemyNumber] == playerY)
+                    if (y == playerY)
                     {
                         moveAlongAxis = false;
                     }
-                    else if (_posX[_enemyNumber] == playerX)
+                    else if (x == playerX)
                     {
                         moveAlongAxis = true;
                     }
                     else
                     {
                         // finding the quadrent with the player
-                        if (playerX > _posX[_enemyNumber])
+                        if (playerX > x)
                         {
                             mapQuadrent = 1; // <NE
-                            if (playerY > _posY[_enemyNumber])
+                            if (playerY > y)
                             {
                                 mapQuadrent = 3; // <SE
                             }
 
                         }
-                        else if (playerY > _posY[_enemyNumber])
+                        else if (playerY > y)
                         {
                             mapQuadrent = 2; // <SW
                         }
@@ -279,7 +119,7 @@ namespace Text_Based_RPG_Shell_Knight
                         // check quadrent for which axis to move
                         if (mapQuadrent == 0)
                         {
-                            if ((_posX[_enemyNumber] - playerX) < (_posY[_enemyNumber] - playerY))
+                            if ((x - playerX) < (y - playerY))
                             {
                                 moveAlongAxis = true;
                             }
@@ -287,7 +127,7 @@ namespace Text_Based_RPG_Shell_Knight
                         }
                         else if (mapQuadrent == 1)
                         {
-                            if ((playerX - _posX[_enemyNumber]) < (playerY - _posY[_enemyNumber]))
+                            if ((playerX - x) < (playerY - y))
                             {
                                 moveAlongAxis = true;
                             }
@@ -295,7 +135,7 @@ namespace Text_Based_RPG_Shell_Knight
                         }
                         else if (mapQuadrent == 2)
                         {
-                            if ((_posX[_enemyNumber] - playerX) < (playerY - _posY[_enemyNumber]))
+                            if ((x - playerX) < (playerY - y))
                             {
                                 moveAlongAxis = true;
                             }
@@ -303,7 +143,7 @@ namespace Text_Based_RPG_Shell_Knight
                         }
                         else if (mapQuadrent == 3)
                         {
-                            if ((playerX - _posX[_enemyNumber]) < (playerY - _posY[_enemyNumber]))
+                            if ((playerX - x) < (playerY - y))
                             {
                                 moveAlongAxis = true;
                             }
@@ -314,7 +154,7 @@ namespace Text_Based_RPG_Shell_Knight
                     // check direction to move axis in
                     if (moveAlongAxis == false)
                     {
-                        if (playerX > _posX[_enemyNumber])
+                        if (playerX > x)
                         {
                             Move(DIRECTION_RIGHT);
                         }
@@ -325,7 +165,7 @@ namespace Text_Based_RPG_Shell_Knight
                     }
                     else
                     {
-                        if (playerY > _posY[_enemyNumber])
+                        if (playerY > y)
                         {
                             Move(DIRECTION_DOWN);
                         }
@@ -337,76 +177,14 @@ namespace Text_Based_RPG_Shell_Knight
 
             }
         }
-        
-        //Draw, Override & Update
-        new public void Draw()
-        {
-                //Console.SetCursorPosition(1, 0);
-                //Console.Write($"displaying :{_totalEnemyNumber}:"); // --- debug / display selected enemy number
-                //Console.ReadKey(true);
-            for (_enemyNumber = 0; _enemyNumber < _totalEnemyNumber; _enemyNumber++)
-            {
-                //Console.SetCursorPosition(1, 1);              //
-                //Console.Write($"X: { _posX } Y: { _posY }");  // --- debug / display cursor XY
-                Console.SetCursorPosition(_posX[_enemyNumber], _posY[_enemyNumber]);
-                Console.Write(_avatar[_enemyNumber]);
-            }
-        }
-        new public void Move(int DIRECTION_) //moves the player in the specifyed DICRECTION_ 
-        {
-            if (_aliveInWorld[_enemyNumber])
-            {
-                if (DIRECTION_ == DIRECTION_DOWN) { if (_posY[_enemyNumber] < Console.WindowHeight - 1) { _posY[_enemyNumber] += 1; _directionMoving[_enemyNumber] = DIRECTION_DOWN; } }
-                else if (DIRECTION_ == DIRECTION_UP) { if (Y() > 0) { _posY[_enemyNumber] -= 1; _directionMoving[_enemyNumber] = DIRECTION_UP; } }
-                else if (DIRECTION_ == DIRECTION_LEFT) { if (X() > 0) { _posX[_enemyNumber] -= 1; _directionMoving[_enemyNumber] = DIRECTION_LEFT; } }
-                else if (DIRECTION_ == DIRECTION_RIGHT) { if (X() < Console.WindowWidth - 1) { _posX[_enemyNumber] += 1; _directionMoving[_enemyNumber] = DIRECTION_RIGHT; } }
-            }
-        }
-        new public void CheckForWall(char[] map, string walls)
-        {
-            if (_directionMoving[_enemyNumber] != DIRECTION_NULL)
-            {
-                char[] wallGroup = new char[walls.Length];
-                for (int i = 0; i < walls.Length; i++)
-                {
-                    wallGroup[i] = walls[i];
-                }
-                for (int i = 0; i < wallGroup.Length; i++)
-                {
 
-                    if (map[_directionMoving[_enemyNumber]] == wallGroup[i])
-                    {
-                        moveBack();
-                    }
-                }
-            }
-        }
-        new public void ChecktoTakeDamage(int playerX, int playerY, bool alive, int[] damage, UI ui)
-        {
-                if (_aliveInWorld[_enemyNumber])
-                {
-            if (alive)
-            {
-                    if (playerX == _posX[_enemyNumber])
-                    {
-                        if (playerY == _posY[_enemyNumber])
-                        {
-                            moveBack();
-                            displayDamage(takeDamage(damage), ui);
-                            killCharacter();
-                        }
-                    }
-            }
-                }
-        }
-        public void Update(int playerX, int playerY, char[] mapMovement, string walls, bool alive, int[] health, UI ui)
-        {
-            for (_enemyNumber = 0; _enemyNumber < _totalEnemyNumber; _enemyNumber++)
-            {
-                ChecktoTakeDamage(playerX, playerY, alive, health, ui);
-                MoveChasePlayer(playerX, playerY);
-                CheckForWall(mapMovement, walls);
-            }
+        //update
+        public void Update(Player player, Map map, UI ui)
+        { 
+                ChangetoDealDamage(player.X, player.Y, player.Alive, player.getHealth(), ui);
+                MoveChasePlayer(player.X, player.Y);
+                CheckForWall(map.getTile(toolkit, _name, X, Y), map.getWallHold());
+
         }
     }
 }
