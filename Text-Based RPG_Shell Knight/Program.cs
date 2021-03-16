@@ -21,7 +21,7 @@ namespace Text_Based_RPG_Shell_Knight
             {
                 if (_state == PROGRAMSTATE_PLAYMENU)
                 {
-                    
+                    //Menu();  
                 }
                 while (_state != PROGRAMSTATE_GAMEOVER)
                 {
@@ -30,12 +30,13 @@ namespace Text_Based_RPG_Shell_Knight
                         game.Game();
                         if (game.GameState == PROGRAMSTATE_GAMEOVER)
                         {
-                            _state = PROGRAMSTATE_GAMEOVER;
+                            //_state = PROGRAMSTATE_GAMEOVER;
                         }
                     }
                 }
                 _state = PROGRAMSTATE_ENDING;
             }
+            //Console.ReadKey(true);
         }
         public void Menu()
         { 

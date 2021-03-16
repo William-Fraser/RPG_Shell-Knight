@@ -20,11 +20,11 @@ namespace Text_Based_RPG_Shell_Knight
         public Enemy(string enemyInfo) 
         {
             
-            readEnemyInfo(enemyInfo);
+            ReadEnemyInfo(enemyInfo);
         }
 
         //read info
-        private void readEnemyInfo(string enemyInfo) // Constructor child: reads all enemies available to print on map
+        private void ReadEnemyInfo(string enemyInfo) // Constructor child: reads all enemies available to print on map
         {
 
 
@@ -33,7 +33,7 @@ namespace Text_Based_RPG_Shell_Knight
                 string avatarHold = avatarAndPos[0];
                 string posHold = avatarAndPos[1];
                 char identity = avatarHold[0];
-                string[] identifyed = recognizeInfo(identity).Split(';');
+                string[] identifyed = RecognizeInfo(identity).Split(';');
                 
             // creating enemy with recognized information
                 _avatar = avatarHold[0];
@@ -49,10 +49,11 @@ namespace Text_Based_RPG_Shell_Knight
                 x = Int32.Parse(setPos[0]);
                 y = Int32.Parse(setPos[1]);
                 aliveInWorld = true;
+                
                 _directionMoving = DIRECTION_NULL;
 
         }// Constructor child: reads all enemies available to print on map
-        private string recognizeInfo(char identity) ///holds stats for enemys found in ^EnemyAvatars^
+        private string RecognizeInfo(char identity) ///holds stats for enemys found in ^EnemyAvatars^
         {
             string identifyed = "";
             if (identity == '#') ///#   - Spider / Health: 20 Attack: 7-17 /
@@ -78,113 +79,143 @@ namespace Text_Based_RPG_Shell_Knight
         } // read enemy info child
 
         // ----- public methods
-
-        //AI
-        public void MoveChasePlayer(int playerX, int playerY)
+        public bool CheckForCharacterCollision(Player player, bool alive)
         {
-            bool moveAlongAxis = false; // if /true = y/ else /false = x/
-            int mapQuadrent = 0; // enemy location is 0, 0 /x,-y = 0/x, y = 1/-x, -y = 2/-x, y = 3/ <NW
+            bool collision;
+            collision = base.CheckForCharacterCollision(player.X(), player.Y(), player.AliveInWorld());
+            return collision;
+        }
+        public void DealDamage(Player player, UI ui, Toolkit toolkit)
+        {
+            base.DealDamage(player.Name(), player.AliveInWorld(), player.Health(), true, ui, toolkit);
+        }
+        //AI
+        public void AIMoveChasePlayer(Player player)
+        {
+            int playerX = player.X();
+            int playerY = player.Y();
+
+            bool moveYAlongAxis = false; // if /true = y/ else /false = x/
+            int quadrent = 0; // creates a grid with enemy location at 0,0 //x,-y = 0//x, y = 1//-x, -y = 2//-x, y = 3//  0 <NW compass orientation to help explain
 
             if (x == playerX && y == playerY)
             {
                 _directionMoving = DIRECTION_NULL;
+                _XYHolder[0] = x;
+                _XYHolder[1] = y;
             }
-            else 
+            else
             {
-                    if (y == playerY)
+                if (y == playerY)
+                {
+                    moveYAlongAxis = false;
+                }
+                else if (x == playerX)
+                {
+                    moveYAlongAxis = true;
+                }
+                else
+                {
+                    // finding the quadrent with the player
+                    if (playerX > x)
                     {
-                        moveAlongAxis = false;
-                    }
-                    else if (x == playerX)
-                    {
-                        moveAlongAxis = true;
-                    }
-                    else
-                    {
-                        // finding the quadrent with the player
-                        if (playerX > x)
-                        {
-                            mapQuadrent = 1; // <NE
-                            if (playerY > y)
-                            {
-                                mapQuadrent = 3; // <SE
-                            }
-
-                        }
-                        else if (playerY > y)
-                        {
-                            mapQuadrent = 2; // <SW
-                        }
-
-                        // check quadrent for which axis to move
-                        if (mapQuadrent == 0)
-                        {
-                            if ((x - playerX) < (y - playerY))
-                            {
-                                moveAlongAxis = true;
-                            }
-                            else { moveAlongAxis = false; }
-                        }
-                        else if (mapQuadrent == 1)
-                        {
-                            if ((playerX - x) < (playerY - y))
-                            {
-                                moveAlongAxis = true;
-                            }
-                            else { moveAlongAxis = false; }
-                        }
-                        else if (mapQuadrent == 2)
-                        {
-                            if ((x - playerX) < (playerY - y))
-                            {
-                                moveAlongAxis = true;
-                            }
-                            else { moveAlongAxis = false; }
-                        }
-                        else if (mapQuadrent == 3)
-                        {
-                            if ((playerX - x) < (playerY - y))
-                            {
-                                moveAlongAxis = true;
-                            }
-                            else { moveAlongAxis = false; }
-                        }
-                    }
-
-                    // check direction to move axis in
-                    if (moveAlongAxis == false)
-                    {
-                        if (playerX > x)
-                        {
-                            Move(DIRECTION_RIGHT);
-                        }
-                        else
-                        {
-                            Move(DIRECTION_LEFT);
-                        }
-                    }
-                    else
-                    {
+                        quadrent = 1; // <NE
                         if (playerY > y)
                         {
-                            Move(DIRECTION_DOWN);
+                            quadrent = 3; // <SE
                         }
-                        else
-                        {
-                            Move(DIRECTION_UP);
-                        }
+
                     }
+                    else if (playerY > y)
+                    {
+                        quadrent = 2; // <SW
+                    }
+
+                    // check quadrent for which axis to move // note in this calc enemy is not 0,0 yet
+                    if (quadrent == 0)
+                    {
+                        if ((x - playerX) <= (y - playerY))
+                        {
+                            moveYAlongAxis = true;
+                        }
+                        else { moveYAlongAxis = false; }
+                    }
+                    else if (quadrent == 1)
+                    {
+                        if ((playerX - x) <= (y - playerY))
+                        {
+                            moveYAlongAxis = true;
+                        }
+                        else { moveYAlongAxis = false; }
+                    }
+                    else if (quadrent == 2)
+                    {
+                        if ((x - playerX) <= (playerY - y))
+                        {
+                            moveYAlongAxis = true;
+                        }
+                        else { moveYAlongAxis = false; }
+                    }
+                    else if (quadrent == 3)
+                    {
+                        if ((playerX - x) <= (playerY - y))
+                        {
+                            moveYAlongAxis = true;
+                        }
+                        else { moveYAlongAxis = false; }
+                    }
+                }
+
+                // check direction to move axis in
+                if (moveYAlongAxis == false)
+                {
+                    if (playerX > x)
+                    {
+                        CheckDirection(DIRECTION_RIGHT);
+                    }
+                    else
+                    {
+                        CheckDirection(DIRECTION_LEFT);
+                    }
+                }
+                else
+                {
+                    if (playerY > y)
+                    {
+                        CheckDirection(DIRECTION_DOWN);
+                    }
+                    else
+                    {
+                        CheckDirection(DIRECTION_UP);
+                    }
+                }
 
             }
         }
 
         //update
-        public void Update(Player player, Map map, UI ui)
-        { 
-                ChangetoDealDamage(player.X, player.Y, player.Alive, player.getHealth(), ui);
-                MoveChasePlayer(player.X, player.Y);
-                CheckForWall(map.getTile(toolkit, _name, X, Y), map.getWallHold());
+        public void Update(Player player, Map map, UI ui, Toolkit toolkit)
+        {
+            KillIfDead(toolkit);
+            if (aliveInWorld)
+            {
+                AIMoveChasePlayer(player);
 
+                bool collision = false;
+                if (CheckForCharacterCollision(player, player.AliveInWorld())) // enemy values read as zero on firstcontact, needs enemy locate to read adjesent tile's
+                {
+                    collision = true;
+                    DealDamage(player, ui, toolkit);
+                }
+
+                if (!CheckForWall(map.getTile(_XYHolder[0], _XYHolder[1] - 1), map.getWallHold()))
+                {
+                    if (!collision)
+                    {
+                        Move();
+                    }
+                }
+            }
         }
     }
 }

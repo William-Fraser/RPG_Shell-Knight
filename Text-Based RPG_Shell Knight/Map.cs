@@ -6,18 +6,19 @@ namespace Text_Based_RPG_Shell_Knight
 {
     class Map
     {
-        // Map File Lines/Info Readers
-        string[] allRowsAndInfo = File.ReadAllLines("Map_test.txt");// this changes to string constant is _test for now
-        string[] allRows;
-        char[] row;
-
+        
         // height and width of the Map
-        static int height;
-        static int width;
+        public static int height;
+        public static int width;
         
         // lists containing Map Information for the game system to read
         public List<string> wallHold = new List<string>();
         public List<string> enemyHold = new List<string>();
+
+        // Map File Lines/Info Readers
+        private string[] allRowsAndInfo = File.ReadAllLines("Map_test.txt");// this changes to string constant is _test for now
+        private string[] allRows;
+        private char[] row;
 
         // Map
         private char[,] map;
@@ -48,29 +49,9 @@ namespace Text_Based_RPG_Shell_Knight
             map = new char[width, height];
         }
         // ----- gets & manager tools
-        public char[] getTile(Toolkit toolkit, string _name, int x = 2, int y = 2) 
+        public char getTile(int x = 0, int y = 0) 
         {
-            //toolkit.DisplayText($"checking {_name}");
-            char[] directions = new char[5];
-            directions[0] = map[x, y];
-            if (y > 0)
-            {
-                directions[1] = map[x, y - 1];
-            }
-            else {
-                directions[1] = map[x, y];
-            }
-            directions[2] = map[x+1, y];
-            directions[3] = map[x, y+1];
-            if (x > 0)
-            {
-                directions[4] = map[x-1, y];
-            }
-            else
-            {
-                directions[1] = map[x, y];
-            }
-            return directions;
+            return map[x, y];
         }
         public string getWallHold()
         { 
@@ -82,14 +63,14 @@ namespace Text_Based_RPG_Shell_Knight
             string allEnemies = string.Join("", enemyHold);
             return allEnemies;
         }
-        public string[] readEnemyHold()
+        public string[] ReadEnemyHold()
         {
             string[] allenemies = new string[enemyHold.Count];
             for (int i = 0; i < enemyHold.Count; i++)
             { allenemies[i] = enemyHold[i]; }
             return allenemies;
         }
-        public void openDoor()
+        public void OpenDoor()
         {
             string[] allwalls = wallHold.ToArray();
             for (int i = 0; i < wallHold.Count; i++)
@@ -126,7 +107,8 @@ namespace Text_Based_RPG_Shell_Knight
 
         
 
-        // ----- Manager Builders
+        // ----- Manager Builders 	Text-Based RPG_Shell Knight.exe!Text_Based_RPG_Shell_Knight.Player.Update(System.Collections.Generic.List<Text_Based_RPG_Shell_Knight.Enemy> enemy, Text_Based_RPG_Shell_Knight.Map map, Text_Based_RPG_Shell_Knight.UI ui) Line 79	C#
+
         public void CreateWindowBorder() // walls ═ ║ 
         {
             borderArray = new string[Console.WindowWidth, Console.WindowHeight];
@@ -243,7 +225,7 @@ namespace Text_Based_RPG_Shell_Knight
             int y;
             int x;
             Console.SetCursorPosition(0, 1);
-            for (y = 1; y < height; y++) { // line 0 is to pass info,  
+            for (y = 0; y < height; y++) { // line 0 is to pass info,  
                 for (x = 0; x < width; x++) {
                     Console.Write(map[x, y]);
                 }

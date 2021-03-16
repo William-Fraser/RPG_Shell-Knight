@@ -9,7 +9,7 @@ namespace Text_Based_RPG_Shell_Knight
     abstract class GameObject
     {
         //
-        protected Toolkit toolkit = new Toolkit();
+        //protected Toolkit toolkit = new Toolkit();
 
         protected int x;
         protected int y;
@@ -19,8 +19,10 @@ namespace Text_Based_RPG_Shell_Knight
         protected private bool aliveInWorld = true;
 
         // ----- gets / sets
-        public string Name { get; }
-        public bool Alive { get; }
+        public string Name() { return _name; }
+        public bool AliveInWorld() { return aliveInWorld; }
+        public int X() { return x; }
+        public int Y() { return y; }
 
         // ----- public methods
         public void Draw()

@@ -23,7 +23,7 @@ namespace Text_Based_RPG_Shell_Knight
         UI ui;
         Player player;
         Item item;
-        Enemy[] enemies;
+        List<Enemy> enemies = new List<Enemy>();
 
         // constructor
         public GameManager()
@@ -38,7 +38,9 @@ namespace Text_Based_RPG_Shell_Knight
             ui = new UI();
             player = new Player("John Smith", '@');
             item = new Item("Key", 'k');
+
             
+
             map.CreateWindowBorder();
             
         }
@@ -47,25 +49,25 @@ namespace Text_Based_RPG_Shell_Knight
         public int GameState { get; set; }
         public void setGameOver()
         {
-            if (player.Alive == false) { GameState = GAMESTATE_GAMEOVER; }
+            if (player.AliveInWorld() == false) { GameState = GAMESTATE_GAMEOVER; }
             else { }
-        }
+        } //reads players state and set's game to gameover
 
         // ----- Manager Methods
         public void UpdateDisplay()
         {
+            enemies.Clear();
             map.SetCurrent();
-            enemies = new Enemy[map.readEnemyHold().Length]; // because enemies.length makes more sense
-
             string[] enemyInfo = map.getEnemyHold().Split('|');
-            for (int i = 0; i < enemyInfo.Length; i++) // nested loop to write window border
+
+            for (int i = 0; i < enemyInfo.Length; i++) 
             {
                 Enemy enemy = new Enemy(enemyInfo[i]);
-                enemies[i] = enemy;
+                enemies.Add(enemy);
             }
 
             map.DrawWindowBorder();
-            ui.getHUDvalues(player.getHealth());
+            ui.getHUDvalues(player.Health());
             Draw();
         }
         public void Draw()
@@ -73,7 +75,8 @@ namespace Text_Based_RPG_Shell_Knight
             ui.HUD();
             map.DrawCurrent();
             item.Draw();
-            for (int i = 0; i < enemies.Length; i++)
+
+            for (int i = 0; i < enemies.Count; i++)
             {
                 enemies[i].Draw();
             }
@@ -82,12 +85,13 @@ namespace Text_Based_RPG_Shell_Knight
         public void Update()
         {
             //map.checkPosition( 0, 0, map.getEnemyHold());
-            for (int i = 0; i < enemies.Length; i++)
+            player.Update(enemies, map, ui, toolkit);
+
+            for (int i = 0; i < enemies.Count; i++)
             {
-                player.Update(enemies[i], map, ui);
-                enemies[i].Update(player, map, ui);
-            }
-            ui.getHUDvalues(player.getHealth());
+                enemies[i].Update(player, map, ui, toolkit);
+            }    
+            ui.getHUDvalues(player.Health());
         }
 
         // ----- game loop
@@ -100,10 +104,9 @@ namespace Text_Based_RPG_Shell_Knight
             }
             else if (_gameState == GAMESTATE_MAP)
             {
-
                 Update();
                 Draw();
-
+                
                 setGameOver();
             }
             else if (_gameState == GAMESTATE_GAMEOVER)

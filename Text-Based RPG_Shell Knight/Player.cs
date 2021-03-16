@@ -21,55 +21,95 @@ namespace Text_Based_RPG_Shell_Knight
 
             x = Console.WindowWidth / 2;
             y = Console.WindowHeight / 2;
+
+            this.aliveInWorld = true;
         }
 
         // ----- gets sets
         public bool HasKey { get; set; }
         
         // ----- Private Methods
-        private void directionalOutput() {
-
+        private void DirectionalOutput() 
+        {
             if (_playerInput.Key == ConsoleKey.S || _playerInput.Key == ConsoleKey.DownArrow)
             {
-                Move(DIRECTION_DOWN);
+                CheckDirection(DIRECTION_DOWN);
             }
             else if (_playerInput.Key == ConsoleKey.W || _playerInput.Key == ConsoleKey.UpArrow)
             {
-                Move(DIRECTION_UP);
+                CheckDirection(DIRECTION_UP);
             }
             else if (_playerInput.Key == ConsoleKey.A || _playerInput.Key == ConsoleKey.LeftArrow)
             {
-                Move(DIRECTION_LEFT);
+                CheckDirection(DIRECTION_LEFT);
             }
             else if (_playerInput.Key == ConsoleKey.D || _playerInput.Key == ConsoleKey.RightArrow)
             {
-                Move(DIRECTION_RIGHT);
+                CheckDirection(DIRECTION_RIGHT);
             }
             else
-            { _directionMoving = DIRECTION_NULL; }
+            { 
+                _directionMoving = DIRECTION_NULL;
+                _XYHolder[0] = x;
+                _XYHolder[1] = y;
+            }
         }
-        
+
         // ----- Public Methods
+        new public void Draw() 
+        {
+            base.Draw();
+            //toolkit.DisplayText("drawing");
+        }
         public void GetInput()
         {
-            _playerInput = Console.ReadKey(true);
-        }
-        
-        //  map.getWallHold(), enemy.getAlive(), enemy.getDamage(player.X(),player.Y()), ui
-        public void Update(Enemy enemy, Map map, UI ui) {
-            //toolkit.DisplayText(toolkit.blank);// clears the text after it's been displayed once - changed
-            GetInput();
-            toolkit.SetConsoleSize();
-            directionalOutput();
-                    Console.ReadKey(true);
-            if (CheckForCharacterCollision(enemy.X, enemy.Y, enemy.Alive == true)) // enemy values read as zero on firstcontact, needs enemy locate to read adjesent tile's
-            { 
-                MoveBack();
-                Console.SetCursorPosition(1, 0);
-                Console.Write("Contact");
+            _playerInput = Console.ReadKey(false);
+            while (Console.KeyAvailable)
+            {
+                _playerInput = Console.ReadKey(true);
             }
-            CheckForWall(map.getTile(toolkit, _name, X, Y), map.getWallHold());
+        }
+        public bool CheckForCharacterCollision(Enemy enemy)
+        {
+            bool collision;
+            collision = base.CheckForCharacterCollision(enemy.X(), enemy.Y(), enemy.AliveInWorld());
+            return collision;
+        }
+        public void DealDamage(Enemy enemy, UI ui, Toolkit toolkit)
+        {
+            base.DealDamage(enemy.Name(), enemy.AliveInWorld(), enemy.Health(), false, ui, toolkit);
+        }
+
+        public void Update(List<Enemy> enemy, Map map, UI ui, Toolkit toolkit) {
+            //toolkit.DisplayText(toolkit.blank);// clears the text after it's been displayed once - LEGACYCODE
+            KillIfDead(toolkit);
             
+            GetInput();
+
+            toolkit.SetConsoleSize();
+            DirectionalOutput();
+
+
+            //check each enemy for collision
+            bool collision = false;
+            for (int i = 0; i < enemy.Count; i++)
+            {
+                if (CheckForCharacterCollision(enemy[i])) // enemy values read as zero on firstcontact, needs enemy locate to read adjesent tile's
+                {
+                    collision = true;
+                    DealDamage(enemy[i], ui, toolkit);
+                }
+            }
+
+            //toolkit.DisplayText($"checking at: {map.getTile(_XYHolder[0], _XYHolder[1])}");
+            if (!CheckForWall(map.getTile(_XYHolder[0], _XYHolder[1]-1), map.getWallHold()))
+            {
+                if (!collision)
+                {
+                    Move();
+                }
+            }
+
         }
     }
 }
