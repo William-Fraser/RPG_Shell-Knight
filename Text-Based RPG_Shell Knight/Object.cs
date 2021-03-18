@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Text_Based_RPG_Shell_Knight
 {
-    abstract class GameObject
+    abstract class Object
     {
         //
         //protected Toolkit toolkit = new Toolkit();

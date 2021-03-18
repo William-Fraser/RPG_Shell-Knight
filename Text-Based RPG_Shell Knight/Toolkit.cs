@@ -27,7 +27,7 @@ namespace Text_Based_RPG_Shell_Knight
             int finalDamage = rdm.Next(lowNumber, highNumber);
             return finalDamage;
         }
-        public void DisplayText(string message)
+        public void DisplayText(string message, bool alive = true) // bool for game over text
         {
             //if (message != blank)
             //{
@@ -37,24 +37,30 @@ namespace Text_Based_RPG_Shell_Knight
 
             if (message != blank)
             {
-                saveMessage(currentMessage);
+                SaveMessage(currentMessage);
                 DisplayText(blank);
             }
             Console.SetCursorPosition(1, Console.WindowHeight - 3);
             Console.Write(message);
             if (message != blank)
             {
-                Console.CursorVisible = true;
-                Console.Write(", press any key to continue");
-                Console.ReadKey(true);
-                Console.CursorVisible = false;
-                DisplayText(blank);
+                if (alive)
+                {
+                    Console.CursorVisible = true;
+                 
+                    
+                    
+                    Console.Write(", press any key to continue");
+                    Console.ReadKey(true);
+                    Console.CursorVisible = false;
+                    DisplayText(blank);
+                }
                 currentMessage = message;
                 Console.SetCursorPosition(1, Console.WindowHeight - 3);
                 Console.Write(currentMessage);
             }
         }
-        public void saveMessage(string message)
+        public void SaveMessage(string message)
         {
             if (message != "")
             {

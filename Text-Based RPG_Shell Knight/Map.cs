@@ -87,7 +87,7 @@ namespace Text_Based_RPG_Shell_Knight
         }
 
         // ----- public methods
-        public void checkPosition(int x, int y, string[] enemyInfo) { // debug
+        public void CheckPosition(int x, int y, string[] enemyInfo) { // debug
             string allWalls = string.Join("", wallHold);
             Console.SetCursorPosition(1, 0);
             Console.Write($"selected map tile: [{map[x, y]}] walls available: [{allWalls}] enemy check: [{enemyInfo[2]}]"); // --- debug

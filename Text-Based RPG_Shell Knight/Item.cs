@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Text_Based_RPG_Shell_Knight
 {
-    class Item : GameObject
+    class Item : Object
     {
         public Item(string name, char avatar)
         {

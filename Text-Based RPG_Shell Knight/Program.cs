@@ -8,11 +8,11 @@ namespace Text_Based_RPG_Shell_Knight
 {
     class Program
     {
-        private static int PROGRAMSTATE_GAMEOVER = 0;
-        private static int PROGRAMSTATE_PLAYGAME = 1;
-        private static int PROGRAMSTATE_PLAYMENU = 2;
-        private static int PROGRAMSTATE_ENDING = 3;
-        static void Main(string[] args)
+        private static readonly int PROGRAMSTATE_GAMEOVER = 0;
+        private static readonly int PROGRAMSTATE_PLAYGAME = 1;
+        private static readonly int PROGRAMSTATE_PLAYMENU = 2;
+        private static readonly int PROGRAMSTATE_ENDING = 3;
+        static void Main()
         {
             int _state = PROGRAMSTATE_PLAYGAME;
             GameManager game = new GameManager();
@@ -28,9 +28,10 @@ namespace Text_Based_RPG_Shell_Knight
                     if (_state == PROGRAMSTATE_PLAYGAME)
                     {
                         game.Game();
-                        if (game.GameState == PROGRAMSTATE_GAMEOVER)
+                        if (game.GameState() == PROGRAMSTATE_GAMEOVER)
                         {
-                            //_state = PROGRAMSTATE_GAMEOVER;
+                            game.Game(); // extra game to display GAMEOVER TEXT
+                            _state = PROGRAMSTATE_GAMEOVER;
                         }
                     }
                 }

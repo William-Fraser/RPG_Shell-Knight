@@ -6,17 +6,18 @@ using System.Threading.Tasks;
 
 namespace Text_Based_RPG_Shell_Knight
 {
-    class Player : GameCharacter
+    class Player : Character
     {
         private ConsoleKeyInfo _playerInput;
         private bool hasKey = false;
 
+        private int[] _shield; // displayed as armour, 0 = current, 1 = max
+
         //constructor
-        public Player(string name, char avatar)
+        public Player(string name, char avatar) : base(name, avatar, 100)
         {
-            _name = name;
-            _avatar = avatar;
-            _health = new int[] { 999, 999 };
+            _shield = new int[] { 50, 50 };
+
             _damage = new int[] { 50, 75 };
 
             x = Console.WindowWidth / 2;
@@ -27,6 +28,10 @@ namespace Text_Based_RPG_Shell_Knight
 
         // ----- gets sets
         public bool HasKey { get; set; }
+        public int[] Shield()
+        {
+            return _shield;
+        }
         
         // ----- Private Methods
         private void DirectionalOutput() 
@@ -56,18 +61,19 @@ namespace Text_Based_RPG_Shell_Knight
         }
 
         // ----- Public Methods
-        new public void Draw() 
+        public void Draw(UI ui, Toolkit toolkit) 
         {
+            ui.HUD(_name, toolkit);
             base.Draw();
             //toolkit.DisplayText("drawing");
         }
         public void GetInput()
         {
-            _playerInput = Console.ReadKey(false);
+            if (aliveInWorld)
+            _playerInput = Console.ReadKey(true);
             while (Console.KeyAvailable)
-            {
-                _playerInput = Console.ReadKey(true);
-            }
+            _playerInput = Console.ReadKey(true);
+            
         }
         public bool CheckForCharacterCollision(Enemy enemy)
         {
@@ -77,9 +83,8 @@ namespace Text_Based_RPG_Shell_Knight
         }
         public void DealDamage(Enemy enemy, UI ui, Toolkit toolkit)
         {
-            base.DealDamage(enemy.Name(), enemy.AliveInWorld(), enemy.Health(), false, ui, toolkit);
+            base.DealDamage(enemy.Name(), enemy.AliveInWorld(), enemy.Health(), true, ui, toolkit);
         }
-
         public void Update(List<Enemy> enemy, Map map, UI ui, Toolkit toolkit) {
             //toolkit.DisplayText(toolkit.blank);// clears the text after it's been displayed once - LEGACYCODE
             KillIfDead(toolkit);

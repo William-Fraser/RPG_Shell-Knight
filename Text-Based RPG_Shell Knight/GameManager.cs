@@ -8,31 +8,26 @@ namespace Text_Based_RPG_Shell_Knight
 {
     class GameManager
     {
-        private int _gameState = GAMESTATE_CHANGEMAP;
-        private static int GAMESTATE_GAMEOVER = 0;
-        private static int GAMESTATE_MAP = 1;
-        private static int GAMESTATE_CHANGEMAP = 2;
-        private static int GAMESTATE_BATTLE = 3;
+        private int _gameState;
+        private static readonly int GAMESTATE_GAMEOVER = 0;
+        private static readonly int GAMESTATE_MAP = 1;
+        private static readonly int GAMESTATE_CHANGEMAP = 2;
+        private static readonly int GAMESTATE_BATTLE = 3;
 
-        static int CONSOLE_HEIGHT;
-        static int CONSOLE_WIDTH;
+        readonly Toolkit toolkit = new Toolkit();
 
-        Toolkit toolkit = new Toolkit();
-
-        Map map;
-        UI ui;
-        Player player;
-        Item item;
-        List<Enemy> enemies = new List<Enemy>();
+        readonly Map map;
+        readonly UI ui;
+        readonly Player player;
+        readonly Item item;
+        readonly List<Enemy> enemies = new List<Enemy>();
 
         // constructor
         public GameManager()
         {
             toolkit.SetConsoleSize();
             Console.CursorVisible = false;
-
-            CONSOLE_HEIGHT = Console.WindowHeight;
-            CONSOLE_WIDTH = Console.WindowWidth;
+            _gameState = GAMESTATE_CHANGEMAP;
 
             map = new Map();
             ui = new UI();
@@ -46,10 +41,10 @@ namespace Text_Based_RPG_Shell_Knight
         }
 
         // ----- gets/sets
-        public int GameState { get; set; }
+        public int GameState() { return _gameState; }
         public void setGameOver()
         {
-            if (player.AliveInWorld() == false) { GameState = GAMESTATE_GAMEOVER; }
+            if (player.AliveInWorld() == false) { _gameState = GAMESTATE_GAMEOVER; }
             else { }
         } //reads players state and set's game to gameover
 
@@ -67,31 +62,34 @@ namespace Text_Based_RPG_Shell_Knight
             }
 
             map.DrawWindowBorder();
-            ui.getHUDvalues(player.Health());
+            ui.getHUDvalues(player.Health(), player.Shield());
             Draw();
         }
         public void Draw()
         {
-            ui.HUD();
+            //draw current map and objects
             map.DrawCurrent();
             item.Draw();
 
+            //draw characters, lowest is on top
             for (int i = 0; i < enemies.Count; i++)
             {
                 enemies[i].Draw();
             }
-            player.Draw();
+            player.Draw(ui, toolkit);
         }
         public void Update()
         {
-            //map.checkPosition( 0, 0, map.getEnemyHold());
+            //update by prioity
+
+            //map.checkPosition( 0, 0, map.getEnemyHold()); -- debug
             player.Update(enemies, map, ui, toolkit);
 
             for (int i = 0; i < enemies.Count; i++)
             {
                 enemies[i].Update(player, map, ui, toolkit);
             }    
-            ui.getHUDvalues(player.Health());
+            ui.getHUDvalues(player.Health(), player.Shield());
         }
 
         // ----- game loop
@@ -111,7 +109,8 @@ namespace Text_Based_RPG_Shell_Knight
             }
             else if (_gameState == GAMESTATE_GAMEOVER)
             {
-                
+                toolkit.DisplayText(" > GAME OVER < ", false);
+                Console.ReadKey(true);
             }
         }
     }

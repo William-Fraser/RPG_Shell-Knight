@@ -10,16 +10,15 @@ using System.Threading.Tasks;
 /// %   - Knight / Health: 70 Attack: 9-25 / runs towards player, smart runs around walls similar to spider? 
 /// 
 /// $   - King / Health: 200 Attack: 1-15 /current Boss, walks back and fourth not strong
-/// </icons used to display enemies>
+/// </icons used to display enemies, and discriptions of what they should do>
 
 namespace Text_Based_RPG_Shell_Knight
 {
-    class Enemy : GameCharacter
+    class Enemy : Character
     {
         //constructor
-        public Enemy(string enemyInfo) 
+        public Enemy(string enemyInfo, string name = "errBlank", char avatar = '!') : base(name, avatar, 0) // starts enemy blank
         {
-            
             ReadEnemyInfo(enemyInfo);
         }
 
@@ -79,7 +78,7 @@ namespace Text_Based_RPG_Shell_Knight
         } // read enemy info child
 
         // ----- public methods
-        public bool CheckForCharacterCollision(Player player, bool alive)
+        public bool CheckForCharacterCollision(Player player)
         {
             bool collision;
             collision = base.CheckForCharacterCollision(player.X(), player.Y(), player.AliveInWorld());
@@ -87,7 +86,7 @@ namespace Text_Based_RPG_Shell_Knight
         }
         public void DealDamage(Player player, UI ui, Toolkit toolkit)
         {
-            base.DealDamage(player.Name(), player.AliveInWorld(), player.Health(), true, ui, toolkit);
+                base.DealDamage(player.Name(), player.AliveInWorld(), player.Health(), false, ui, toolkit, player.Shield());
         }
         //AI
         public void AIMoveChasePlayer(Player player)
@@ -202,7 +201,7 @@ namespace Text_Based_RPG_Shell_Knight
                 AIMoveChasePlayer(player);
 
                 bool collision = false;
-                if (CheckForCharacterCollision(player, player.AliveInWorld())) // enemy values read as zero on firstcontact, needs enemy locate to read adjesent tile's
+                if (CheckForCharacterCollision(player)) // enemy values read as zero on firstcontact, needs enemy locate to read adjesent tile's
                 {
                     collision = true;
                     DealDamage(player, ui, toolkit);
