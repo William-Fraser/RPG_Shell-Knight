@@ -18,21 +18,21 @@ namespace Text_Based_RPG_Shell_Knight
         protected char _avatar;
         protected private bool aliveInWorld = true;
 
-        // ----- gets / sets
+        // ----- gets
         public string Name() { return _name; }
-        public bool AliveInWorld() { return aliveInWorld; }
+        public char Avatar() { return _avatar; }
         public int X() { return x; }
         public int Y() { return y; }
+        public bool AliveInWorld() { return aliveInWorld; }
 
         // ----- public methods
-        public void Draw()
+        public void Draw(Camera camera)
         {
             if (aliveInWorld)
             {
                 //Console.SetCursorPosition(1, 1);              //
                 //Console.Write($"X: { _posX } Y: { _posY }");  // --- debug / display cursor XY
-                Console.SetCursorPosition(x, y);
-                Console.Write(_avatar);
+                camera.GameWorldTile(_avatar, x, y);
             }
         }
     }

@@ -39,7 +39,7 @@ namespace Text_Based_RPG_Shell_Knight
             }
             //Console.ReadKey(true);
         }
-        public void Menu()
+        public void MainMenu()
         { 
         
         }

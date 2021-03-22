@@ -1,0 +1,40 @@
+﻿
+
+	LEGEND OF THE CONCH
+
+Map Tiles, Ground and Walls
+
+Ground
+
+ ▒ - Grass
+ 
+ ▓ - Sand
+
+Walls, no bypass yet...
+
+ █ - Stone Wall, //possibly could be blown up? 
+
+ M - Mountain
+
+ w - Water, //swimable(Raft?)
+
+
+/// <ItemAvatars>
+///
+///  k - Small key, unlocks a small door <d>
+///  
+///  K - Big key, unlocks a big door <D>
+///  
+///  ö - healingpot, heals 50 HP
+///  
+///  ï - shellbanding, heals 50 SP
+/// </icons used to display Items, and discriptions of what they should do>
+
+/// <EnemyAvatars>
+///
+/// #   - Spider / Health: 20 Attack: 7-17 / runs towards player, runs to walls and along them until player is close then runs at player
+/// 
+/// %   - Knight / Health: 70 Attack: 9-25 / runs towards player, smart runs around walls similar to spider? 
+/// 
+/// $   - King / Health: 200 Attack: 1-15 /current Boss, walks back and fourth not strong
+/// </icons used to display enemies, and discriptions of what they should do>

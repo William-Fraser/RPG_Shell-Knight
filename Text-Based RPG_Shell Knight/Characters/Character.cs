@@ -35,20 +35,19 @@ namespace Text_Based_RPG_Shell_Knight
             this.aliveInWorld = true;
         }
 
-        // ----- gets
+        // ----- gets / sets 
         public int[] Health()
         {
             return _health;
-        }
-        public void Health(int value)
-        {
-            _health[0] = value;
-            _health[0] = setStatToLimits(_health[0], _health[1]);
-        }
-        public int[] getDamage()
+        } // get
+        public int[] Damage()
         {
             return _damage;
-        }
+        } // get
+        public int[] XYHolder() 
+        {
+            return _XYHolder;
+        } // get
 
         // ----- internal sets
         protected private int setStatToLimits(int currentStatus, int maxStatus)
@@ -61,80 +60,8 @@ namespace Text_Based_RPG_Shell_Knight
             } return fixedStatus;
         }
 
-        /// ----- private methods
-        //protected private void MoveBack() // moves player back if they're supposed to collide with something
-        //{
-        //    if (_directionMoving == DIRECTION_UP) { Move(DIRECTION_DOWN); }
-        //    else if (_directionMoving == DIRECTION_DOWN) { Move(DIRECTION_UP); }
-        //    else if (_directionMoving == DIRECTION_LEFT) { Move(DIRECTION_RIGHT); }
-        //    else if (_directionMoving == DIRECTION_RIGHT) { Move(DIRECTION_LEFT); }
-        //    else { }
-        //}
-        private void KillCharacter(string name, Toolkit toolkit)
-        {
-            if (_health[0] <= 0) {
-                _avatar = 'X';
-                Draw();
-                string deathMessage = $"< {name} has been slain >";
-                aliveInWorld = false;
-                toolkit.DisplayText(deathMessage, false);
-            }
-        }
-        private int Attack(int[] health, UI ui, Toolkit toolkit, bool isEnemy, int[] shield = null)
-        {
-            int finalDamage = toolkit.RandomNumBetween(_damage[0], _damage[1]);
-            if (aliveInWorld)
-            {
-                int passDamage = 0;
-                if (shield != null) /// this if statement could alternatively be in enemy.dealdamage()
-                {
-                    // calculate damage
-                    int firstDamage = toolkit.RandomNumBetween(_damage[0], _damage[1]);
-
-                    // deal damage to player shield 
-                    shield[0] -= firstDamage;
-                    if (shield[0] < 0) { passDamage = (shield[0] * -1); }
-                    shield[0] = setStatToLimits(shield[0], shield[1]);
-                }
-                else if (!isEnemy) { shield[0] = 0; }
-                if (shield == null || shield[0] == 0)
-                {
-                    // calculate damage
-                    if (passDamage != 0) { finalDamage = passDamage; } // sets the damage to the leftover shield break damage
-
-                    //deal damage to character health
-                    health[0] -= finalDamage;
-                    health[0] = setStatToLimits(health[0], health[1]);
-
-                    //update HUD
-                    ui.getHUDvalues(health, shield);
-                }
-            }
-            else
-            {
-                //err character should not attack if dead
-                finalDamage = -1;
-            }
-            return finalDamage;
-        }
-        protected private void DisplayDamageToHUD(string name, int attackDamage, int[] health, Toolkit toolkit, bool isEnemy)
-        {
-            health[0] = setStatToLimits(health[0], health[1]);
-            string damageMessage = $"< {name} taking {attackDamage} points of Damage ";
-            if (isEnemy)
-            { damageMessage += $"[{health[0]}/{health[1]}] >"; }
-            else 
-            { damageMessage += $">"; }
-            toolkit.DisplayText(damageMessage);
-        }
-
-        // ----- public methods
-        new public void Draw()
-        {
-            Console.SetCursorPosition(x, y);
-            Console.Write(_avatar);
-        }
-        public void CheckDirection(int DIRECTION_) //moves the player in the specifyed DICRECTION_ 
+        // ----- private methods
+        protected private void CheckDirection(int DIRECTION_) //moves the player in the specifyed DICRECTION_ 
         {
             if (aliveInWorld)
             {
@@ -147,17 +74,81 @@ namespace Text_Based_RPG_Shell_Knight
             }
             
         }
-        public void Move() // also stops character at boundaries        // change bounds to border for screen scrolling?
+        protected private void Move() // also stops character at boundaries        // change bounds to border for screen scrolling?
         {
             if (aliveInWorld)
             {
-                if      (_directionMoving == DIRECTION_DOWN && _XYHolder[1] < Map.height)        { y++; }
-                else if (_directionMoving == DIRECTION_UP && _XYHolder[1] > 2)                   { y--; }
-                else if (_directionMoving == DIRECTION_LEFT && _XYHolder[0] > 0)                 { x--; }
-                else if (_directionMoving == DIRECTION_RIGHT && _XYHolder[0] < Map.width - 1)    { x++; }
+                if      (_directionMoving == DIRECTION_DOWN && _XYHolder[1] < Map.height +1) { y++; }
+                else if (_directionMoving == DIRECTION_UP && _XYHolder[1] > 1)                      { y--; }
+                else if (_directionMoving == DIRECTION_LEFT && _XYHolder[0] > 0)                    { x--; }
+                else if (_directionMoving == DIRECTION_RIGHT && _XYHolder[0] < Map.width +1) { x++; }
             }
         }
-        public bool CheckForWall(char map, string walls)
+        private int Attack(int[] health, HUD ui, Toolkit toolkit, bool isEnemy, int[] shield = null)
+        {
+            //calculate damage
+            int finalDamage = toolkit.RandomNumBetween(_damage[0], _damage[1]);
+            int firstDamage = finalDamage;
+            if (aliveInWorld)
+            {
+                int passDamage = 0;
+                if (shield != null) /// this if statement could alternatively be in enemy.dealdamage() but it was moved here and now makes more sense
+                {
+                    // calculate damage
+                    int calcDamageSpill = firstDamage - shield[0];
+
+                    // deal damage to player shield 
+                    shield[0] -= firstDamage;
+                    if (shield[0] < 0) { passDamage = calcDamageSpill; }
+                    shield[0] = setStatToLimits(shield[0], shield[1]);
+                }
+                else if (!isEnemy) { shield[0] = 0; }
+                if (shield == null || shield[0] == 0)
+                {
+                    // calculate damage
+                    if (passDamage != 0) { finalDamage = passDamage; } // sets the damage to the leftover shield break damage
+
+                    //deal damage to character health
+                    health[0] -= finalDamage;
+                    health[0] = setStatToLimits(health[0], health[1]);
+                }
+
+                if (!isEnemy)
+                {
+                    //update HUD
+                    ui.setHudHealthAndShield(health, shield);
+                    ui.Draw(toolkit);
+                }
+
+                //sets damage to total amount of damage done if it spills into health
+                if (passDamage != 0) { finalDamage = firstDamage; }
+            }
+            else
+            {
+                //err character should not attack if dead
+                finalDamage = -1;
+            }
+            return finalDamage;
+        }
+        protected private void DealDamage(string name, bool alive, int[] health, bool isEnemy, HUD hud, Toolkit toolkit, int[] shield = null)
+        {
+            if (alive)
+            {
+                int damage = Attack(health, hud, toolkit, isEnemy, shield);
+                DisplayDamageToHUD(name, damage, health, hud, isEnemy);
+            }
+        }
+        protected private void DisplayDamageToHUD(string name, int attackDamage, int[] health, HUD hud, bool isEnemy)
+        {
+            health[0] = setStatToLimits(health[0], health[1]);
+            string damageMessage = $"< {name} taking {attackDamage} points of Damage ";
+            if (isEnemy)
+            { damageMessage += $"[{health[0]}/{health[1]}] >"; }
+            else 
+            { damageMessage += $">"; }
+            hud.DisplayText(damageMessage);
+        }
+        protected private bool CheckForWall(char map, string walls)
         {
             bool iswall = false;
             if (_directionMoving != DIRECTION_NULL)
@@ -179,7 +170,7 @@ namespace Text_Based_RPG_Shell_Knight
             }
             return iswall;
         }
-        public bool CheckForCharacterCollision(int collidingX, int collidingY, bool alive)
+        protected private bool CheckForCharacterCollision(int collidingX, int collidingY, bool alive)
         {// collides with objects, seperate from map wall collision
             if (alive)
             {
@@ -199,20 +190,28 @@ namespace Text_Based_RPG_Shell_Knight
             }
             return false;
         }// collides with objects
-        public void DealDamage(string name, bool alive, int[] health, bool isEnemy, UI ui, Toolkit toolkit, int[] shield = null)
-        {
-            if (alive)
-            {   // Attack() method is the Damage Dealer
-                DisplayDamageToHUD(name, Attack(health, ui, toolkit, isEnemy, shield), health, toolkit, isEnemy);
-            }
-        }
-        public void KillIfDead(Toolkit toolkit)
+        protected private void KillIfDead(Camera camera, Map map, HUD hud)
         {
             if (aliveInWorld)
             {
-                KillCharacter(_name, toolkit);
+                KillCharacter(_name, camera, map, hud);
             }
         }
-    }
+        private void KillCharacter(string name, Camera camera, Map map, HUD hud)
+        {
+            if (_health[0] <= 0) {
+                _avatar = 'X';
+                Draw(camera);
+                string deathMessage = $"< {name} has been slain >";
+                aliveInWorld = false;
+                hud.DisplayText(deathMessage, false);
+            }
+        }
+        new public void Draw(Camera camera)
+        {
+            camera.GameWorldTile(_avatar, x, y);
+        }
 
+
+    }
 }
