@@ -9,9 +9,9 @@ namespace Text_Based_RPG_Shell_Knight
     class Camera
     {
         // states for if the player is on the border or not
-        private int _stateMap;
-        public static int MAP_BORDER = 0;
-        public static int MAP_MIDDLE = 1;
+        //private int _stateMap;
+        //public static int MAP_BORDER = 0;
+        //public static int MAP_MIDDLE = 1;
 
         //full map with objects placed on it
         private char[,] _gameWorld;
@@ -35,6 +35,17 @@ namespace Text_Based_RPG_Shell_Knight
         public static int savedHeight = Console.WindowHeight;
         public static int savedWidth = Console.WindowWidth;
 
+        // min height and width
+        public const int minConsoleSizeWidth = 120;
+        public const int minConsoleSizeHeight = 30;
+
+        // state of Console size used for HUD compacting
+        private int _stateConsoleSize;
+        public const int CONSOLESIZE_MIN = 0;
+        public const int CONSOLESIZE_ADJUSTED = 1;
+
+
+
         // map holder
         Map _map;
 
@@ -47,9 +58,9 @@ namespace Text_Based_RPG_Shell_Knight
         }
 
         // ----- gets / sets
-        public int getStateMap()
+        public int getStateConsoleSize()
         {
-            return _stateMap;
+            return _stateConsoleSize;
         }
         public void GameWorldGetMap() // set
         {
@@ -84,7 +95,16 @@ namespace Text_Based_RPG_Shell_Knight
         {
             AdjustDisplayedArea(player);
 
-            Console.SetCursorPosition(1, 2);
+            int moveUIX = (Console.WindowWidth / 2) - (Camera.displayWidth / 2);
+            if (moveUIX < 0) { moveUIX = 0; }
+
+            int moveUIY = (Console.WindowHeight / 3) - (Camera.displayHeight / 2);
+            if (moveUIY < 0) { moveUIY = 0; }
+
+            if (Console.WindowHeight != Camera.minConsoleSizeHeight || Console.WindowWidth != Camera.minConsoleSizeWidth)
+            { Console.SetCursorPosition(moveUIX + 1, moveUIY + 2); }
+            else
+            { Console.SetCursorPosition(1, 2); }
 
             int line = 2;
             for (int y = 0; y < displayHeight - 1; y++)
@@ -94,7 +114,12 @@ namespace Text_Based_RPG_Shell_Knight
                     Console.Write(_display[y, x]);
                 }
                 line++;
-                Console.SetCursorPosition(1, line);
+                if (Console.WindowHeight != Camera.minConsoleSizeHeight || Console.WindowWidth != Camera.minConsoleSizeWidth)
+                { Console.SetCursorPosition(moveUIX + 1, moveUIY + line); }
+                else
+                {
+                    Console.SetCursorPosition(1, line);
+                }
             }
         }
         public void UpdateWindowBorder() // 
@@ -107,9 +132,16 @@ namespace Text_Based_RPG_Shell_Knight
             borderArray = new string[borderHeight, borderWidth];
 
             //reset borderstring
+
+            int moveUI = (Console.WindowWidth / 2) - (Camera.displayWidth / 2);
+            if (moveUI < 0) { moveUI = 0; }
+
             borderString = "";
 
-            Console.SetCursorPosition(0, 0);
+            if (Console.WindowHeight != Camera.minConsoleSizeHeight || Console.WindowWidth != Camera.minConsoleSizeWidth)
+            { Console.SetCursorPosition(moveUI, 0); }
+            else
+            { Console.SetCursorPosition(0, 0); }
             borderString += "╔,"; //Console.Write("╔"); 
             for (int i = 0; i < borderWidth - 2; i++)
             {
@@ -125,12 +157,12 @@ namespace Text_Based_RPG_Shell_Knight
                 }
                 borderString += "║;"; //Console.Write("║"); 
             }
-            borderString += "╠,"; //Console.Write("╚"); 
+            borderString += "╚,"; //Console.Write("╚"); 
             for (int i = 0; i < borderWidth - 2; i++)
             {
                 borderString += "═,"; //Console.Write("═"); 
             }
-            borderString += "╣"; //Console.Write("╝");
+            borderString += "╝"; //Console.Write("╝");
 
             string[] borderY = borderString.Split(';');
 
@@ -149,18 +181,31 @@ namespace Text_Based_RPG_Shell_Knight
             string[] borderY = borderString.Split(';');
             string[] borderXLength = borderY[0].Split(','); //used for loop length
 
+            int moveUIX = (Console.WindowWidth / 2) - (Camera.displayWidth / 2);
+            if (moveUIX < 0) { moveUIX = 0; }
+
+            int moveUIY = (Console.WindowHeight / 3) - (Camera.displayHeight / 2);
+            if (moveUIY < 0) { moveUIY = 0; }
+
             //Console.WriteLine($"x: {MapXLength.Length} y: {MapY.Length}");   //debug
             //Console.WriteLine($"Map 0,0: [{borderMap[0, 0]}]"); // --- /debug/
 
-
-            Console.SetCursorPosition(0, 1);
+            if (Console.WindowHeight != Camera.minConsoleSizeHeight || Console.WindowWidth != Camera.minConsoleSizeWidth)
+            { Console.SetCursorPosition(moveUIX, moveUIY + 1); }
+            else
+            { Console.SetCursorPosition(0, 1); }
+            int line = 2;
             for (int i = 0; i < borderHeight; i++) // nested loop to write window border
             {
                 for (int j = 0; j < borderWidth; j++)
                 {
                     Console.Write(borderArray[i, j]);
                 }
-                Console.WriteLine();
+                if (Console.WindowHeight != Camera.minConsoleSizeHeight || Console.WindowWidth != Camera.minConsoleSizeWidth)
+                { Console.SetCursorPosition(moveUIX, moveUIY + line); }
+                else
+                { Console.SetCursorPosition(0, line); }
+                line++;
             }
             //for (int i = 0; i <= borderY.Length; i++)
             //{
@@ -183,7 +228,6 @@ namespace Text_Based_RPG_Shell_Knight
             int yEnd = player.Y() + (Camera.displayHeight / 2) - 1;
 
 
-            _stateMap = 0;
             if (xStart <= 0)
             {
                 xStart = 0; xEnd = Camera.displayWidth - 1;
@@ -202,18 +246,28 @@ namespace Text_Based_RPG_Shell_Knight
             }
             else
             {
-                _stateMap = MAP_MIDDLE;
             }
             setDisplay(yStart, yEnd, xStart, xEnd);
         }
-        public void ResetDisplay(HUD hud) // resets the display if the console is modifyed
+        public void ResetConsole(HUD hud) // resets the display if the console is modifyed
         {
             if (Console.WindowHeight != savedHeight || Console.WindowWidth != savedWidth)
             {
-                hud.AdjustTextBox();
                 Console.Clear();
+                hud.AdjustTextBox();
                 savedHeight = Console.WindowHeight;
                 savedWidth = Console.WindowWidth;
+                _stateConsoleSize = CONSOLESIZE_MIN;
+
+                if (Console.WindowHeight != minConsoleSizeHeight || Console.WindowWidth != minConsoleSizeWidth)
+                {
+                    _stateConsoleSize = CONSOLESIZE_ADJUSTED;
+                }
+                if (Console.WindowHeight < minConsoleSizeHeight || Console.WindowWidth < minConsoleSizeWidth)
+                {
+                    Console.WindowHeight = minConsoleSizeHeight; Console.WindowWidth = minConsoleSizeWidth;
+                }
+                    
             }
         }
     }

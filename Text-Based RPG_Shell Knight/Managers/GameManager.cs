@@ -82,7 +82,7 @@ namespace Text_Based_RPG_Shell_Knight
         }
         public void Draw()
         {
-            camera.ResetDisplay(hud);
+            camera.ResetConsole(hud); // adjusts c
             camera.AdjustDisplayedArea(player);
             camera.UpdateWindowBorder();
             camera.DrawWindowBorder(); // border
@@ -91,9 +91,9 @@ namespace Text_Based_RPG_Shell_Knight
             map.loadMap();
             camera.GameWorldGetMap();
 
-            //draw characters, lowest is on top
-            for (int i = 0; i < enemies.Count; i++) { enemies[i].Draw(camera); }
+            //draw characters/objects, lowest is on top
             for (int i = 0; i < items.Count; i++) { items[i].Draw(camera); }
+            for (int i = 0; i < enemies.Count; i++) { enemies[i].Draw(camera); }
             player.Draw(map, camera, hud, toolkit);
 
             // draw GameWorld
@@ -120,7 +120,9 @@ namespace Text_Based_RPG_Shell_Knight
         // ----- game loop
         public void Game()
         {
-            
+
+            if (Console.CursorVisible == true)
+            { Console.CursorVisible = false; }
             if (_gameState == GAMESTATE_CHANGEMAP)
             {
                 UpdateDisplay();

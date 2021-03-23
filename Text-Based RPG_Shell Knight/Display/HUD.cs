@@ -85,13 +85,30 @@ namespace Text_Based_RPG_Shell_Knight
         public void AdjustTextBox()
         {
             // draws textbox
-            Console.SetCursorPosition(0, Camera.borderHeight + 3);
-            Console.WriteLine($"║{blank}║");
-            Console.WriteLine($"║{blank}║");
-            Console.WriteLine($"║{blank}║");
-            Console.WriteLine($"║{blank}║");
+            int moveUI = (Console.WindowWidth / 2) - (Camera.displayWidth / 2);
+            if (moveUI < 0) { moveUI = 0; }
+
+            int line = Console.WindowHeight - 6;
+            if (Console.WindowHeight != Camera.minConsoleSizeHeight || Console.WindowWidth != Camera.minConsoleSizeWidth) 
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    Console.SetCursorPosition(moveUI, line);
+                    Console.Write($"║{blank}║");
+                    line++;
+                }
+                Console.SetCursorPosition(moveUI, line);
+            }
+            else
+            {
+                Console.SetCursorPosition(0, Console.WindowHeight - 6); 
+                Console.WriteLine($"║{blank}║");
+                Console.WriteLine($"║{blank}║");
+                Console.WriteLine($"║{blank}║");
+                Console.WriteLine($"║{blank}║");
+            }
             Console.Write("╚");
-            for (int i = 0; i < Camera.displayWidth; i++) { Console.Write("═"); }
+            for (int i = 0; i < 117; i++) { Console.Write("═"); }
             Console.Write("╝");
         }
         public void Draw(Toolkit toolkit) // displays HUD on screen
@@ -100,19 +117,33 @@ namespace Text_Based_RPG_Shell_Knight
             //Health
             //Essence - magic unlocked? strech goal...
 
+            int moveUI = (Console.WindowWidth / 2) - (Camera.displayWidth / 2);
+            if (moveUI < 0) { moveUI = 0; }
+
             //seperates HUD from the Camera display
-            Console.SetCursorPosition(0, Camera.borderHeight);
-            Console.Write("╠");
+            if (Console.WindowHeight != Camera.minConsoleSizeHeight || Console.WindowWidth != Camera.minConsoleSizeWidth)
+            { Console.SetCursorPosition(moveUI, Console.WindowHeight - 9); }
+            else
+            { Console.SetCursorPosition(0, Console.WindowHeight - 9); }
+            if (Console.WindowHeight == Camera.minConsoleSizeHeight || Console.WindowWidth == Camera.minConsoleSizeWidth) { Console.Write("╠"); }
+            else { Console.Write("╔"); }
             for (int i = 0; i < hudNameHealthShield.Length; i++) { Console.Write("═"); }
             Console.Write("╦");
             for (int i = 0; i < (Camera.displayWidth - hudNameHealthShield.Length - 2); i++) { Console.Write("═"); }
-            Console.Write("╣");
+            if (Console.WindowHeight == Camera.minConsoleSizeHeight || Console.WindowWidth == Camera.minConsoleSizeWidth) { Console.Write("╣"); }
+            else { Console.Write("╗"); }
 
             // clears HUD
-            Console.SetCursorPosition(1, Camera.borderHeight +1);
+            if (Console.WindowHeight != Camera.minConsoleSizeHeight || Console.WindowWidth != Camera.minConsoleSizeWidth)
+            { Console.SetCursorPosition(moveUI + 1, Console.WindowHeight - 8); }
+            else
+            { Console.SetCursorPosition(1, Console.WindowHeight - 8); }
             Console.WriteLine(blank);
 
             //seperates HUD from the Text box
+
+            if (Console.WindowHeight != Camera.minConsoleSizeHeight || Console.WindowWidth != Camera.minConsoleSizeWidth)
+            { Console.SetCursorPosition(moveUI, Console.WindowHeight - 7); }
             Console.Write("╠");
             for (int i = 0; i < hudNameHealthShield.Length; i++) { Console.Write("═"); }
             Console.Write("╩");
@@ -120,13 +151,22 @@ namespace Text_Based_RPG_Shell_Knight
             Console.WriteLine("╣");
 
             // write HUD values
-            Console.SetCursorPosition(0, Camera.borderHeight + 1);
+            if (Console.WindowHeight != Camera.minConsoleSizeHeight || Console.WindowWidth != Camera.minConsoleSizeWidth)
+            { Console.SetCursorPosition(moveUI, Console.WindowHeight - 8); }
+            else
+            { Console.SetCursorPosition(0, Console.WindowHeight - 8); }
             Console.Write("║");
-            Console.SetCursorPosition(1, Camera.borderHeight + 1);
+            if (Console.WindowHeight != Camera.minConsoleSizeHeight || Console.WindowWidth != Camera.minConsoleSizeWidth)
+            { Console.SetCursorPosition(moveUI+1, Console.WindowHeight - 8); }
+            else
+            { Console.SetCursorPosition(1, Console.WindowHeight - 8); }
             Console.Write(hudNameHealthShield);
             Console.Write("║");
             Console.Write(hudInventory);
-            Console.SetCursorPosition(Camera.borderWidth -1, Camera.borderHeight+1);
+            if (Console.WindowHeight != Camera.minConsoleSizeHeight || Console.WindowWidth != Camera.minConsoleSizeWidth)
+            { Console.SetCursorPosition(moveUI+ (Camera.borderWidth - 1), Console.WindowHeight - 8); }
+            else
+            { Console.SetCursorPosition(Camera.borderWidth - 1, Console.WindowHeight - 8); }
             Console.Write("║");
             
         }
@@ -199,12 +239,18 @@ namespace Text_Based_RPG_Shell_Knight
             //    message += PaktC;
             //}
 
+            int moveUI = (Console.WindowWidth / 2) - (Camera.displayWidth / 2);
+            if (moveUI < 0) { moveUI = 0; }
+
             if (message != blank)
             {
                 SaveMessage(currentMessage);
                 DisplayText(blank);
             }
-            Console.SetCursorPosition(1, Console.WindowHeight - 3);
+            if (Console.WindowHeight != Camera.minConsoleSizeHeight || Console.WindowWidth != Camera.minConsoleSizeWidth)
+            { Console.SetCursorPosition(moveUI + 1, Console.WindowHeight - 3); }
+            else
+            { Console.SetCursorPosition(1, Console.WindowHeight - 3); }
             Console.Write(message);
             if (message != blank)
             {
@@ -220,7 +266,10 @@ namespace Text_Based_RPG_Shell_Knight
                     DisplayText(blank);
                 }
                 currentMessage = message;
-                Console.SetCursorPosition(1, Console.WindowHeight - 3);
+                if (Console.WindowHeight != Camera.minConsoleSizeHeight || Console.WindowWidth != Camera.minConsoleSizeWidth)
+                { Console.SetCursorPosition(moveUI + 1, Console.WindowHeight - 3); }
+                else
+                { Console.SetCursorPosition(1, Console.WindowHeight - 3); }
                 Console.Write(currentMessage);
             }
         }
@@ -228,21 +277,43 @@ namespace Text_Based_RPG_Shell_Knight
         {
             if (message != "")
             {
+                
                 decayingMessage = middleMessage;
                 middleMessage = recentMessage;
                 recentMessage = currentMessage;
 
-                Console.SetCursorPosition(1, Console.WindowHeight - 4);
+                int moveUI = (Console.WindowWidth / 2) - (Camera.displayWidth / 2);
+                if (moveUI < 0) { moveUI = 0; }
+
+                if (Console.WindowHeight != Camera.minConsoleSizeHeight || Console.WindowWidth != Camera.minConsoleSizeWidth)
+                { Console.SetCursorPosition(moveUI + 1, Console.WindowHeight - 4); }
+                else
+                { Console.SetCursorPosition(1, Console.WindowHeight - 4); }
                 Console.Write(blank);
-                Console.SetCursorPosition(1, Console.WindowHeight - 4);
+                if (Console.WindowHeight != Camera.minConsoleSizeHeight || Console.WindowWidth != Camera.minConsoleSizeWidth)
+                { Console.SetCursorPosition(moveUI + 1, Console.WindowHeight - 4); }
+                else
+                { Console.SetCursorPosition(1, Console.WindowHeight - 4); }
                 Console.Write(recentMessage);
-                Console.SetCursorPosition(1, Console.WindowHeight - 5);
+                if (Console.WindowHeight != Camera.minConsoleSizeHeight || Console.WindowWidth != Camera.minConsoleSizeWidth)
+                { Console.SetCursorPosition(moveUI + 1, Console.WindowHeight - 5); }
+                else
+                { Console.SetCursorPosition(1, Console.WindowHeight - 5); }
                 Console.Write(blank);
-                Console.SetCursorPosition(1, Console.WindowHeight - 5);
+                if (Console.WindowHeight != Camera.minConsoleSizeHeight || Console.WindowWidth != Camera.minConsoleSizeWidth)
+                { Console.SetCursorPosition(moveUI + 1, Console.WindowHeight - 5); }
+                else
+                { Console.SetCursorPosition(1, Console.WindowHeight - 5); }
                 Console.Write(middleMessage);
-                Console.SetCursorPosition(1, Console.WindowHeight - 6);
-                Console.Write(blank);
-                Console.SetCursorPosition(1, Console.WindowHeight - 6);
+                if (Console.WindowHeight != Camera.minConsoleSizeHeight || Console.WindowWidth != Camera.minConsoleSizeWidth)
+                { Console.SetCursorPosition(moveUI + 1, Console.WindowHeight - 6); }
+                else
+                { Console.SetCursorPosition(1, Console.WindowHeight - 6); }
+                Console.Write(blank); 
+                if (Console.WindowHeight != Camera.minConsoleSizeHeight || Console.WindowWidth != Camera.minConsoleSizeWidth)
+                { Console.SetCursorPosition(moveUI + 1, Console.WindowHeight - 6); }
+                else
+                { Console.SetCursorPosition(1, Console.WindowHeight - 6); }
                 Console.Write(decayingMessage);
             }
         }
