@@ -9,7 +9,7 @@ namespace Text_Based_RPG_Shell_Knight
         // height and width of the Whole Map
         public static int height;
         public static int width;
-        
+
         // lists containing Map Information for the game system to read
         public List<string> wallHold = new List<string>();
         public List<string> enemyHold = new List<string>();
@@ -31,10 +31,10 @@ namespace Text_Based_RPG_Shell_Knight
             for (int i = 0; i < allRowsAndInfo.Length - 1; i++) {
                 allRows[i] = allRowsAndInfo[i + 1];
             }
-            
+
             row = new char[allRows[0].Length];
             string holder = allRows[0];// used in loop to convert string to char
-            for (int i = 0; i < holder.Length - 1; i++){
+            for (int i = 0; i < holder.Length - 1; i++) {
                 row[i] = holder[i];
             }
 
@@ -44,28 +44,28 @@ namespace Text_Based_RPG_Shell_Knight
 
             map = new char[height, width];
         }
-        
+
         // ----- gets & manager tools
-        public char getTile(int x = 0, int y = 0) 
+        public char getTile(int x = 0, int y = 0)
         {
             return map[y, x];
         }
         public char[,] getMap()
         {
-            return map;    
+            return map;
         }
         public string getWallHold()
-        { 
+        {
             string allwalls = string.Join("", wallHold);
             return allwalls;
         }
-        public string getEnemyHold() 
+        public string getEnemyHold()
         {
             string allEnemies = "";
             for (int i = 0; i < enemyHold.Count; i++)
             {
                 allEnemies += enemyHold[i];
-                if (i != enemyHold.Count-1)
+                if (i != enemyHold.Count - 1)
                 {
                     allEnemies += "|";
                 }
@@ -104,7 +104,7 @@ namespace Text_Based_RPG_Shell_Knight
                 {
                     wallHold.Add(allwalls[i]);
                 }
-            
+
 
         } // move to DoorGate
 
@@ -113,11 +113,11 @@ namespace Text_Based_RPG_Shell_Knight
         {
             // set width and height of displayed map
             Camera.displayWidth = Camera.borderWidth - 1;
-            Camera.displayHeight = Camera.borderHeight- 1;
+            Camera.displayHeight = Camera.borderHeight - 1;
 
             // removing objects from current map
             for (int i = 0; i < wallHold.Count; i++)
-            { 
+            {
                 wallHold.Remove(wallHold[i]);
             }
             for (int i = 0; i < enemyHold.Count; i++)
@@ -158,20 +158,26 @@ namespace Text_Based_RPG_Shell_Knight
                 itemHold.Add(itemInfo[i]);
             }
 
+            ReadMap();
+        }
+
+        public void ReadMap()
+        {
             ///read map
-            for (int y = 0; y < height; y++){ 
+            for (int y = 0; y < height; y++)
+            {
                 string xHolder = allRows[y];
                 for (int i = 0; i < xHolder.Length; i++)
                 {
                     row[i] = xHolder[i];
                 }
-                for (int x = 0; x < width; x++) {
+                for (int x = 0; x < width; x++)
+                {
                     //create array
                     map[y, x] = row[x];
                 }
             }
         }
-        
 
         public void CheckPosition(int x, int y, string[] enemyInfo)
         { // debug

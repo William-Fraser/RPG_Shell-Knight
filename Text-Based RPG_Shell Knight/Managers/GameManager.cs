@@ -39,8 +39,6 @@ namespace Text_Based_RPG_Shell_Knight
             camera = new Camera(map);
             player = new Player("John Smith", '@', hud);
             hud = new HUD(player.Name());
-            camera.AdjustDisplayedArea(player);
-            camera.UpdateWindowBorder();
         }
 
         // ----- gets/sets
@@ -58,8 +56,10 @@ namespace Text_Based_RPG_Shell_Knight
             items.Clear();
             enemies.Clear();
 
-            //set Current Display Map
+            //read new map info
             map.loadMap();
+            hud.AdjustTextBox();
+            camera.GameWorldGetMap();
             
             // adding items to Display
             string[] itemInfo = map.getItemHold().Split('|');
@@ -82,16 +82,8 @@ namespace Text_Based_RPG_Shell_Knight
         }
         public void Draw()
         {
-            camera.ResetConsole(hud); // adjusts c
-            camera.AdjustDisplayedArea(player);
-            camera.UpdateWindowBorder();
-            camera.DrawWindowBorder(); // border
+            //draw characters/objects to gameworld, Heirarchy: lowest is on top
 
-            // create replacement gameworld
-            map.loadMap();
-            camera.GameWorldGetMap();
-
-            //draw characters/objects, lowest is on top
             for (int i = 0; i < items.Count; i++) { items[i].Draw(camera); }
             for (int i = 0; i < enemies.Count; i++) { enemies[i].Draw(camera); }
             player.Draw(map, camera, hud, toolkit);
@@ -103,39 +95,42 @@ namespace Text_Based_RPG_Shell_Knight
         {
             //update by prioity
 
-            //map.checkPosition( 0, 0, map.getEnemyHold()); -- debug
+            hud.Update(player, items);
             player.Update(enemies, map, camera, items, hud, toolkit);
 
-            for (int i = 0; i < enemies.Count; i++)
-            {
-                enemies[i].Update(player, map, camera, hud, toolkit);
-            }
-            for (int i = 0; i < items.Count; i++)
-            {
-                items[i].Update(player, items, toolkit, hud);
-            }
-            hud.Update(player, items);
+            for (int i = 0; i < enemies.Count; i++) { enemies[i].Update(player, map, camera, hud, toolkit); }
+            for (int i = 0; i < items.Count; i++) { items[i].Update(player, items, toolkit, hud); }
+
+            camera.Update(player); // updated last to catch all character and object updates on gameworld
         }
 
-        // ----- game loop
+        // ----- Game loop
         public void Game()
         {
+            // fixes display if Console size changes
+            camera.ResetConsole(hud); // checks for console size change and starts handling it
 
+            // turns off cursor in gameplay
             if (Console.CursorVisible == true)
             { Console.CursorVisible = false; }
-            if (_gameState == GAMESTATE_CHANGEMAP)
+
+            // game states
+            if (_gameState == GAMESTATE_CHANGEMAP) // updates the map if the correct transition square is walked on
             {
+                //update what the screen displays
                 UpdateDisplay();
+
+                //run the map changed to
                 _gameState = GAMESTATE_MAP;
             }
-            else if (_gameState == GAMESTATE_MAP)
+            else if (_gameState == GAMESTATE_MAP) // playing the Map screen;
             {
+                Draw(); 
                 Update();
-                Draw();
                 
                 setGameOver();
             }
-            else if (_gameState == GAMESTATE_GAMEOVER)
+            else if (_gameState == GAMESTATE_GAMEOVER) // That's all folks
             {
                 hud.DisplayText(" > GAME OVER < ", false);
                 Console.ReadKey(true);

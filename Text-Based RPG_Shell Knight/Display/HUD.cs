@@ -51,7 +51,6 @@ namespace Text_Based_RPG_Shell_Knight
             _inventoryStock[ITEM_KEYSMALL] = 0;
 
             AdjustBlank();
-            AdjustTextBox();
         }
 
         // ----- gets / sets
