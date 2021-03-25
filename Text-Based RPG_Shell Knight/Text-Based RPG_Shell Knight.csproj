@@ -52,7 +52,7 @@
     <Compile Include="Objects\Object.cs" />
     <Compile Include="Display\Map.cs" />
     <Compile Include="Characters\Player.cs" />
-    <Compile Include="Managers\Program.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Managers\Toolkit.cs" />
     <Compile Include="Display\HUD.cs" />

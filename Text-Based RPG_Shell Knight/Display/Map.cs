@@ -32,7 +32,7 @@ namespace Text_Based_RPG_Shell_Knight
                 allRows[i] = allRowsAndInfo[i + 1];
             }
 
-            row = new char[allRows[0].Length];
+            row = new char[allRows[0].Length +1];
             string holder = allRows[0];// used in loop to convert string to char
             for (int i = 0; i < holder.Length - 1; i++) {
                 row[i] = holder[i];

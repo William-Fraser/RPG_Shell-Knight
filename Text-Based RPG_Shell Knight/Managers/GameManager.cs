@@ -9,10 +9,10 @@ namespace Text_Based_RPG_Shell_Knight
     class GameManager
     {
         private int _gameState;
-        private static readonly int GAMESTATE_GAMEOVER = 0;
-        private static readonly int GAMESTATE_MAP = 1;
-        private static readonly int GAMESTATE_CHANGEMAP = 2;
-        private static readonly int GAMESTATE_BATTLE = 3;
+        public static readonly int GAMESTATE_GAMEOVER = 0;
+        public static readonly int GAMESTATE_MAP = 1;
+        public static readonly int GAMESTATE_CHANGEMAP = 2;
+        public static readonly int GAMESTATE_BATTLE = 3;
 
 
         Toolkit toolkit = new Toolkit();
@@ -102,6 +102,12 @@ namespace Text_Based_RPG_Shell_Knight
             for (int i = 0; i < items.Count; i++) { items[i].Update(player, items, toolkit, hud); }
 
             camera.Update(player); // updated last to catch all character and object updates on gameworld
+            
+            setGameOver(); // check for gameover
+        }
+        public void GameOver()
+        {
+            hud.DisplayText(" > GAME OVER < ");
         }
 
         // ----- Game loop
@@ -114,26 +120,29 @@ namespace Text_Based_RPG_Shell_Knight
             if (Console.CursorVisible == true)
             { Console.CursorVisible = false; }
 
-            // game states
-            if (_gameState == GAMESTATE_CHANGEMAP) // updates the map if the correct transition square is walked on
+            // game loop
+            while (_gameState != GAMESTATE_GAMEOVER)
             {
-                //update what the screen displays
-                UpdateDisplay();
+                if (_gameState == GAMESTATE_CHANGEMAP) // updates the map if the correct transition square is walked on
+                {
+                    //update what the screen displays
+                    UpdateDisplay();
 
-                //run the map changed to
-                _gameState = GAMESTATE_MAP;
+                    //run the map changed to
+                    _gameState = GAMESTATE_MAP;
+                }
+                else if (_gameState == GAMESTATE_MAP) // playing the Map screen;
+                {
+                    //gameplay
+                    Draw();
+                    Update();
+                }
+                else { }
             }
-            else if (_gameState == GAMESTATE_MAP) // playing the Map screen;
+            if (_gameState == GAMESTATE_GAMEOVER) // That's all folks
             {
-                Draw(); 
-                Update();
-                
-                setGameOver();
-            }
-            else if (_gameState == GAMESTATE_GAMEOVER) // That's all folks
-            {
-                hud.DisplayText(" > GAME OVER < ", false);
-                Console.ReadKey(true);
+                // display gameover
+                GameOver();
             }
         }
     }
