@@ -43,8 +43,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Settings\Global.cs" />
     <Compile Include="Managers\BattleManager.cs" />
     <Compile Include="Display\Camera.cs" />
+    <Compile Include="Managers\ListManager.cs" />
+    <Compile Include="Objects\Door.cs" />
     <Compile Include="Objects\Item.cs" />
     <Compile Include="Characters\Character.cs" />
     <Compile Include="Characters\Enemy.cs" />

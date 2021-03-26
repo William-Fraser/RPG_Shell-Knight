@@ -5,11 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 
 /// <EnemyAvatars>
-/// #   - Spider / Health: 20 Attack: 7-17 / runs towards player, runs to walls and along them until player is close then runs at player
+///
+/// #   - Spider / Health: 20 / Attack: 7-17 / runs away from player but chases when it's in vacinity
 /// 
-/// %   - Knight / Health: 70 Attack: 9-25 / runs towards player, smart runs around walls similar to spider? 
+/// &   - Goblin / Health: 70 / Attack: 9-25 / Chases Player
+///
+/// %   - Knight / Health: 150 / Attack: 17-40 / Chases player once in radius
 /// 
-/// $   - King / Health: 200 Attack: 1-15 /current Boss, walks back and fourth not strong
+/// $   - King / Health: 275 Attack: 20-50 / Stronger Knight
+///
 /// </icons used to display enemies, and discriptions of what they should do>
 
 namespace Text_Based_RPG_Shell_Knight
@@ -20,6 +24,7 @@ namespace Text_Based_RPG_Shell_Knight
         private const int AI_CHASE = 0;
         private const int AI_FLEE = 1;
         private const int AI_FLEEANDCHASE = 2;
+        private const int AI_IDLEANDCHASE = 3;
 
         //constructor
         public Enemy(string enemyInfo, string name = "errBlank", char avatar = '!') : base(name, avatar, 0) // starts enemy blank
@@ -65,6 +70,7 @@ namespace Text_Based_RPG_Shell_Knight
                 x = Int32.Parse(setPos[0]);
                 y = Int32.Parse(setPos[1]);
                 aliveInWorld = true;
+                int[] _XYHolder = new int[] { 100,100 };
                 
                 _directionMoving = DIRECTION_NULL;
 
@@ -78,20 +84,27 @@ namespace Text_Based_RPG_Shell_Knight
                 identifyed += "20,20;";
                 identifyed += "7,17;";
                 identifyed += Enemy.AI_FLEEANDCHASE.ToString();
-            } 
-            else if (identity == '%') /// %   - Knight / Health: 70 Attack: 9-25 // AI Chase
+            }
+            else if (identity == '&') /// & - Goblin / Health: 70 / Attack: 9-25 / Chases Player
             {
-                identifyed += "Knight;";
+                identifyed += "Goblin;";
                 identifyed += "70,70;";
                 identifyed += "9,25;";
                 identifyed += Enemy.AI_CHASE.ToString();
-            } 
+            }
+            else if (identity == '%') /// %   - Knight / Health: 70 Attack: 9-25 // AI Chase
+            {
+                identifyed += "Knight;";
+                identifyed += "150,150;";
+                identifyed += "17,40;";
+                identifyed += Enemy.AI_IDLEANDCHASE.ToString();
+            }
             else if (identity == '$') /// $   - King / Health: 200 Attack: 1-15 /
             {
                 identifyed += "King;";
-                identifyed += "200,200;";
-                identifyed += "1,15;";
-                identifyed += Enemy.AI_FLEE.ToString();
+                identifyed += "275,275;";
+                identifyed += "20,50;";
+                identifyed += Enemy.AI_IDLEANDCHASE.ToString();
             } /// $   - King / Health: 200 Attack: 1-15 /
             return identifyed;
         } // read enemy info child
@@ -110,6 +123,7 @@ namespace Text_Based_RPG_Shell_Knight
                 _directionMoving = DIRECTION_NULL;
                 _XYHolder[0] = x;
                 _XYHolder[1] = y;
+                Console.WriteLine();
             }
             else
             {
@@ -307,14 +321,32 @@ namespace Text_Based_RPG_Shell_Knight
             int playerY = player.Y();
 
             if (
+            (x - playerX) + (y - playerY) >= 10 ||
+            (playerX - x) + (y - playerY) >= 10 ||
+            (x - playerX) + (playerY - y) >= 10 ||
+            (playerX - x) + (playerY - y) >= 10)
+            {
+                AIMoveFleePlayer(player);
+            }
+            else 
+            { AIMoveChasePlayer(player); }
+        }
+        private void AIChaseInProx(Player player)
+        {
+            int playerX = player.X();
+            int playerY = player.Y();
+
+            if (
             (x - playerX) + (y - playerY) >= 20 ||
             (playerX - x) + (y - playerY) >= 20 ||
             (x - playerX) + (playerY - y) >= 20 ||
             (playerX - x) + (playerY - y) >= 20)
             {
-                AIMoveFleePlayer(player);
+                x = X();
+                y = Y();
             }
-            else 
+
+            else
             { AIMoveChasePlayer(player); }
         }
 
@@ -323,9 +355,18 @@ namespace Text_Based_RPG_Shell_Knight
 
 
         //update
-        public void Update(Player player, Map map, Camera camera, HUD hud, Toolkit toolkit)
+        private void KillIfDead(Camera camera, Map map, HUD hud, int state)
         {
-            KillIfDead(camera, map, hud);
+            if (aliveInWorld)
+            {
+                
+                
+                KillCharacter(_name, camera, map, hud, state);
+            }
+        }
+            public void Update(Player player, Map map, Camera camera, HUD hud, Toolkit toolkit, int state)
+            {
+            KillIfDead(camera, map, hud, state);
             if (aliveInWorld)
             {
                 switch(_stateAI)
@@ -339,6 +380,9 @@ namespace Text_Based_RPG_Shell_Knight
                     case AI_FLEEANDCHASE:
                         AIMoveFleeThenChaseInProx(player);
                         break;
+                    case AI_IDLEANDCHASE:
+                        AIChaseInProx(player);
+                        break;
                 }
 
                 bool collision = false;
@@ -348,7 +392,7 @@ namespace Text_Based_RPG_Shell_Knight
                     DealDamage(player, hud, toolkit);
                 }
 
-                if (!CheckForWall(map.getTile(_XYHolder[0], _XYHolder[1] - 1), map.getWallHold()))
+                if (!CheckForWall(map.getTile(_XYHolder[0], _XYHolder[1]), map.getWallHold()))
                 {
                     if (!collision)
                     {

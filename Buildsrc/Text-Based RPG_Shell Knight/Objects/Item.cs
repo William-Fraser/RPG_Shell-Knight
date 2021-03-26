@@ -5,15 +5,19 @@ using System.Text;
 using System.Threading.Tasks;
 
 /// <ItemAvatars>
-/// UPDATE IN LEGEND!!!
-/// 
+///
 ///  k - Small key, unlocks a small door <d>
 ///  
 ///  K - Big key, unlocks a big door <D>
 ///  
 ///  ö - healingpot, heals 50 HP
 ///  
-///  ï - shellbanding, heals 50 SP
+///  ï - shellbanding, heals 35 SP
+///
+///  d - small door, unlocked by small key <k>
+///
+///  B - Big door, unlocked by Big key <K>
+///
 /// </icons used to display Items, and discriptions of what they should do>
 
 

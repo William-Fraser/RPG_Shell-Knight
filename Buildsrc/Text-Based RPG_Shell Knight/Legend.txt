@@ -1,0 +1,56 @@
+﻿
+
+	LEGEND OF THE SHELL
+
+Map Tiles, Ground and Walls
+
+Ground - no funtionality
+
+ ▒ - Grass
+ 
+ ▓ - Sand // dig?
+
+Walls, no bypass yet...
+
+ ║═║╔╗╚╝ - Fences, // possibly jump over with boots?
+
+ █ - Stone Wall, // possibly be blown up? 
+
+ O
+ T - Tree, // cut down?
+
+ M - Mountain // hiking boots? probably not
+
+ w - Water, //swimable(Raft?)
+
+
+  vV\/Vv Functional GameObjects vV\/Vv
+
+/// <ItemAvatars>
+///
+///  k - Small key, unlocks a small door <d>
+///  
+///  K - Big key, unlocks a big door <D>
+///  
+///  ö - healingpot, heals 50 HP
+///  
+///  ï - shellbanding, heals 35 SP
+///
+///  d - small door, unlocked by small key <k>
+///
+///  B - Big door, unlocked by Big key <K>
+///
+/// </icons used to display Items, and discriptions of what they should do>
+
+
+/// <EnemyAvatars>
+///
+/// #   - Spider / Health: 20 / Attack: 7-17 / runs away from player but chases once in radius
+/// 
+/// &   - Goblin / Health: 70 / Attack: 9-25 / Chases Player
+///
+/// %   - Knight / Health: 150 / Attack: 17-40 / Chases player once in radius
+/// 
+/// $   - King / Health: 275 Attack: 20-50 / Stronger Knight
+///
+/// </icons used to display enemies, and discriptions of what they should do>

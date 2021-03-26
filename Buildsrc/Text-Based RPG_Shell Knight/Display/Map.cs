@@ -14,6 +14,7 @@ namespace Text_Based_RPG_Shell_Knight
         public List<string> wallHold = new List<string>();
         public List<string> enemyHold = new List<string>();
         public List<string> itemHold = new List<string>();
+        public List<string> doorHold = new List<string>();
 
         // Map File Lines/Info Readers
         private string[] allRowsAndInfo = File.ReadAllLines("Map_test.txt");// this changes to string constant is _test for now
@@ -85,6 +86,19 @@ namespace Text_Based_RPG_Shell_Knight
             }
             return allItems;
         }
+        public string getDoorHold()
+        {
+            string allItems = "";
+            for (int i = 0; i < doorHold.Count; i++)
+            {
+                allItems += doorHold[i];
+                if (i != doorHold.Count - 1)
+                {
+                    allItems += "|";
+                }
+            }
+            return allItems;
+        }
         public string[] ReadEnemyHold()
         {
             string[] allenemies = new string[enemyHold.Count];
@@ -128,6 +142,10 @@ namespace Text_Based_RPG_Shell_Knight
             {
                 itemHold.Remove(itemHold[i]);
             }
+            for (int i = 0; i < doorHold.Count; i++)
+            {
+                doorHold.Remove(doorHold[i]);
+            }
 
             // check for file
             if (!File.Exists("Map_test.txt")) {// input same string
@@ -157,6 +175,13 @@ namespace Text_Based_RPG_Shell_Knight
             {
                 itemHold.Add(itemInfo[i]);
             }
+            //value 3 of info is doors
+            string[] doorInfo = readInfo[3].ToString().Split('|');
+            for (int i = 0; i < (doorInfo.Length); i++)
+            {
+                doorHold.Add(doorInfo[i]);
+            }
+
 
             ReadMap();
         }

@@ -12,11 +12,11 @@ namespace Text_Based_RPG_Shell_Knight
         //directional States
         protected private int[] _XYHolder = new int[2]; // 0 = X, 1 = Y
         protected private int _directionMoving;
-        protected static int DIRECTION_NULL = 0;
-        protected static int DIRECTION_UP = 1;
-        protected static int DIRECTION_RIGHT = 2;
-        protected static int DIRECTION_DOWN = 3;
-        protected static int DIRECTION_LEFT = 4;
+        public static int DIRECTION_NULL = 0;
+        public static int DIRECTION_UP = 1;
+        public static int DIRECTION_RIGHT = 2;
+        public static int DIRECTION_DOWN = 3;
+        public static int DIRECTION_LEFT = 4;
 
         //character fields.
         protected private int[] _health = new int[2]; // set: 0 = current health / 1 = max health
@@ -197,7 +197,7 @@ namespace Text_Based_RPG_Shell_Knight
                 KillCharacter(_name, camera, map, hud);
             }
         }
-        private void KillCharacter(string name, Camera camera, Map map, HUD hud)
+        protected private void KillCharacter(string name, Camera camera, Map map, HUD hud, int state = 0)
         {
             if (_health[0] <= 0) {
                 _avatar = 'X';
@@ -205,6 +205,11 @@ namespace Text_Based_RPG_Shell_Knight
                 string deathMessage = $"< {name} has been slain >";
                 aliveInWorld = false;
                 hud.DisplayText(deathMessage, false);
+                if (this._avatar == '$')
+                {
+                    hud.DisplayText("< you ursurped the King and claimed the Throne> ", false);
+                    state = GameManager.GAMESTATE_GAMEOVER;
+                }
             }
         }
         new public void Draw(Camera camera)

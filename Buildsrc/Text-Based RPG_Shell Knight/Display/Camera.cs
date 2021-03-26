@@ -72,7 +72,11 @@ namespace Text_Based_RPG_Shell_Knight
         }
         public void GameWorldTile(char avatar, int x, int y) // set
         {
-            _gameWorld[y - 1, x] = avatar; // y-1 because of the gap on top of the consoleMinSize
+            _gameWorld[y -1, x] = avatar; // y-1 because of the gap on top of the consoleMinSize
+        }
+        public char GameWorldTile(int x, int y) // get
+        {
+            return _gameWorld[y - 1, x]; // y-1 because of the gap on top of the consoleMinSize
         }
 
         // ----- private methods

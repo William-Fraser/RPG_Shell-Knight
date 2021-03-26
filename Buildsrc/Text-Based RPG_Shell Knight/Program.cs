@@ -5,7 +5,7 @@ namespace Text_Based_RPG_Shell_Knight
     class Program
     {
         // program states / change to enum and switch
-        private static int _state = PROGRAMSTATE_PLAYMENU;
+        private static int _state;
         private static readonly int PROGRAMSTATE_GAMEOVER = 0;
         private static readonly int PROGRAMSTATE_PLAYGAME = 1;
         private static readonly int PROGRAMSTATE_PLAYMENU = 2;
@@ -15,15 +15,16 @@ namespace Text_Based_RPG_Shell_Knight
         private static bool retryMenu = false;
         private static ConsoleKeyInfo decision;
         private static ConsoleKeyInfo savedReset; // set to null on purpose
+        static GameManager game;
 
         static void Main()
         {
-            GameManager game = new GameManager();
+            game = new GameManager();
             _state = PROGRAMSTATE_PLAYMENU;
 
             while (_state != PROGRAMSTATE_ENDING)
             {
-                while (_state == PROGRAMSTATE_PLAYMENU)
+                while (_state == PROGRAMSTATE_PLAYMENU) // Main Menu
                 {
                     string mainMenu = "@ SHELL KNIGHT ";
                     //Display Main Menu and obtain choice
@@ -41,13 +42,15 @@ namespace Text_Based_RPG_Shell_Knight
                         
                     }
                 }
-                string returnToMenu = "Return to Menu?";
-                //ask to return to menu
-                TwoOptionMenu(returnToMenu, "Start Screen", PROGRAMSTATE_PLAYMENU, "Exit Game", PROGRAMSTATE_ENDING);
-
+                ////ask to return to menu
+                //string returnToMenu = "Return to Menu?";
+                //TwoOptionMenu(returnToMenu, "Start Screen", PROGRAMSTATE_PLAYMENU, "Exit Game", PROGRAMSTATE_ENDING);
             }
+            Console.Clear();
             Console.WriteLine("Thank you so much for playing my game");
             Console.ReadKey(true);
+            if (_state == PROGRAMSTATE_GAMEOVER)
+            _state = PROGRAMSTATE_ENDING;
         }
 
         //used for program menus

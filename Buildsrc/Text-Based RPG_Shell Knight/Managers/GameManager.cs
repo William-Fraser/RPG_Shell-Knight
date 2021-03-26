@@ -18,16 +18,20 @@ namespace Text_Based_RPG_Shell_Knight
         Toolkit toolkit = new Toolkit();
 
         Camera camera; // frames the map for gameplay
-
         Map map; // gameworld for all game objects to be drawn on and saved to (player isn't saved on map)
-        
         HUD hud; // appears under camera to give player information
-        
         Player player; // controls the player
         
-        List<Item> items = new List<Item>(); // Items in the current game world
-        
-        List<Enemy> enemies = new List<Enemy>(); // Enemies in the current game world
+        ListManager list; // manages the lists below
+
+        List<Item> items; // Items in the current game world
+        Item identifyerItem;
+
+        List<Enemy> enemies; // Enemies in the current game world
+        Enemy identifyerEnemy;
+
+        List<Door> doors;
+        Door identifyerDoor;
 
         // constructor
         public GameManager()
@@ -37,8 +41,13 @@ namespace Text_Based_RPG_Shell_Knight
 
             map = new Map();
             camera = new Camera(map);
-            player = new Player("John Smith", '@', hud);
+            player = new Player(Global.PLAYER_DEFAULTNAME, Global.PLAYER_AVATAR, hud);
             hud = new HUD(player.Name());
+
+            list = new ListManager();
+            items = new List<Item>();
+            enemies = new List<Enemy>();
+            doors = new List<Door>();
         }
 
         // ----- gets/sets
@@ -49,43 +58,37 @@ namespace Text_Based_RPG_Shell_Knight
             else { }
         } //reads players state and set's game to gameover
 
+
         // ----- Manager Methods
         public void UpdateDisplay()// updates display screen to represent the selected Map
         {
             //clear objects
             items.Clear();
             enemies.Clear();
+            doors.Clear();
 
             //read new map info
             map.loadMap();
             hud.AdjustTextBox();
             camera.GameWorldGetMap();
-            
-            // adding items to Display
-            string[] itemInfo = map.getItemHold().Split('|');
-            for (int i = 0; i < itemInfo.Length; i++)
-            {
-                Item item= new Item(itemInfo[i]);
-                items.Add(item);
-            }
 
-            // adding enemies to Display
-            string[] enemyInfo = map.getEnemyHold().Split('|');
-            for (int i = 0; i < enemyInfo.Length; i++) 
-            {
-                Enemy enemy = new Enemy(enemyInfo[i]);
-                enemies.Add(enemy);
-            }
+            // adding gameplay elements to Display 
+            items = list.Init<Item>(map.getItemHold(), map, identifyerItem);
+            enemies = list.Init<Enemy>(map.getEnemyHold(), map, identifyerEnemy);
+            doors = list.Init<Door>(map.getDoorHold(), map, identifyerDoor);
+            
             
             hud.Update(player, items);
-            Draw();
+            //sDraw();
         }
         public void Draw()
         {
-            //draw characters/objects to gameworld, Heirarchy: lowest is on top
+            //draw gameplay elements to gameworld, Heirarchy: lowest is on top
 
-            for (int i = 0; i < items.Count; i++) { items[i].Draw(camera); }
-            for (int i = 0; i < enemies.Count; i++) { enemies[i].Draw(camera); }
+            list.Draw(items, camera, identifyerItem);
+            list.Draw(enemies, camera, identifyerEnemy);
+            list.Draw(doors, camera, identifyerDoor);
+            
             player.Draw(map, camera, hud, toolkit);
 
             // draw GameWorld
@@ -96,10 +99,11 @@ namespace Text_Based_RPG_Shell_Knight
             //update by prioity
 
             hud.Update(player, items);
-            player.Update(enemies, map, camera, items, hud, toolkit);
+            player.Update(enemies, doors, map, camera, items, hud, toolkit);
 
-            for (int i = 0; i < enemies.Count; i++) { enemies[i].Update(player, map, camera, hud, toolkit); }
-            for (int i = 0; i < items.Count; i++) { items[i].Update(player, items, toolkit, hud); }
+            list.Update(items, player, toolkit, hud);
+            list.Update(enemies, player, map, camera, toolkit, hud, identifyerEnemy, _gameState);
+            list.Update(doors, player, hud, toolkit, identifyerDoor);
 
             camera.Update(player); // updated last to catch all character and object updates on gameworld
             
@@ -107,8 +111,10 @@ namespace Text_Based_RPG_Shell_Knight
         }
         public void GameOver()
         {
-            hud.DisplayText(" > GAME OVER < ");
+            hud.DisplayText(Global.MESSAGE_GAMEOVER);
         }
+
+
 
         // ----- Game loop
         public void Game()

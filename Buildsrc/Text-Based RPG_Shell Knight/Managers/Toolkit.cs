@@ -9,8 +9,6 @@ namespace Text_Based_RPG_Shell_Knight
 {
     class Toolkit
     {
-        
-
         public int RandomNumBetween(int lowNumber, int highNumber)
         {
             Random rdm = new Random();
