@@ -188,13 +188,8 @@ namespace Text_Based_RPG_Shell_Knight
                 savedHeight = Console.WindowHeight;
                 savedWidth = Console.WindowWidth;
 
-                // set state to min
+                // set state for defaults to min
                 _stateConsoleSize = CONSOLESIZE_MIN;
-
-                // set up display for new size
-                Console.Clear();
-                hud.AdjustTextBox();
-                DrawBorder(); // border
 
                 // set state if window is different
                 if (Console.WindowHeight != minConsoleSizeHeight || Console.WindowWidth != minConsoleSizeWidth)
@@ -204,8 +199,13 @@ namespace Text_Based_RPG_Shell_Knight
                 if (Console.WindowHeight < minConsoleSizeHeight || Console.WindowWidth < minConsoleSizeWidth)
                 {
                     Console.WindowHeight = minConsoleSizeHeight; Console.WindowWidth = minConsoleSizeWidth;
+                    ResetConsole(hud);
                 }
-                    
+
+                // set up display for new size
+                Console.Clear();
+                hud.AdjustTextBox();
+                DrawBorder(); // border
             }
         }
         public void Update(Player player)
@@ -285,7 +285,7 @@ namespace Text_Based_RPG_Shell_Knight
             //Console.WriteLine($"Map 0,0: [{borderMap[0, 0]}]"); // --- /debug/
 
             if (Console.WindowHeight != Camera.minConsoleSizeHeight || Console.WindowWidth != Camera.minConsoleSizeWidth)
-            { Console.SetCursorPosition(moveUIX, moveUIY + 1); }
+            { Console.SetCursorPosition(moveUIX, moveUIY+1); }
             else
             { Console.SetCursorPosition(0, 1); }
             int line = 2;

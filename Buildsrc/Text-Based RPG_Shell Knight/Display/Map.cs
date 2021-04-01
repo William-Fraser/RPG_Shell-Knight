@@ -47,7 +47,7 @@ namespace Text_Based_RPG_Shell_Knight
         }
 
         // ----- gets & manager tools
-        public char getTile(int x = 0, int y = 0)
+        public char getTile(int x = 1, int y = 1)
         {
             return map[y, x];
         }

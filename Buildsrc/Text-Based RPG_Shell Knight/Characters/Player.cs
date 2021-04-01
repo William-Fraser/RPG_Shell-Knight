@@ -19,8 +19,8 @@ namespace Text_Based_RPG_Shell_Knight
             _shield = new int[] { Global.PLAYER_SHIELD, Global.PLAYER_SHIELD };
             _damage = new int[] { Global.PLAYER_DAMGERANGE[0], Global.PLAYER_DAMGERANGE[1] };
 
-            y = 56;
-            x = 9;
+            x = Global.PLAYER_SPAWNPOINT[0];
+            y = Global.PLAYER_SPAWNPOINT[1];
 
             this.aliveInWorld = true;
         }
@@ -45,23 +45,23 @@ namespace Text_Based_RPG_Shell_Knight
         {
             if (_playerInput.Key == ConsoleKey.S || _playerInput.Key == ConsoleKey.DownArrow)
             {
-                CheckDirection(DIRECTION_DOWN);
+                CheckDirection(DIRECTION.DOWN);
             }
             else if (_playerInput.Key == ConsoleKey.W || _playerInput.Key == ConsoleKey.UpArrow)
             {
-                CheckDirection(DIRECTION_UP);
+                CheckDirection(DIRECTION.UP);
             }
             else if (_playerInput.Key == ConsoleKey.A || _playerInput.Key == ConsoleKey.LeftArrow)
             {
-                CheckDirection(DIRECTION_LEFT);
+                CheckDirection(DIRECTION.LEFT);
             }
             else if (_playerInput.Key == ConsoleKey.D || _playerInput.Key == ConsoleKey.RightArrow)
             {
-                CheckDirection(DIRECTION_RIGHT);
+                CheckDirection(DIRECTION.RIGHT);
             }
             else
             { 
-                _directionMoving = DIRECTION_NULL;
+                _directionMoving = DIRECTION.NULL;
                 _XYHolder[0] = x;
                 _XYHolder[1] = y;
             }
@@ -185,11 +185,11 @@ namespace Text_Based_RPG_Shell_Knight
             {
                 if (CheckForCharacterCollision(doors[i]))
                 {
-                    //collide
-                    collision = true;
-
                     // Use Key or not
                     doors[i].OpenDoor(this, hud, toolkit);
+                    
+                    //collide
+                    collision = true;
                 }
             }
 

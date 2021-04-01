@@ -72,7 +72,7 @@ namespace Text_Based_RPG_Shell_Knight
                 aliveInWorld = true;
                 int[] _XYHolder = new int[] { 100,100 };
                 
-                _directionMoving = DIRECTION_NULL;
+                _directionMoving = DIRECTION.NULL;
 
         }// Constructor child: reads all enemies available to print on map
         private string RecognizeInfo(char identity) ///holds stats for enemys found in ^EnemyAvatars^
@@ -120,7 +120,7 @@ namespace Text_Based_RPG_Shell_Knight
 
             if (x == playerX && y == playerY)
             {
-                _directionMoving = DIRECTION_NULL;
+                _directionMoving = DIRECTION.NULL;
                 _XYHolder[0] = x;
                 _XYHolder[1] = y;
                 Console.WriteLine();
@@ -192,22 +192,22 @@ namespace Text_Based_RPG_Shell_Knight
                 {
                     if (playerX > x)
                     {
-                        CheckDirection(DIRECTION_RIGHT);
+                        CheckDirection(DIRECTION.RIGHT);
                     }
                     else
                     {
-                        CheckDirection(DIRECTION_LEFT);
+                        CheckDirection(DIRECTION.LEFT);
                     }
                 }
                 else
                 {
                     if (playerY > y)
                     {
-                        CheckDirection(DIRECTION_DOWN);
+                        CheckDirection(DIRECTION.DOWN);
                     }
                     else
                     {
-                        CheckDirection(DIRECTION_UP);
+                        CheckDirection(DIRECTION.UP);
                     }
                 }
 
@@ -223,7 +223,7 @@ namespace Text_Based_RPG_Shell_Knight
 
             if (x == playerX && y == playerY)
             {
-                _directionMoving = DIRECTION_NULL;
+                _directionMoving = DIRECTION.NULL;
                 _XYHolder[0] = x;
                 _XYHolder[1] = y;
             }
@@ -294,22 +294,22 @@ namespace Text_Based_RPG_Shell_Knight
                 {
                     if (playerX > x)
                     {
-                        CheckDirection(DIRECTION_LEFT);
+                        CheckDirection(DIRECTION.LEFT);
                     }
                     else
                     {
-                        CheckDirection(DIRECTION_RIGHT);
+                        CheckDirection(DIRECTION.RIGHT);
                     }
                 }
                 else
                 {
                     if (playerY > y)
                     {
-                        CheckDirection(DIRECTION_UP);
+                        CheckDirection(DIRECTION.UP);
                     }
                     else
                     {
-                        CheckDirection(DIRECTION_DOWN);
+                        CheckDirection(DIRECTION.DOWN);
                     }
                 }
 
@@ -342,8 +342,7 @@ namespace Text_Based_RPG_Shell_Knight
             (x - playerX) + (playerY - y) >= 20 ||
             (playerX - x) + (playerY - y) >= 20)
             {
-                x = X();
-                y = Y();
+
             }
 
             else
@@ -364,8 +363,8 @@ namespace Text_Based_RPG_Shell_Knight
                 KillCharacter(_name, camera, map, hud, state);
             }
         }
-            public void Update(Player player, Map map, Camera camera, HUD hud, Toolkit toolkit, int state)
-            {
+        public void Update(Player player, Map map, Camera camera, HUD hud, Toolkit toolkit, int state)
+        {
             KillIfDead(camera, map, hud, state);
             if (aliveInWorld)
             {
@@ -392,10 +391,14 @@ namespace Text_Based_RPG_Shell_Knight
                     DealDamage(player, hud, toolkit);
                 }
 
-                if (!CheckForWall(map.getTile(_XYHolder[0], _XYHolder[1]), map.getWallHold()))
+                if (!CheckForWall(map.getTile(_XYHolder[0], _XYHolder[1]-1), map.getWallHold()))
                 {
+                    _name = _name;
+                    x = x;
+                    _XYHolder[0] = _XYHolder[0];
                     if (!collision)
                     {
+                        
                         Move();
                     }
                 }

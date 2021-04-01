@@ -9,14 +9,21 @@ namespace Text_Based_RPG_Shell_Knight
     abstract class Character : Object
     {
         ///INIT
-        //directional States
+        
+        // direction the character "looks at"
         protected private int[] _XYHolder = new int[2]; // 0 = X, 1 = Y
-        protected private int _directionMoving;
-        public static int DIRECTION_NULL = 0;
-        public static int DIRECTION_UP = 1;
-        public static int DIRECTION_RIGHT = 2;
-        public static int DIRECTION_DOWN = 3;
-        public static int DIRECTION_LEFT = 4;
+        
+        //directional States
+        public enum DIRECTION
+        {
+            NULL,
+            UP,
+            RIGHT,
+            DOWN,
+            LEFT
+        };
+        protected private DIRECTION _directionMoving;
+        
 
         //character fields.
         protected private int[] _health = new int[2]; // set: 0 = current health / 1 = max health
@@ -28,6 +35,9 @@ namespace Text_Based_RPG_Shell_Knight
             _name = name;
             _avatar = avatar;
             _health = new int[] { health, health };
+
+            _XYHolder[0] = 1;
+            _XYHolder[1] = 1;
 
             x = Console.WindowWidth / 2;
             y = Console.WindowHeight / 2;
@@ -61,16 +71,16 @@ namespace Text_Based_RPG_Shell_Knight
         }
 
         // ----- private methods
-        protected private void CheckDirection(int DIRECTION_) //moves the player in the specifyed DICRECTION_ 
+        protected private void CheckDirection(DIRECTION DIRECTION_) //moves the player in the specifyed DICRECTION_ 
         {
             if (aliveInWorld)
             {
                 int XHolder = x;
                 int YHolder = y;
-                if      (DIRECTION_ == DIRECTION_DOWN) { _directionMoving = DIRECTION_DOWN; _XYHolder[0] = XHolder; _XYHolder[1] = YHolder+=1;}
-                else if (DIRECTION_ == DIRECTION_UP)    { _directionMoving = DIRECTION_UP; _XYHolder[0] = XHolder; _XYHolder[1] = YHolder-=1; }
-                else if (DIRECTION_ == DIRECTION_LEFT) { _directionMoving = DIRECTION_LEFT; _XYHolder[0] = XHolder-=1; _XYHolder[1] = YHolder; } 
-                else if (DIRECTION_ == DIRECTION_RIGHT) { _directionMoving = DIRECTION_RIGHT; _XYHolder[0] = XHolder+=1; _XYHolder[1] = YHolder; } 
+                if      (DIRECTION_ == DIRECTION.DOWN) { _directionMoving = DIRECTION.DOWN; _XYHolder[0] = XHolder; _XYHolder[1] = YHolder+=1;}
+                else if (DIRECTION_ == DIRECTION.UP)    { _directionMoving = DIRECTION.UP; _XYHolder[0] = XHolder; _XYHolder[1] = YHolder-=1; }
+                else if (DIRECTION_ == DIRECTION.LEFT) { _directionMoving = DIRECTION.LEFT; _XYHolder[0] = XHolder-=1; _XYHolder[1] = YHolder; } 
+                else if (DIRECTION_ == DIRECTION.RIGHT) { _directionMoving = DIRECTION.RIGHT; _XYHolder[0] = XHolder+=1; _XYHolder[1] = YHolder; } 
             }
             
         }
@@ -78,10 +88,10 @@ namespace Text_Based_RPG_Shell_Knight
         {
             if (aliveInWorld)
             {
-                if      (_directionMoving == DIRECTION_DOWN && _XYHolder[1] < Map.height +1) { y++; }
-                else if (_directionMoving == DIRECTION_UP && _XYHolder[1] > 1)                      { y--; }
-                else if (_directionMoving == DIRECTION_LEFT && _XYHolder[0] > 0)                    { x--; }
-                else if (_directionMoving == DIRECTION_RIGHT && _XYHolder[0] < Map.width +1) { x++; }
+                if      (_directionMoving == DIRECTION.DOWN && _XYHolder[1] < Map.height +1) { y++; }
+                else if (_directionMoving == DIRECTION.UP && _XYHolder[1] > 1)                      { y--; }
+                else if (_directionMoving == DIRECTION.LEFT && _XYHolder[0] > 0)                    { x--; }
+                else if (_directionMoving == DIRECTION.RIGHT && _XYHolder[0] < Map.width +1) { x++; }
             }
         }
         private int Attack(int[] health, HUD ui, Toolkit toolkit, bool isEnemy, int[] shield = null)
@@ -151,7 +161,7 @@ namespace Text_Based_RPG_Shell_Knight
         protected private bool CheckForWall(char map, string walls)
         {
             bool iswall = false;
-            if (_directionMoving != DIRECTION_NULL)
+            if (_directionMoving != DIRECTION.NULL)
             {
                 char[] wallGroup = new char[walls.Length];
                 for (int i = 0; i < walls.Length; i++)
@@ -166,6 +176,7 @@ namespace Text_Based_RPG_Shell_Knight
                         //MoveBack();
                         iswall = true;
                     }
+            
                 }
             }
             return iswall;

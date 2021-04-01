@@ -14,7 +14,7 @@ namespace Text_Based_RPG_Shell_Knight
         // menu controls
         private static bool retryMenu = false;
         private static ConsoleKeyInfo decision;
-        private static ConsoleKeyInfo savedReset; // set to null on purpose
+        private static ConsoleKeyInfo savedReset; // set to null on purpose, for resetting choice 
         static GameManager game;
 
         static void Main()
@@ -45,12 +45,13 @@ namespace Text_Based_RPG_Shell_Knight
                 ////ask to return to menu
                 //string returnToMenu = "Return to Menu?";
                 //TwoOptionMenu(returnToMenu, "Start Screen", PROGRAMSTATE_PLAYMENU, "Exit Game", PROGRAMSTATE_ENDING);
+                Console.Clear();
+                Console.WriteLine("\n");
+                Console.WriteLine("     END OF PROGRAM");
+                Console.ReadKey(true);
+                if (_state == PROGRAMSTATE_GAMEOVER)
+                    _state = PROGRAMSTATE_ENDING;
             }
-            Console.Clear();
-            Console.WriteLine("Thank you so much for playing my game");
-            Console.ReadKey(true);
-            if (_state == PROGRAMSTATE_GAMEOVER)
-            _state = PROGRAMSTATE_ENDING;
         }
 
         //used for program menus

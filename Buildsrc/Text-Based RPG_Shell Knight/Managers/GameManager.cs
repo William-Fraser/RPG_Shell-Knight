@@ -103,7 +103,7 @@ namespace Text_Based_RPG_Shell_Knight
 
             list.Update(items, player, toolkit, hud);
             list.Update(enemies, player, map, camera, toolkit, hud, identifyerEnemy, _gameState);
-            list.Update(doors, player, hud, toolkit, identifyerDoor);
+            //list.Update(doors, player, hud, toolkit, identifyerDoor);
 
             camera.Update(player); // updated last to catch all character and object updates on gameworld
             
@@ -113,6 +113,11 @@ namespace Text_Based_RPG_Shell_Knight
         {
             hud.DisplayText(Global.MESSAGE_GAMEOVER);
         }
+        public void FixDisplay()
+        {
+            camera.ResetConsole(hud); // checks for console size change and starts handling it
+            Console.CursorVisible = false;
+        }
 
 
 
@@ -120,11 +125,10 @@ namespace Text_Based_RPG_Shell_Knight
         public void Game()
         {
             // fixes display if Console size changes
-            camera.ResetConsole(hud); // checks for console size change and starts handling it
 
             // turns off cursor in gameplay
             if (Console.CursorVisible == true)
-            { Console.CursorVisible = false; }
+            {  }
 
             // game loop
             while (_gameState != GAMESTATE_GAMEOVER)
@@ -139,6 +143,8 @@ namespace Text_Based_RPG_Shell_Knight
                 }
                 else if (_gameState == GAMESTATE_MAP) // playing the Map screen;
                 {
+                    FixDisplay();
+
                     //gameplay
                     Draw();
                     Update();
