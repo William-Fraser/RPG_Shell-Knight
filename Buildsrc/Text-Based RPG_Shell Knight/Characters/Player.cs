@@ -143,7 +143,8 @@ namespace Text_Based_RPG_Shell_Knight
             int[] stock = ui.getInventoryStock();
             ui.setInventoryStockItem(index, stock[index] - 1);
         }
-        public void Update(List<Enemy> enemies, List<Door> doors, Map map, Camera camera, List<Item> item, HUD hud, Toolkit toolkit){
+        public void Update(List<Enemy> enemies, List<Door> doors, Map map, Camera camera, List<Item> item, HUD hud, Toolkit toolkit)
+        {
 
             //Stops character update and ends game
             CheckForDying(camera, map, hud);

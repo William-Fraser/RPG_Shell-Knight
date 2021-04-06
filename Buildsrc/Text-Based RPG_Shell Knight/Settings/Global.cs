@@ -10,7 +10,8 @@ namespace Text_Based_RPG_Shell_Knight
     {
         //player
         public static int[] PLAYER_SPAWNPOINT = { 9, 71 }; //X and Y  // should start player in house
-        public static string PLAYER_DEFAULTNAME = "PLAYER";
+        public static int[] PLAYER_WINPOINT = { 213, 19 }; //X and Y  // should finish the game in the throne
+        public static string PLAYER_DEFAULTNAME = "PLAYER"; // playername shoule be no more than 16 chars
         public static char PLAYER_AVATAR = '@';
         public static int PLAYER_HEALTH = 100; // the value of the current and max health
         public static int PLAYER_SHIELD = 77; // the value of the current and max shield
@@ -22,12 +23,13 @@ namespace Text_Based_RPG_Shell_Knight
         //message
         public static string MESSAGE_GAMEOVER = " > GAME OVER < ";
 
-        // messages below start with characters name and <> is already included
+        // messages below start with characters name and <> is already included /// 90 CHARACTER LIMIT OTHERWISE EXPECT BUGS
         public static string MESSAGE_SLAIN = "has been slain"; 
         public static string MESSAGE_POTHEALTHDRINK = "drinks a Health Potion [+50 HP]";
         public static string MESSAGE_POTHEALTHMISSING = "looked for a HealthPotion but found none";
         public static string MESSAGE_POTSHIELDDRINK = "used some Shell Banding [+30 SP]";
         public static string MESSAGE_POTSHIELDMISSING = "is fresh out of Shell Banding";
+        public static string MESSAGE_PLAYERVICTORY = "The King has been userped, A new Lord has been crowned!";
 
     }
 }

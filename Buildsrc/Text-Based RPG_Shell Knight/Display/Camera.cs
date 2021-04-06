@@ -8,11 +8,6 @@ namespace Text_Based_RPG_Shell_Knight
 {
     class Camera
     {
-        // states for if the player is on the border or not
-        //private int _stateMap;
-        //public static int MAP_BORDER = 0;
-        //public static int MAP_MIDDLE = 1;
-
         //full map with objects placed on it
         private char[,] _gameWorld;
 
@@ -24,11 +19,11 @@ namespace Text_Based_RPG_Shell_Knight
         private string borderString = "";
         private string[,] borderArray;
 
-        // height and width of camera
+        // height and width of "camera" lens / border
         public static int borderHeight = Console.WindowHeight - 9;
         public static int borderWidth = Console.WindowWidth - 1;
 
-        // height and width of displayed screen 
+        // height and width of display
         public static int displayHeight = Camera.borderHeight - 2;
         public static int displayWidth = Camera.borderWidth - 2;
 

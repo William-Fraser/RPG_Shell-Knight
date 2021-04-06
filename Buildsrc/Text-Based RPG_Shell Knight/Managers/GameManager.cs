@@ -8,12 +8,14 @@ namespace Text_Based_RPG_Shell_Knight
 {
     class GameManager
     {
-        private int _gameState;
-        public static readonly int GAMESTATE_GAMEOVER = 0;
-        public static readonly int GAMESTATE_MAP = 1;
-        public static readonly int GAMESTATE_CHANGEMAP = 2;
-        public static readonly int GAMESTATE_BATTLE = 3;
-
+        public enum GAMESTATE
+        {
+            GAMEOVER,
+            MAP,
+            CHANGEMAP,
+            BATTLE
+        }
+        public GAMESTATE _gameState;
 
         Toolkit toolkit = new Toolkit();
 
@@ -37,7 +39,7 @@ namespace Text_Based_RPG_Shell_Knight
         public GameManager()
         {
             Console.CursorVisible = false;
-            _gameState = GAMESTATE_CHANGEMAP;
+            _gameState = GAMESTATE.CHANGEMAP;
 
             map = new Map();
             camera = new Camera(map);
@@ -51,12 +53,26 @@ namespace Text_Based_RPG_Shell_Knight
         }
 
         // ----- gets/sets
-        public int GameState() { return _gameState; }
-        public void setGameOver()
+        public int GameState() { return (int)_gameState; }
+        public void GameOverPlayerDeath() // checks for player death and sets game over
         {
-            if (player.AliveInWorld() == false) { _gameState = GAMESTATE_GAMEOVER; }
+            if (player.AliveInWorld() == false) { _gameState = GAMESTATE.GAMEOVER; }
             else { }
-        } //reads players state and set's game to gameover
+        } 
+        public void GameOverWinCondition(int CharacterX, int CharacterY, HUD hud) // checks if win condition is met and sets game over
+        { /// current win condition, reach the goal point
+            if (CharacterX == Global.PLAYER_WINPOINT[0])
+            {
+                if (CharacterY == Global.PLAYER_WINPOINT[1])
+                {
+                    string victoryMessage;
+                    victoryMessage = $"< {Global.MESSAGE_PLAYERVICTORY} > ";
+                    hud.DisplayText(victoryMessage);
+                    _gameState = GameManager.GAMESTATE.GAMEOVER;
+                }
+            }
+        }
+
 
 
         // ----- Manager Methods
@@ -102,12 +118,12 @@ namespace Text_Based_RPG_Shell_Knight
             player.Update(enemies, doors, map, camera, items, hud, toolkit);
 
             list.Update(items, player, toolkit, hud);
-            list.Update(enemies, player, map, camera, toolkit, hud, identifyerEnemy, _gameState);
-            //list.Update(doors, player, hud, toolkit, identifyerDoor);
+            list.Update(enemies, player, map, camera, toolkit, hud, identifyerEnemy, 0); // 
 
             camera.Update(player); // updated last to catch all character and object updates on gameworld
-            
-            setGameOver(); // check for gameover
+
+            GameOverWinCondition(player.X(), player.Y(), hud);
+            GameOverPlayerDeath(); // check for gameover
         }
         public void GameOver()
         {
@@ -131,17 +147,17 @@ namespace Text_Based_RPG_Shell_Knight
             {  }
 
             // game loop
-            while (_gameState != GAMESTATE_GAMEOVER)
+            while (_gameState != GAMESTATE.GAMEOVER)
             {
-                if (_gameState == GAMESTATE_CHANGEMAP) // updates the map if the correct transition square is walked on
+                if (_gameState == GAMESTATE.CHANGEMAP) // updates the map if the correct transition square is walked on
                 {
                     //update what the screen displays
                     UpdateDisplay();
 
                     //run the map changed to
-                    _gameState = GAMESTATE_MAP;
+                    _gameState = GAMESTATE.MAP;
                 }
-                else if (_gameState == GAMESTATE_MAP) // playing the Map screen;
+                else if (_gameState == GAMESTATE.MAP) // playing the Map screen;
                 {
                     FixDisplay();
 
@@ -151,7 +167,7 @@ namespace Text_Based_RPG_Shell_Knight
                 }
                 else { }
             }
-            if (_gameState == GAMESTATE_GAMEOVER) // That's all folks
+            if (_gameState == GAMESTATE.GAMEOVER) // That's all folks
             {
                 // display gameover
                 GameOver();

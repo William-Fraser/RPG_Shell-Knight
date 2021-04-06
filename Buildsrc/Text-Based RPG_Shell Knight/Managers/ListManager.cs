@@ -124,7 +124,7 @@ namespace Text_Based_RPG_Shell_Knight
         {
             for (int i = 0; i < enemies.Count; i++) 
             { 
-                enemies[i].Update(player, map, camera, hud, toolkit, state); 
+                enemies[i].Update(player, map, camera, hud, toolkit); 
             }
         }
 

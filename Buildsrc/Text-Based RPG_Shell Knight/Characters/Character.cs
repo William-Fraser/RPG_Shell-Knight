@@ -112,7 +112,7 @@ namespace Text_Based_RPG_Shell_Knight
         protected private void KillCharacter(string name, Camera camera, Map map, HUD hud, int state = 0) // kills character and displays that to HUD holds gameComepletionMessage
         {
             aliveInWorld = false;
-            
+
             //show dead Charcter
             _avatar = Global.CHARACTER_DEADAVATAR;
             Draw(camera);
@@ -159,7 +159,7 @@ namespace Text_Based_RPG_Shell_Knight
                     shield[(int)STATUS.CURRENT] = setStatToLimits(shield[(int)STATUS.CURRENT], shield[(int)STATUS.MAX]);
                 }
 
-                if (shield == null)
+                if (shield == null )//|| shield[(int)STATUS.CURRENT] == 0)
                 {
                     // calculate damage
                     if (passDamage != 0) { damageToHealth = passDamage; } // sets the damage to the leftover shield break damage
@@ -246,7 +246,7 @@ namespace Text_Based_RPG_Shell_Knight
             }
             return false;
         }
-        protected private void CheckForDying(Camera camera, Map map, HUD hud, int state = 0) // checks if player is alive and at 0 health, then kills them
+        protected private void CheckForDying(Camera camera, Map map, HUD hud) // checks if player is alive and at 0 health, then kills them
         { // if character is alive but at 0HP then death time
             if (aliveInWorld)
             {

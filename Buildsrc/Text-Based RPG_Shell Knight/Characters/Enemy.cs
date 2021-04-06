@@ -321,9 +321,9 @@ namespace Text_Based_RPG_Shell_Knight
 
 
         // ----- public methods
-        public void Update(Player player, Map map, Camera camera, HUD hud, Toolkit toolkit, int state)
+        public void Update(Player player, Map map, Camera camera, HUD hud, Toolkit toolkit)
         {
-            CheckForDying(camera, map, hud, state);
+            CheckForDying(camera, map, hud);
             if (aliveInWorld)
             {
                 switch(_ai)
