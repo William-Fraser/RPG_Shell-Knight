@@ -16,41 +16,42 @@ Walls, no bypass yet...
 
  █ - Stone Wall, // possibly be blown up? 
 
- O
+ O \ leaves for
  T - Tree, // cut down?
 
  M - Mountain // hiking boots? probably not
 
  w - Water, //swimable(Raft?)
 
+ // missing 
 
   vV\/Vv Functional GameObjects vV\/Vv
 
 /// <ItemAvatars>
 ///
-///  k - Small key, unlocks a small door <d>
+///  k - Small key,	   / unlocks a small door <d>
 ///  
-///  K - Big key, unlocks a big door <D>
+///  K - Big key,	   / unlocks a big door <D>
 ///  
-///  ö - healingpot, heals 50 HP
+///  ö - healingpot,   / heals 50 HP
 ///  
-///  ï - shellbanding, heals 35 SP
+///  ï - shellbanding, / heals 35 SP
 ///
-///  d - small door, unlocked by small key <k>
+///  d - small door,   / unlocked by small key <k>
 ///
-///  B - Big door, unlocked by Big key <K>
+///  B - Big door,     / unlocked by Big key <K>
 ///
 /// </icons used to display Items, and discriptions of what they should do>
 
 
 /// <EnemyAvatars>
 ///
-/// #   - Spider / Health: 20 / Attack: 7-17 / runs away from player but chases once in radius
-/// 
-/// &   - Goblin / Health: 70 / Attack: 9-25 / Chases Player
+/// #   - Spider / Health: 20  / Attack: 7-17  / AI: Flee and Chase in prox
 ///
-/// %   - Knight / Health: 150 / Attack: 17-40 / Chases player once in radius
-/// 
-/// $   - King / Health: 275 Attack: 20-50 / Stronger Knight
+/// &   - Goblin / Health: 70  / Attack: 9-25  / AI: Chase
+///
+/// %   - Knight / Health: 150 / Attack: 17-40 / AI: Idle to Chase in prox
+///
+/// $   - King   / Health: 275 / Attack: 20-50 / AI: Idle to Chase in prox
 ///
 /// </icons used to display enemies, and discriptions of what they should do>

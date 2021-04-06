@@ -9,15 +9,25 @@ namespace Text_Based_RPG_Shell_Knight
     class Global
     {
         //player
+        public static int[] PLAYER_SPAWNPOINT = { 9, 71 }; //X and Y  // should start player in house
         public static string PLAYER_DEFAULTNAME = "PLAYER";
         public static char PLAYER_AVATAR = '@';
         public static int PLAYER_HEALTH = 100; // the value of the current and max health
         public static int PLAYER_SHIELD = 77; // the value of the current and max shield
         public static int[] PLAYER_DAMGERANGE = { 30, 67 }; // the range of damage the player can do, change to weapon system
-        public static int[] PLAYER_SPAWNPOINT = { 9, 71 }; //X and Y  // should start player in house
+
+        //Characters
+        public static char CHARACTER_DEADAVATAR = 'X';
 
         //message
         public static string MESSAGE_GAMEOVER = " > GAME OVER < ";
+
+        // messages below start with characters name and <> is already included
+        public static string MESSAGE_SLAIN = "has been slain"; 
+        public static string MESSAGE_POTHEALTHDRINK = "drinks a Health Potion [+50 HP]";
+        public static string MESSAGE_POTHEALTHMISSING = "looked for a HealthPotion but found none";
+        public static string MESSAGE_POTSHIELDDRINK = "used some Shell Banding [+30 SP]";
+        public static string MESSAGE_POTSHIELDMISSING = "is fresh out of Shell Banding";
 
     }
 }

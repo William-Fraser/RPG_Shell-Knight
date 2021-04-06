@@ -49,7 +49,7 @@ namespace Text_Based_RPG_Shell_Knight
                 {
 
                     player.RemoveItemFromInventory(HUD.ITEM_KEYSMALL, hud);
-                    hud.Draw(toolkit);
+                    hud.Draw(toolkit); // updates visible inventory
                     aliveInWorld = false;
                     hud.DisplayText($"< {player.Name()} opened a small door with a small key >");
                     _opened = true;
@@ -64,7 +64,7 @@ namespace Text_Based_RPG_Shell_Knight
                 if (stock[HUD.ITEM_KEYBIG] > 0)
                 {
                     player.RemoveItemFromInventory(HUD.ITEM_KEYBIG, hud);
-                    hud.Draw(toolkit);
+                    hud.Draw(toolkit); // updates visible inventory
                     aliveInWorld = false;
                     hud.DisplayText($"< {player.Name()} opened the big door with the big key >");
                     _opened = true;

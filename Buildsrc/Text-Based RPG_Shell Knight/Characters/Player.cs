@@ -10,7 +10,7 @@ namespace Text_Based_RPG_Shell_Knight
     {
         private ConsoleKeyInfo _playerInput;
 
-        private int[] _shield; // displayed as armour, 0 = current, 1 = maxa
+        private int[] _shield; // displayed as Shell, set states: 0 = current, 1 = max, health follows the same number convention
 
         //constructor
         public Player(string name, char avatar, HUD ui) : base(name, avatar, Global.PLAYER_HEALTH)
@@ -32,16 +32,18 @@ namespace Text_Based_RPG_Shell_Knight
         }
         
         // ----- Private Methods
-        private void GetInput()
+        private void GetInput() // recieves player input from a single keypress
         {
             if (aliveInWorld)
             {
+                // inital read key to stop
                 _playerInput = Console.ReadKey(true);
+                // every key press after is read from this ReadKey and once it's stopped so is the console display
                 while (Console.KeyAvailable)
                 _playerInput = Console.ReadKey(true);
             }
         }
-        private void DirectionalOutput() 
+        private void DirectionalOutput()// checks or 'looks at' the direction output of the playes input
         {
             if (_playerInput.Key == ConsoleKey.S || _playerInput.Key == ConsoleKey.DownArrow)
             {
@@ -59,83 +61,75 @@ namespace Text_Based_RPG_Shell_Knight
             {
                 CheckDirection(DIRECTION.RIGHT);
             }
-            else
+            else // its possible not to move
             { 
                 _directionMoving = DIRECTION.NULL;
                 _XYHolder[0] = x;
                 _XYHolder[1] = y;
             }
         }
-        private bool CheckForCharacterCollision(Enemy enemy)
-        {
-            bool collision;
-            collision = base.CheckForCharacterCollision(enemy.X(), enemy.Y(), enemy.AliveInWorld());
-            return collision;
-        }
-        private bool CheckForCharacterCollision(Door door)
-        {
-            bool collision;
-            collision = base.CheckForCharacterCollision(door.X(), door.Y(), door.AliveInWorld());
-            return collision;
-        }
-        private void DealDamage(Enemy enemy, HUD ui, Toolkit toolkit)
-        {
-            base.DealDamage(enemy.Name(), enemy.AliveInWorld(), enemy.Health(), true, ui, toolkit);
-        }
-        private void HealHealth(int value)
+        private void HealHealth(int value)// restores health and values to limits if broken
         {
             int[] health = Health();
-            health[0] += value;
-            health[0] = setStatToLimits(health[0], health[1]);
+            health[(int)STATUS.CURRENT] += value;
+            health[(int)STATUS.CURRENT] = setStatToLimits(health[(int)STATUS.CURRENT], health[(int)STATUS.MAX]);
         }
-        private void HealShell(int value)
+        private void HealShell(int value)// restores shield and values to limits if broken
         {
             int[] shield = Shield();
-            shield[0] += value;
-            shield[0] = setStatToLimits(shield[0], shield[1]);
+            shield[(int)STATUS.CURRENT] += value;
+            shield[(int)STATUS.CURRENT] = setStatToLimits(shield[(int)STATUS.CURRENT], shield[(int)STATUS.MAX]);
         }
-        
-        private void UseItemInventoryOutput(Item item, HUD hud, Toolkit toolkit)
+        private void UseItemInventoryOutput(Item item, HUD hud, Toolkit toolkit)// uses item if player inputs
         {
+            // init values for easy reading
             char[] avatar = hud.getInventoryAvatars();
             int[] stock = hud.getInventoryStock();
+
+            // Use Health Pot
             if (_playerInput.Key == ConsoleKey.X)
             {
                 if (stock[HUD.ITEM_POTHEAL] > 0)
                 {
                     HealHealth(item.Power(avatar[HUD.ITEM_POTHEAL]));
                     RemoveItemFromInventory(HUD.ITEM_POTHEAL, hud);
+
+                    //update HUD bar and display to HUD text box
                     hud.setHudHealthAndShield(_health, _shield);
-                    hud.Draw(toolkit);
-                    hud.DisplayText($"< {_name} drinks a Health Potion [+50 HP] >");
+                    hud.Draw(toolkit); // updates visible inventory
+                    hud.DisplayText($"< {_name} {Global.MESSAGE_POTHEALTHDRINK} >");
                     
                 }
                 else
                 {
-                    hud.DisplayText($"< {_name} looked for a HealthPotion but found none >", false);
+                    hud.DisplayText($"< {_name} {Global.MESSAGE_POTHEALTHMISSING} >", false);
                 }
             }
+
+            // Use Shield Pot
             if (_playerInput.Key == ConsoleKey.Z)
             {
                 if (stock[HUD.ITEM_POTSHELL] > 0)
                 {
                     RemoveItemFromInventory(HUD.ITEM_POTSHELL, hud);
                     HealShell(item.Power(avatar[HUD.ITEM_POTSHELL]));
+
+                    //update HUD bar and display to HUD text box
                     hud.setHudHealthAndShield(_health, _shield);
-                    hud.Draw(toolkit);
-                    hud.DisplayText($"< {_name} used some Shell Banding [+30 SP] >");
+                    hud.Draw(toolkit); // updates visible inventory
+                    hud.DisplayText($"< {_name} {Global.MESSAGE_POTSHIELDDRINK} >");
                 }
                 else
                 {
-                    hud.DisplayText($"< {_name} is fresh out of Shell Banding >", false);
+                    hud.DisplayText($"< {_name} {Global.MESSAGE_POTSHIELDMISSING} >", false);
                 }
             }
         }
         
         // ----- Public Methods
-        public void Draw(Map map, Camera camera, HUD ui, Toolkit toolkit) 
+        public void Draw(Map map, Camera camera, HUD hud, Toolkit toolkit) // Draws to HUD bar then calls base
         {
-            ui.Draw(toolkit);
+            hud.Draw(toolkit);
             //if (map.getStateMap() == Map.MAP_MIDDLE)
             //{
             //    y = Map.displayHeight / 2;
@@ -144,15 +138,15 @@ namespace Text_Based_RPG_Shell_Knight
             base.Draw(camera);
             //toolkit.DisplayText("drawing");
         }
-        public void RemoveItemFromInventory(int index, HUD ui)
+        public void RemoveItemFromInventory(int index, HUD ui) // used to distinguish function
         {
             int[] stock = ui.getInventoryStock();
             ui.setInventoryStockItem(index, stock[index] - 1);
         }
-        public void Update(List<Enemy> enemies, List<Door> doors, Map map, Camera camera, List<Item> item, HUD hud, Toolkit toolkit) {
+        public void Update(List<Enemy> enemies, List<Door> doors, Map map, Camera camera, List<Item> item, HUD hud, Toolkit toolkit){
 
             //Stops character update and ends game
-            KillIfDead(camera, map, hud);
+            CheckForDying(camera, map, hud);
             
             // gets Input
             GetInput();
@@ -170,20 +164,20 @@ namespace Text_Based_RPG_Shell_Knight
             //Enemy Collision / Attacking
             for (int i = 0; i < enemies.Count; i++)
             {
-                if (CheckForCharacterCollision(enemies[i])) // enemy values read as zero on firstcontact, needs enemy locate to read adjesent tile's
+                if (CheckForCharacterCollision(enemies[i].X(), enemies[i].Y(), enemies[i].AliveInWorld())) // enemy values read as zero on firstcontact, needs enemy locate to read adjesent tile's
                 {
                     //collide
                     collision = true;
                     
                     //collide to deal damage
-                    DealDamage(enemies[i], hud, toolkit);
+                    StartAttacking(enemies[i].Name(), enemies[i].AliveInWorld(), enemies[i].Health(), true, hud, toolkit);
                 }
             }
 
             //Door Collision / Unlocking
             for (int i = 0; i < doors.Count; i++)
             {
-                if (CheckForCharacterCollision(doors[i]))
+                if (CheckForCharacterCollision(doors[i].X(), doors[i].Y(), doors[i].AliveInWorld()))
                 {
                     // Use Key or not
                     doors[i].OpenDoor(this, hud, toolkit);
@@ -194,7 +188,7 @@ namespace Text_Based_RPG_Shell_Knight
             }
 
                 //toolkit.DisplayText($"checking at: {map.getTile(_XYHolder[0], _XYHolder[1])}"); //    --------- debugg
-            if (!CheckForWall(map.getTile(_XYHolder[0], _XYHolder[1]-1), map.getWallHold()))
+            if (!CheckForWallCollision(map.getTile(_XYHolder[0], _XYHolder[1]-1), map.getWallHold()))
             {
                 if (!collision)
                 {
