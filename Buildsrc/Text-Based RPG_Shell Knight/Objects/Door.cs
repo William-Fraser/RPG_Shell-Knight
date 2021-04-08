@@ -39,55 +39,39 @@ namespace Text_Based_RPG_Shell_Knight
         public bool PickedUp() { return _opened; }
 
         // ----- private methods
-        public void OpenDoor(Player player, HUD hud, Toolkit toolkit)
+        public void OpenDoor(Player player, HUD hud)
         {
-            int[] stock = hud.getInventoryStock();
+            int[] stock = hud.InventoryStock();
 
             if (this._avatar == 'd')
             {
-                if (stock[HUD.ITEM_KEYSMALL] > 0)
+                if (stock[(int)HUD.ITEM.KEYSMALL] > 0)
                 {
 
-                    player.RemoveItemFromInventory(HUD.ITEM_KEYSMALL, hud);
-                    hud.Draw(toolkit); // updates visible inventory
+                    player.RemoveItemFromInventory((int)HUD.ITEM.KEYSMALL, hud);
+                    hud.Draw(); // updates visible inventory
                     aliveInWorld = false;
-                    hud.DisplayText($"< {player.Name()} opened a small door with a small key >");
+                    hud.DisplayText($"< {player.Name()} {Global.MESSAGE_DOORSMALLOPEN} >");
                     _opened = true;
                 }
                 else
                 {
-                    hud.DisplayText("< " + player.Name() + " tried to open the small door, but it was locked >", false);        
+                    hud.DisplayText($"<  { player.Name()} {Global.MESSAGE_DOORSMALLLOCKED} >", false);        
                 }
             }
             if (this._avatar == 'D')
             {
-                if (stock[HUD.ITEM_KEYBIG] > 0)
+                if (stock[(int)HUD.ITEM.KEYBIG] > 0)
                 {
-                    player.RemoveItemFromInventory(HUD.ITEM_KEYBIG, hud);
-                    hud.Draw(toolkit); // updates visible inventory
+                    player.RemoveItemFromInventory((int)HUD.ITEM.KEYBIG, hud);
+                    hud.Draw(); // updates visible inventory
                     aliveInWorld = false;
-                    hud.DisplayText($"< {player.Name()} opened the big door with the big key >");
+                    hud.DisplayText($"< {player.Name()} {Global.MESSAGE_DOORBIGOPEN} >");
                     _opened = true;
                 }
                 else
                 {
-                    hud.DisplayText($"< {player.Name()} tried to open the big door, but it's sealed shut >");
-                }
-            }
-        }
-
-        // ----- public methods
-
-        public void CheckForDoor(Player player, HUD hud, Toolkit toolkit)
-        {
-            if (aliveInWorld)
-            {
-                if (player.XYHolder()[0] == this.x)
-                {
-                    if (player.XYHolder()[1] == this.y)
-                    {
-                        OpenDoor(player, hud, toolkit);
-                    }
+                    hud.DisplayText($"< {player.Name()} {Global.MESSAGE_DOORBIGLOCKED} >");
                 }
             }
         }

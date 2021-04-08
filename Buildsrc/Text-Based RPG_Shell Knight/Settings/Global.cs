@@ -24,12 +24,15 @@ namespace Text_Based_RPG_Shell_Knight
         public static string MESSAGE_GAMEOVER = " > GAME OVER < ";
 
         // messages below start with characters name and <> is already included /// 90 CHARACTER LIMIT OTHERWISE EXPECT BUGS
-        public static string MESSAGE_SLAIN = "has been slain"; 
+        public static string MESSAGE_SLAIN = "has been slain";
         public static string MESSAGE_POTHEALTHDRINK = "drinks a Health Potion [+50 HP]";
         public static string MESSAGE_POTHEALTHMISSING = "looked for a HealthPotion but found none";
         public static string MESSAGE_POTSHIELDDRINK = "used some Shell Banding [+30 SP]";
         public static string MESSAGE_POTSHIELDMISSING = "is fresh out of Shell Banding";
+        public static string MESSAGE_DOORSMALLOPEN = "opened a small door with a small key";
+        public static string MESSAGE_DOORSMALLLOCKED = "tried to open the small door, but it was locked";
+        public static string MESSAGE_DOORBIGOPEN = "opened the big door with the big key";
+        public static string MESSAGE_DOORBIGLOCKED = "tried to open the big door, but it's sealed shut";
         public static string MESSAGE_PLAYERVICTORY = "The King has been userped, A new Lord has been crowned!";
-
     }
 }

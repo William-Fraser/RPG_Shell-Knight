@@ -22,6 +22,7 @@ namespace Text_Based_RPG_Shell_Knight
             game = new GameManager();
             _state = PROGRAMSTATE_PLAYMENU;
 
+            //only exits if program is in ending state
             while (_state != PROGRAMSTATE_ENDING)
             {
                 while (_state == PROGRAMSTATE_PLAYMENU) // Main Menu
@@ -30,8 +31,10 @@ namespace Text_Based_RPG_Shell_Knight
                     //Display Main Menu and obtain choice
                     TwoOptionMenu(mainMenu, "Start", PROGRAMSTATE_PLAYGAME, "Exit",  PROGRAMSTATE_GAMEOVER);
                 }
+                //skip gameplay if exiting in gameover state
                 while (_state != PROGRAMSTATE_GAMEOVER)
                 {
+                    //plays game while in play state
                     if (_state == PROGRAMSTATE_PLAYGAME)
                     {
                         // start game
@@ -45,6 +48,8 @@ namespace Text_Based_RPG_Shell_Knight
                 ////ask to return to menu
                 //string returnToMenu = "Return to Menu?";
                 //TwoOptionMenu(returnToMenu, "Start Screen", PROGRAMSTATE_PLAYMENU, "Exit Game", PROGRAMSTATE_ENDING);
+
+                //set to exit by default
                 Console.Clear();
                 Console.WriteLine("\n");
                 Console.WriteLine("     END OF PROGRAM");
@@ -57,7 +62,7 @@ namespace Text_Based_RPG_Shell_Knight
         //used for program menus
         public static void TwoOptionMenu(string MenuDisplay, string optionS, int resultS, string optionE,int resultE)
         {
-            Console.Clear();
+            
             //choices
             if (decision.Key == ConsoleKey.S || decision.Key == ConsoleKey.E) 
             {
@@ -102,6 +107,7 @@ namespace Text_Based_RPG_Shell_Knight
                 retryMenu = true;
 
             }
+            Console.Clear();
         }
     }
 }

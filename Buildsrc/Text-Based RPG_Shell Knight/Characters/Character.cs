@@ -63,7 +63,7 @@ namespace Text_Based_RPG_Shell_Knight
         } // get
 
         // ----- internal sets
-        protected private int setStatToLimits(int currentStatus, int maxStatus) // checks if stats are overlimit and resets them to their bounds
+        protected private int SetStatToLimits(int currentStatus, int maxStatus) // checks if stats are overlimit and resets them to their bounds
         {
             //case no fixes needed
             int fixedStatus = currentStatus;
@@ -109,7 +109,7 @@ namespace Text_Based_RPG_Shell_Knight
                 else if (_directionMoving == DIRECTION.RIGHT && _XYHolder[0] < Map.width +1) { x++; }
             }
         }
-        protected private void KillCharacter(string name, Camera camera, Map map, HUD hud, int state = 0) // kills character and displays that to HUD holds gameComepletionMessage
+        protected private void KillCharacter(string name, Camera camera, HUD hud) // kills character and displays that to HUD holds gameComepletionMessage
         {
             aliveInWorld = false;
 
@@ -156,24 +156,24 @@ namespace Text_Based_RPG_Shell_Knight
 
                     // passes spill damage and sets stat to limit
                     if (shield[(int)STATUS.CURRENT] < 0) { passDamage = calcDamageSpill; }
-                    shield[(int)STATUS.CURRENT] = setStatToLimits(shield[(int)STATUS.CURRENT], shield[(int)STATUS.MAX]);
+                    shield[(int)STATUS.CURRENT] = SetStatToLimits(shield[(int)STATUS.CURRENT], shield[(int)STATUS.MAX]);
                 }
 
-                if (shield == null )//|| shield[(int)STATUS.CURRENT] == 0)
+                if (shield == null || shield[(int)STATUS.CURRENT] == 0)
                 {
                     // calculate damage
                     if (passDamage != 0) { damageToHealth = passDamage; } // sets the damage to the leftover shield break damage
 
                     //deal damage to character health and checks the limits
                     health[(int)STATUS.CURRENT] -= damageToHealth;
-                    health[(int)STATUS.CURRENT] = setStatToLimits(health[(int)STATUS.CURRENT], health[(int)STATUS.MAX]); // does nothing if limit doesnt break
+                    health[(int)STATUS.CURRENT] = SetStatToLimits(health[(int)STATUS.CURRENT], health[(int)STATUS.MAX]); // does nothing if limit doesnt break
                 }
 
                 if (!isEnemy)
                 {
                     //update player HUD bar
-                    ui.setHudHealthAndShield(health, shield);
-                    ui.Draw(toolkit);
+                    ui.HudHealthAndShield(health, shield);
+                    ui.Draw();
                 }
 
                 //sets damage to total amount of damage done if it spills into health
@@ -188,7 +188,7 @@ namespace Text_Based_RPG_Shell_Knight
         }
         protected private void DisplayDamageToHUD(string name, int attackDamage, int[] health, HUD hud, bool isEnemy) // translates damage done into parsable message and displays it in the HUD
         { // holds its own message due to complexity in display not much vaiation visible = no desire to modulate
-            health[(int)STATUS.CURRENT] = setStatToLimits(health[(int)STATUS.CURRENT], health[(int)STATUS.MAX]);
+            health[(int)STATUS.CURRENT] = SetStatToLimits(health[(int)STATUS.CURRENT], health[(int)STATUS.MAX]);
             string damageMessage = $"< {name} taking {attackDamage} points of Damage ";
             if (isEnemy)
             { damageMessage += $"[{health[(int)STATUS.CURRENT]}/{health[(int)STATUS.MAX]}] >"; }
@@ -246,13 +246,13 @@ namespace Text_Based_RPG_Shell_Knight
             }
             return false;
         }
-        protected private void CheckForDying(Camera camera, Map map, HUD hud) // checks if player is alive and at 0 health, then kills them
+        protected private void CheckForDying(Camera camera, HUD hud) // checks if player is alive and at 0 health, then kills them
         { // if character is alive but at 0HP then death time
             if (aliveInWorld)
             {
                 if (_health[(int)STATUS.CURRENT] <= 0)
                 {
-                    KillCharacter(_name, camera, map, hud);
+                    KillCharacter(_name, camera, hud);
                 }
             }
         }

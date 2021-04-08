@@ -99,28 +99,6 @@ namespace Text_Based_RPG_Shell_Knight
             }
             return allItems;
         }
-        public string[] ReadEnemyHold()
-        {
-            string[] allenemies = new string[enemyHold.Count];
-            for (int i = 0; i < enemyHold.Count; i++)
-            { allenemies[i] = enemyHold[i]; }
-            return allenemies;
-        }
-        public void OpenDoor()
-        {
-            string[] allwalls = wallHold.ToArray();
-            for (int i = 0; i < wallHold.Count; i++)
-            {
-                wallHold.Remove(allwalls[i]);
-            }
-            for (int i = 0; i < allwalls.Length; i++)
-                if (allwalls[i] != "D")
-                {
-                    wallHold.Add(allwalls[i]);
-                }
-
-
-        } // move to DoorGate
 
         // ----- Public Methods
         public void loadMap()// loads the map from a text file
@@ -192,6 +170,7 @@ namespace Text_Based_RPG_Shell_Knight
             for (int y = 0; y < height; y++)
             {
                 string xHolder = allRows[y];
+                // set row by way of xHolder
                 for (int i = 0; i < xHolder.Length; i++)
                 {
                     row[i] = xHolder[i];

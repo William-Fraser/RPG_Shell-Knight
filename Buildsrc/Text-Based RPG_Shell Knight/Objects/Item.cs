@@ -100,7 +100,7 @@ namespace Text_Based_RPG_Shell_Knight
         public void PickedUp(bool value) { _pickedUpByPlayer = value; }
 
         // private methods
-        private bool PickUpItem(Player player, List<Item> items, Toolkit toolkit, HUD ui)
+        private bool PickUpItem(Player player, List<Item> items, HUD ui)
         {
             if (aliveInWorld)
             {
@@ -110,7 +110,7 @@ namespace Text_Based_RPG_Shell_Knight
                     {
                         aliveInWorld = false; _pickedUpByPlayer = true; //removes sprite from stage and tells game to add it in HUD
                         ui.AdjustInvetory(items);
-                        ui.Draw(toolkit);
+                        ui.Draw();
                         ui.DisplayText($"< {player.Name()} picked up {_name} [{_avatar}] >", false);
                         return true;
                     }
@@ -120,9 +120,9 @@ namespace Text_Based_RPG_Shell_Knight
         }
 
         // public methods
-        public void Update(Player player, List<Item> items, Toolkit toolkit, HUD ui)
+        public void Update(Player player, List<Item> items, HUD ui)
         {
-            PickUpItem(player, items, toolkit, ui);
+            PickUpItem(player, items, ui);
         }
     }
 }

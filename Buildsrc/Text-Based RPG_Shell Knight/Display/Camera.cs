@@ -8,21 +8,22 @@ namespace Text_Based_RPG_Shell_Knight
 {
     class Camera
     {
+        // map holder
+        readonly Map map;
+        char[,] _map;
         //full map with objects placed on it
         private char[,] _gameWorld;
 
-        //displayed game screen
-        private char[,] _display;
-        private char[,] _buffer;
-
-        // border
+        // border / camera lens
         private string borderString = "";
         private string[,] borderArray;
-
         // height and width of "camera" lens / border
         public static int borderHeight = Console.WindowHeight - 9;
         public static int borderWidth = Console.WindowWidth - 1;
 
+        //displayed game screen
+        private char[,] _display;
+        private char[,] _buffer;
         // height and width of display
         public static int displayHeight = Camera.borderHeight - 2;
         public static int displayWidth = Camera.borderWidth - 2;
@@ -30,36 +31,24 @@ namespace Text_Based_RPG_Shell_Knight
         // saved console height and width for checks to clear a size modifyed console
         public static int savedHeight = 0;
         public static int savedWidth = 0;
-
         // min height and width
         public const int minConsoleSizeWidth = 120;
         public const int minConsoleSizeHeight = 30;
 
-        // state of Console size used for HUD compacting
-        private int _stateConsoleSize;
-        public const int CONSOLESIZE_MIN = 0;
-        public const int CONSOLESIZE_ADJUSTED = 1;
-
-
-
-        // map holder
-        Map map;
-        char[,] _map;
-
+        
         //constructor
         public Camera(Map map)
         {
+            // pass map
             this.map = map;
+
+            // instantiate camera fields
             _gameWorld = new char[Map.height, Map.width];
             _display = new char[displayHeight, displayWidth];
             _buffer = new char[displayHeight, displayWidth];
         }
 
         // ----- gets / sets
-        public int getStateConsoleSize()
-        {
-            return _stateConsoleSize;
-        }
         public void GameWorldGetMap() // set
         {
             _map = map.getMap();
@@ -75,19 +64,25 @@ namespace Text_Based_RPG_Shell_Knight
         }
 
         // ----- private methods
-        private void setDisplay(int yStart, int yEnd, int xStart, int xEnd)
-        {
+        private void SetDisplay(int yStart, int yEnd, int xStart, int xEnd)
+        {// ^ values are drawn from player ^
+
+            //int that reinstances to 0 on method call and counts with loop
             int setY = 0;
             for (int y = yStart; y < yEnd; y++)
             {
+                //int that reinstances to 0 before "x" loop and counts with loop
                 int setX = 0;
                 for (int x = xStart; x < xEnd; x++)
                 {
+                    // for each row of the game world the player can "see" set that row to the corrosponding one in display
                     _display[setY, setX] = _gameWorld[y, x];
-                    if (setX < displayWidth - 2) { setX++; }
+                    
+                    if (setX < displayWidth - 2) { setX++; } // counter
                     else { }
                 }
-                if (setY < displayHeight - 2) { setY++; }
+                
+                if (setY < displayHeight - 2) { setY++; } // counter
 
             }
             
@@ -98,13 +93,13 @@ namespace Text_Based_RPG_Shell_Knight
         {
             AdjustDisplayedArea(player);
 
-            //init positioning for display
+            // init positioning for display
             int moveUIX = (Console.WindowWidth / 2) - (Camera.displayWidth / 2);
             if (moveUIX < 0) { moveUIX = 0; }
-
             int moveUIY = (Console.WindowHeight / 3) - (Camera.displayHeight / 2);
             if (moveUIY < 0) { moveUIY = 0; }
 
+            // set position
             if (Console.WindowHeight != Camera.minConsoleSizeHeight || Console.WindowWidth != Camera.minConsoleSizeWidth)
             { Console.SetCursorPosition(moveUIX + 1, moveUIY + 2); }
             else
@@ -140,20 +135,13 @@ namespace Text_Based_RPG_Shell_Knight
         }
         public void AdjustDisplayedArea(Player player) //draws the area around the player
         {
-            //// reset bounds for display
-            //borderHeight = Console.WindowHeight - 9;
-            //borderWidth = Console.WindowWidth - 1;
-
-            //// reset height and width of displayed screen 
-            //displayHeight = Camera.borderHeight - 1;
-            //displayWidth = Camera.borderWidth - 2;
-
+            // get bounds for display from player
             int xStart = player.X() - (Camera.displayWidth / 2);
             int xEnd = player.X() + (Camera.displayWidth / 2) - 1;
             int yStart = player.Y() - (Camera.displayHeight / 2);
             int yEnd = player.Y() + (Camera.displayHeight / 2) - 1;
 
-
+            // adjust for player touching edge of map
             if (xStart <= 0)
             {
                 xStart = 0; xEnd = Camera.displayWidth - 1;
@@ -173,63 +161,62 @@ namespace Text_Based_RPG_Shell_Knight
             else
             {
             }
-            setDisplay(yStart, yEnd, xStart, xEnd);
+
+            SetDisplay(yStart, yEnd, xStart, xEnd);
         }
-        public void ResetConsole(HUD hud) // resets the display if the console is modifyed
+        public void FixModifyedConsole(HUD hud, Toolkit toolkit) // resets the display if the console is modifyed
         {
+            //only activates if console is modifyed
             if (Console.WindowHeight != savedHeight || Console.WindowWidth != savedWidth)
             {
                 // reset range check to current size
                 savedHeight = Console.WindowHeight;
                 savedWidth = Console.WindowWidth;
 
-                // set state for defaults to min
-                _stateConsoleSize = CONSOLESIZE_MIN;
-
-                // set state if window is different
-                if (Console.WindowHeight != minConsoleSizeHeight || Console.WindowWidth != minConsoleSizeWidth)
-                {
-                    _stateConsoleSize = CONSOLESIZE_ADJUSTED;
-                }
+                // if console is too small, fixes itself
                 if (Console.WindowHeight < minConsoleSizeHeight || Console.WindowWidth < minConsoleSizeWidth)
                 {
                     Console.WindowHeight = minConsoleSizeHeight; Console.WindowWidth = minConsoleSizeWidth;
-                    ResetConsole(hud);
+                    FixModifyedConsole(hud, toolkit);
                 }
 
-                // set up display for new size
-                Console.Clear();
-                hud.AdjustTextBox();
-                DrawBorder(); // border
+                //set up display if console isnt too small
+                if (Console.WindowHeight >= minConsoleSizeHeight || Console.WindowWidth >= minConsoleSizeWidth)
+                {
+                    // set up display for new size
+                    Console.Clear();
+                    hud.AdjustTextBox();
+                    hud.Draw();
+                    DrawBorder(); // border
+                }
             }
         }
-        public void Update(Player player)
+        public void Update()
         {
             map.loadMap();
             GameWorldGetMap();
         }
 
         //camera border
-        public void UpdateBorder() // 
+        public void UpdateBorder()
         {
-            //// fix border to window size
-            //borderHeight = Console.WindowHeight - 9;
-            //borderWidth = Console.WindowWidth - 1;
-
             // create new border instance for update
             borderArray = new string[borderHeight, borderWidth];
 
             //reset borderstring
-
+            borderString = "";
+            
+            // init position
             int moveUI = (Console.WindowWidth / 2) - (Camera.displayWidth / 2);
             if (moveUI < 0) { moveUI = 0; }
 
-            borderString = "";
-
-            if (Console.WindowHeight != Camera.minConsoleSizeHeight || Console.WindowWidth != Camera.minConsoleSizeWidth)
+            // position
+            if (Console.WindowHeight > Camera.minConsoleSizeHeight || Console.WindowWidth > Camera.minConsoleSizeWidth)
             { Console.SetCursorPosition(moveUI, 0); }
             else
             { Console.SetCursorPosition(0, 0); }
+
+            // write to borderstring
             borderString += "╔,"; //Console.Write("╔"); 
             for (int i = 0; i < borderWidth - 2; i++)
             {
@@ -241,7 +228,7 @@ namespace Text_Based_RPG_Shell_Knight
                 borderString += "║,"; //Console.Write("║"); 
                 for (int j = 0; j < borderWidth - 2; j++)
                 {
-                    borderString += _display[i, j] + ","; // LEGACY : Console.Write(" "); 
+                    borderString += _display[i, j] + ","; // LEGACY : Console.Write(" ,"); 
                 }
                 borderString += "║;"; //Console.Write("║"); 
             }
@@ -252,8 +239,8 @@ namespace Text_Based_RPG_Shell_Knight
             }
             borderString += "╝"; //Console.Write("╝");
 
+            // create array from string
             string[] borderY = borderString.Split(';');
-
             for (int i = 0; i < borderY.Length; i++)
             {
                 string[] borderX = borderY[i].Split(','); // used for .Length and to Map the Xcoordinates on 
@@ -266,40 +253,38 @@ namespace Text_Based_RPG_Shell_Knight
         }
         public void DrawBorder()
         {
+            //fix border
             UpdateBorder();
-            string[] borderY = borderString.Split(';');
-            string[] borderXLength = borderY[0].Split(','); //used for loop length
 
+            // init position
             int moveUIX = (Console.WindowWidth / 2) - (Camera.displayWidth / 2);
             if (moveUIX < 0) { moveUIX = 0; }
 
             int moveUIY = (Console.WindowHeight / 3) - (Camera.displayHeight / 2);
             if (moveUIY < 0) { moveUIY = 0; }
 
-            //Console.WriteLine($"x: {MapXLength.Length} y: {MapY.Length}");   //debug
-            //Console.WriteLine($"Map 0,0: [{borderMap[0, 0]}]"); // --- /debug/
-
+            //position
             if (Console.WindowHeight != Camera.minConsoleSizeHeight || Console.WindowWidth != Camera.minConsoleSizeWidth)
             { Console.SetCursorPosition(moveUIX, moveUIY+1); }
             else
             { Console.SetCursorPosition(0, 1); }
+
+            // double nested loop to write out array
             int line = 2;
-            for (int i = 0; i < borderHeight; i++) // nested loop to write window border
+            for (int i = 0; i < borderHeight; i++) 
             {
                 for (int j = 0; j < borderWidth; j++)
                 {
                     Console.Write(borderArray[i, j]);
                 }
+
+                // position
                 if (Console.WindowHeight != Camera.minConsoleSizeHeight || Console.WindowWidth != Camera.minConsoleSizeWidth)
                 { Console.SetCursorPosition(moveUIX, moveUIY + line); }
                 else
                 { Console.SetCursorPosition(0, line); }
                 line++;
             }
-            //for (int i = 0; i <= borderY.Length; i++)
-            //{
-            //    Console.Write(borderY[i]);
-            //}
         }
     }
 }

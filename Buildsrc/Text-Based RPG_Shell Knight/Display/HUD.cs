@@ -17,17 +17,20 @@ namespace Text_Based_RPG_Shell_Knight
     class HUD
     {
         //player status
-        private string hudNameHealthShield;
+        private string hudPlayerStatusBar;
         private string hudName;
         private int[] hudHealth = { 0, 0 };
         private int[] hudShield = { 0, 0 };
+        private string hudBarSaved;
 
         //inventory
-        public static int ITEM_POTHEAL  = 0;
-        public static int ITEM_POTSHELL = 1;
-        public static int ITEM_KEYBIG   = 2;
-        public static int ITEM_KEYSMALL = 3;
-
+        public enum ITEM 
+        {
+        POTHEAL,
+        POTSHELL,
+        KEYBIG,
+        KEYSMALL
+        };
         private string hudInventory;
         private int[] _inventoryStock = new int[4];  // = to length of inventory// upgradeable?
         private char[] _inventoryAvatars = new char[4];//
@@ -43,52 +46,56 @@ namespace Text_Based_RPG_Shell_Knight
         //constructor 
         public HUD(string name)
         {
+            //init values
             hudName = name;
+            hudBarSaved = "";
+            _inventoryStock[(int)ITEM.POTHEAL] = 0;
+            _inventoryStock[(int)ITEM.POTSHELL] = 0;
+            _inventoryStock[(int)ITEM.KEYBIG] = 0;
+            _inventoryStock[(int)ITEM.KEYSMALL] = 0;
 
-            _inventoryStock[ITEM_POTHEAL] = 0;
-            _inventoryStock[ITEM_POTSHELL] = 0;
-            _inventoryStock[ITEM_KEYBIG] = 0;
-            _inventoryStock[ITEM_KEYSMALL] = 0;
-
+            //fix blank space
             AdjustBlank();
         }
 
         // ----- gets / sets
-        public int[] getInventoryStock()
+        public int[] InventoryStock()
         {
             return _inventoryStock;
         }
-        public char[] getInventoryAvatars()
+        public char[] InventoryAvatars()
         {
             return _inventoryAvatars;
         }
-        public void setInventoryStockItem(int item, int value)
+        public void InventoryStockItem(int item, int value)
         {
             _inventoryStock[item] = value;
         }
-        public void setHudHealthAndShield(int[] health, int[] shield)
+        public void HudHealthAndShield(int[] health, int[] shield)
         {
-            if (shield == null) { shield = hudShield; } // sets shield if it's null from character attack
+            if (shield == null) { shield = hudShield; } // sets shield if it's null
             hudHealth[0] = health[0]; 
             hudHealth[1] = health[1];
             hudShield[0] = shield[0];
             hudShield[1] = shield[1];
 
-            hudNameHealthShield = "";
-            hudNameHealthShield += $" {hudName} |";
-            hudNameHealthShield += $" Shell : {hudShield[0]}/{hudShield[1]} |";
-            hudNameHealthShield += $" Health : {hudHealth[0]}/{hudHealth[1]} ";
+            // construct HUD bar value
+            hudPlayerStatusBar = "";
+            hudPlayerStatusBar += $" {hudName} |";
+            hudPlayerStatusBar += $" Shell : {hudShield[0]}/{hudShield[1]} |";
+            hudPlayerStatusBar += $" Health : {hudHealth[0]}/{hudHealth[1]} ";
         }
 
         //public methods
         public void AdjustTextBox()
         {
-            // draws textbox
+            // init position
             int moveUI = (Console.WindowWidth / 2) - (Camera.displayWidth / 2);
             if (moveUI < 0) { moveUI = 0; }
-
+            
+            // position and draw // used if console is bigger than displayed output
             int line = Console.WindowHeight - 6;
-            if (Console.WindowHeight != Camera.minConsoleSizeHeight || Console.WindowWidth != Camera.minConsoleSizeWidth) 
+            if (Console.WindowHeight > Camera.minConsoleSizeHeight)
             {
                 for (int i = 0; i < 4; i++)
                 {
@@ -98,78 +105,112 @@ namespace Text_Based_RPG_Shell_Knight
                 }
                 Console.SetCursorPosition(moveUI, line);
             }
-            else
+
+            //draw
+            else if (Console.WindowHeight == Camera.minConsoleSizeHeight)
             {
-                Console.SetCursorPosition(0, Console.WindowHeight - 6); 
+                Console.SetCursorPosition(0, Console.WindowHeight - 6);
                 Console.WriteLine($"║{blank}║");
                 Console.WriteLine($"║{blank}║");
                 Console.WriteLine($"║{blank}║");
                 Console.WriteLine($"║{blank}║");
             }
+            else { }
+
+            // bottom of box
             Console.Write("╚");
             for (int i = 0; i < 117; i++) { Console.Write("═"); }
             Console.Write("╝");
         }
-        public void Draw(Toolkit toolkit) // displays HUD on screen
+        public void Draw() // displays HUD bar on screen
         {
             //Shell
             //Health
             //Essence - magic unlocked? strech goal...
 
+            //init position
             int moveUI = (Console.WindowWidth / 2) - (Camera.displayWidth / 2);
             if (moveUI < 0) { moveUI = 0; }
 
             //seperates HUD from the Camera display
-            if (Console.WindowHeight != Camera.minConsoleSizeHeight || Console.WindowWidth != Camera.minConsoleSizeWidth)
+            //position
+            if (Console.WindowHeight > Camera.minConsoleSizeHeight || Console.WindowWidth > Camera.minConsoleSizeWidth)
             { Console.SetCursorPosition(moveUI, Console.WindowHeight - 9); }
-            else
+            else if (Console.WindowHeight == Camera.minConsoleSizeHeight)
             { Console.SetCursorPosition(0, Console.WindowHeight - 9); }
-            if (Console.WindowHeight == Camera.minConsoleSizeHeight || Console.WindowWidth == Camera.minConsoleSizeWidth) { Console.Write("╠"); }
+            else { }
+            //display
+            if (Console.WindowHeight <= Camera.minConsoleSizeHeight) { Console.Write("╠"); }
             else { Console.Write("╔"); }
-            for (int i = 0; i < hudNameHealthShield.Length; i++) { Console.Write("═"); }
+            for (int i = 0; i < hudPlayerStatusBar.Length; i++) { Console.Write("═"); }
             Console.Write("╦");
-            for (int i = 0; i < (Camera.displayWidth - hudNameHealthShield.Length - 2); i++) { Console.Write("═"); }
-            if (Console.WindowHeight == Camera.minConsoleSizeHeight || Console.WindowWidth == Camera.minConsoleSizeWidth) { Console.Write("╣"); }
+            for (int i = 0; i < (Camera.displayWidth - hudPlayerStatusBar.Length - 2); i++) { Console.Write("═"); }
+            if (Console.WindowHeight <= Camera.minConsoleSizeHeight) { Console.Write("╣"); }
             else { Console.Write("╗"); }
 
-            // clears HUD
-            if (Console.WindowHeight != Camera.minConsoleSizeHeight || Console.WindowWidth != Camera.minConsoleSizeWidth)
-            { Console.SetCursorPosition(moveUI + 1, Console.WindowHeight - 8); }
-            else
-            { Console.SetCursorPosition(1, Console.WindowHeight - 8); }
-            Console.WriteLine(blank);
+            // clears HUD bar if need be also sets position
+            string checkHudBar = hudPlayerStatusBar + hudInventory;
+            if (checkHudBar != hudBarSaved)
+            {
+                if (Console.WindowHeight > Camera.minConsoleSizeHeight)
+                { Console.SetCursorPosition(moveUI, Console.WindowHeight - 8); }
+                else if (Console.WindowHeight == Camera.minConsoleSizeHeight && Console.WindowWidth == Camera.minConsoleSizeWidth)
+                { Console.SetCursorPosition(0, Console.WindowHeight - 8); }
+                else { }
+                Console.WriteLine(blank);
+                hudBarSaved = checkHudBar;
+            }
+            else // position
+            {   
+                if (Console.WindowHeight > Camera.minConsoleSizeHeight || Console.WindowWidth > Camera.minConsoleSizeWidth)
+                { Console.SetCursorPosition(moveUI, Console.WindowHeight - 8); }
+                else if (Console.WindowHeight == Camera.minConsoleSizeHeight)
+                { Console.SetCursorPosition(0, Console.WindowHeight - 8); }
+                Console.WriteLine();
+            }
 
-            //seperates HUD from the Text box
-
-            if (Console.WindowHeight != Camera.minConsoleSizeHeight || Console.WindowWidth != Camera.minConsoleSizeWidth)
+            //seperates HUD bar from the Text box
+            //position
+            if (Console.WindowHeight > Camera.minConsoleSizeHeight || Console.WindowWidth > Camera.minConsoleSizeWidth)
             { Console.SetCursorPosition(moveUI, Console.WindowHeight - 7); }
+            else if (Console.WindowHeight == Camera.minConsoleSizeHeight)
+            {
+                Console.SetCursorPosition(0, Console.WindowHeight - 7);
+
+            }
+            //display
             Console.Write("╠");
-            for (int i = 0; i < hudNameHealthShield.Length; i++) { Console.Write("═"); }
+            for (int i = 0; i < hudPlayerStatusBar.Length; i++) { Console.Write("═"); }
             Console.Write("╩");
-            for (int i = 0; i < (Camera.displayWidth - hudNameHealthShield.Length - 2); i++) { Console.Write("═"); }
+            for (int i = 0; i < (Camera.displayWidth - hudPlayerStatusBar.Length - 2); i++) { Console.Write("═"); }
             Console.WriteLine("╣");
 
-            // write HUD values
-            if (Console.WindowHeight != Camera.minConsoleSizeHeight || Console.WindowWidth != Camera.minConsoleSizeWidth)
+            // write HUD bar values
+            //position
+            if (Console.WindowHeight > Camera.minConsoleSizeHeight || Console.WindowWidth > Camera.minConsoleSizeWidth)
             { Console.SetCursorPosition(moveUI, Console.WindowHeight - 8); }
-            else
+            else if (Console.WindowHeight == Camera.minConsoleSizeHeight)
             { Console.SetCursorPosition(0, Console.WindowHeight - 8); }
+            else { }
+            //display HUD Bar with positioning
             Console.Write("║");
-            if (Console.WindowHeight != Camera.minConsoleSizeHeight || Console.WindowWidth != Camera.minConsoleSizeWidth)
-            { Console.SetCursorPosition(moveUI+1, Console.WindowHeight - 8); }
-            else
+            if (Console.WindowHeight > Camera.minConsoleSizeHeight || Console.WindowWidth > Camera.minConsoleSizeWidth)
+            { Console.SetCursorPosition(moveUI + 1, Console.WindowHeight - 8); }
+            else if (Console.WindowHeight == Camera.minConsoleSizeHeight)
             { Console.SetCursorPosition(1, Console.WindowHeight - 8); }
-            Console.Write(hudNameHealthShield);
+            else { }
+            Console.Write(hudPlayerStatusBar);
             Console.Write("║");
             Console.Write(hudInventory);
-            if (Console.WindowHeight != Camera.minConsoleSizeHeight || Console.WindowWidth != Camera.minConsoleSizeWidth)
+            if (Console.WindowHeight > Camera.minConsoleSizeHeight && Console.WindowWidth > Camera.minConsoleSizeWidth)
             { Console.SetCursorPosition(moveUI+ (Camera.borderWidth - 1), Console.WindowHeight - 8); }
-            else
+            else if (Console.WindowHeight == Camera.minConsoleSizeHeight && Console.WindowWidth == Camera.minConsoleSizeWidth)
             { Console.SetCursorPosition(Camera.borderWidth - 1, Console.WindowHeight - 8); }
+            else { }
             Console.Write("║");
             
         }
-        public void AdjustBlank()
+        public void AdjustBlank() // adjusts the size of blank space according to the camera border
         {
             blank = "";
             for (int i = 0; i < Camera.borderWidth - 2; i++)
@@ -177,80 +218,83 @@ namespace Text_Based_RPG_Shell_Knight
                 blank += " ";
             }
         }
-        public void AdjustInvetory(List<Item> items) // adds items to inventory when picked up
+        public void AdjustInvetory(List<Item> items = null) // adds items to inventory when picked up
         {
-            for (int i = 0; i < items.Count; i++)
+            if (items != null)
             {
-                if (items[i].PickedUp())
+                for (int i = 0; i < items.Count; i++)
                 {
-                    switch (items[i].Avatar())
+                    if (items[i].PickedUp())
                     {
-                        case 'ö':
-                            _inventoryAvatars[ITEM_POTHEAL] = 'ö';
-                            _inventoryStock[ITEM_POTHEAL]++;
-                            break;
+                        switch (items[i].Avatar())
+                        {
+                            case 'ö':
+                                _inventoryAvatars[(int)ITEM.POTHEAL] = 'ö';
+                                _inventoryStock[(int)ITEM.POTHEAL]++;
+                                break;
 
-                        case 'ï':
-                            _inventoryAvatars[ITEM_POTSHELL] = 'ï';
-                            _inventoryStock[ITEM_POTSHELL]++;
-                            break;
-                        
-                        case 'K':
-                            _inventoryAvatars[ITEM_KEYBIG] = 'K';
-                            _inventoryStock[ITEM_KEYBIG]++;
-                            break;
-                        
-                        case 'k':
-                            _inventoryAvatars[ITEM_KEYSMALL] = 'k';
-                            _inventoryStock[ITEM_KEYSMALL]++;
-                            break;
+                            case 'ï':
+                                _inventoryAvatars[(int)ITEM.POTSHELL] = 'ï';
+                                _inventoryStock[(int)ITEM.POTSHELL]++;
+                                break;
+
+                            case 'K':
+                                _inventoryAvatars[(int)ITEM.KEYBIG] = 'K';
+                                _inventoryStock[(int)ITEM.KEYBIG]++;
+                                break;
+
+                            case 'k':
+                                _inventoryAvatars[(int)ITEM.KEYSMALL] = 'k';
+                                _inventoryStock[(int)ITEM.KEYSMALL]++;
+                                break;
+                        }
+
+                        // finishes the pick up process of the item
+                        items[i].PickedUp(false);
                     }
-
-                    // finishes the pick up process of the item
-                    items[i].PickedUp(false);
                 }
             }
+
+            //display information
             hudInventory = "";
-            if (_inventoryStock[ITEM_POTSHELL] > 0 && _inventoryStock[ITEM_POTSHELL] < 2)    { hudInventory += $" [Z] ï "; hudInventory += "|"; }
-            else if (_inventoryStock[ITEM_POTSHELL] > 1)                 { hudInventory += $" [Z] ï x {_inventoryStock[ITEM_POTSHELL]} "; hudInventory += "|"; }
+            if (_inventoryStock[(int)ITEM.POTSHELL] > 0 && _inventoryStock[(int)ITEM.POTSHELL] < 2)    { hudInventory += $" [Z] ï "; hudInventory += "|"; }
+            else if (_inventoryStock[(int)ITEM.POTSHELL] > 1)                 { hudInventory += $" [Z] ï x {_inventoryStock[(int)ITEM.POTSHELL]} "; hudInventory += "|"; }
 
-            if (_inventoryStock[ITEM_POTHEAL] > 0 && _inventoryStock[ITEM_POTHEAL] < 2) { hudInventory += $" [X] ö "; hudInventory += "|";}
-            else if (_inventoryStock[ITEM_POTHEAL] > 1)               { hudInventory += $" [X] ö x {_inventoryStock[ITEM_POTHEAL]} "; hudInventory += "|"; }
+            if (_inventoryStock[(int)ITEM.POTHEAL] > 0 && _inventoryStock[(int)ITEM.POTHEAL] < 2) { hudInventory += $" [X] ö "; hudInventory += "|";}
+            else if (_inventoryStock[(int)ITEM.POTHEAL] > 1)               { hudInventory += $" [X] ö x {_inventoryStock[(int)ITEM.POTHEAL]} "; hudInventory += "|"; }
 
-            if (_inventoryStock[ITEM_KEYBIG] > 0 && _inventoryStock[ITEM_KEYBIG] < 2)       { hudInventory += $" K "; hudInventory += "|"; }
-            else if (_inventoryStock[ITEM_KEYBIG] > 1)                   { hudInventory += $" K x {_inventoryStock[ITEM_KEYBIG]} "; hudInventory += "|"; }
+            if (_inventoryStock[(int)ITEM.KEYBIG] > 0 && _inventoryStock[(int)ITEM.KEYBIG] < 2)       { hudInventory += $" K "; hudInventory += "|"; }
+            else if (_inventoryStock[(int)ITEM.KEYBIG] > 1)                   { hudInventory += $" K x {_inventoryStock[(int)ITEM.KEYBIG]} "; hudInventory += "|"; }
             
-            if (_inventoryStock[ITEM_KEYSMALL] > 0 && _inventoryStock[ITEM_KEYSMALL] < 2)   { hudInventory += $" k "; hudInventory += "|"; }
-            else if (_inventoryStock[ITEM_KEYSMALL] > 1)                 { hudInventory += $" k x {_inventoryStock[ITEM_KEYSMALL]} "; hudInventory += "|"; }
+            if (_inventoryStock[(int)ITEM.KEYSMALL] > 0 && _inventoryStock[(int)ITEM.KEYSMALL] < 2)   { hudInventory += $" k "; hudInventory += "|"; }
+            else if (_inventoryStock[(int)ITEM.KEYSMALL] > 1)                 { hudInventory += $" k x {_inventoryStock[(int)ITEM.KEYSMALL]} "; hudInventory += "|"; }
         }
-        public void Update(Player player, List<Item> items)
-        {
-            setHudHealthAndShield(player.Health(), player.Shield());
-            AdjustInvetory(items);
-        }
+        
         public void DisplayText(string message, bool waitForKey = true) // bool for game over text
         {
             AdjustBlank();
 
-            //if (message != blank)
-            //{
-            //    string PaktC = ", Press any key to Continue.";
-            //    message += PaktC;
-            //}
-
+            //init position
             int moveUI = (Console.WindowWidth / 2) - (Camera.displayWidth / 2);
             if (moveUI < 0) { moveUI = 0; }
 
+            //clears and saves current message, if message is not the blank
             if (message != blank)
             {
                 SaveMessage(currentMessage);
                 DisplayText(blank);
             }
+
+            //posiiton
             if (Console.WindowHeight != Camera.minConsoleSizeHeight || Console.WindowWidth != Camera.minConsoleSizeWidth)
             { Console.SetCursorPosition(moveUI + 1, Console.WindowHeight - 3); }
             else
             { Console.SetCursorPosition(1, Console.WindowHeight - 3); }
+
+            // writes message to console
             Console.Write(message);
+
+            // sets current message and if waitforkey = true then waits for any key, only if message is not the blank
             if (message != blank)
             {
                 if (waitForKey)
@@ -265,11 +309,12 @@ namespace Text_Based_RPG_Shell_Knight
                     DisplayText(blank);
                 }
                 currentMessage = message;
+                //position
                 if (Console.WindowHeight != Camera.minConsoleSizeHeight || Console.WindowWidth != Camera.minConsoleSizeWidth)
                 { Console.SetCursorPosition(moveUI + 1, Console.WindowHeight - 3); }
                 else
                 { Console.SetCursorPosition(1, Console.WindowHeight - 3); }
-                Console.Write(currentMessage);
+                Console.Write(currentMessage); 
             }
         }
         public void SaveMessage(string message)
@@ -316,6 +361,13 @@ namespace Text_Based_RPG_Shell_Knight
                 Console.Write(decayingMessage);
             }
         }
+        public void Update(Player player, List<Item> items)
+        {
+            HudHealthAndShield(player.Health(), player.Shield());
+            AdjustInvetory(items);
+            Draw();
+        }
+
         //scrolling text
 
         //cursor = true

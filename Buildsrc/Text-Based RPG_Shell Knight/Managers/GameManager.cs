@@ -8,32 +8,36 @@ namespace Text_Based_RPG_Shell_Knight
 {
     class GameManager
     {
+        //State machine
         public enum GAMESTATE
         {
             GAMEOVER,
             MAP,
-            CHANGEMAP,
-            BATTLE
+            CHANGEMAP
         }
         public GAMESTATE _gameState;
 
-        Toolkit toolkit = new Toolkit();
-
-        Camera camera; // frames the map for gameplay
-        Map map; // gameworld for all game objects to be drawn on and saved to (player isn't saved on map)
-        HUD hud; // appears under camera to give player information
-        Player player; // controls the player
+        readonly Toolkit toolkit = new Toolkit();
         
-        ListManager list; // manages the lists below
+        // display init
+        readonly Camera camera; // frames the map for gameplay
+        readonly Map map; // gameworld for all game objects to be drawn on and saved to (player isn't saved on map)
+        readonly HUD hud; // appears under camera to give player information
 
+        // Character init
+        readonly Player player; // controls the player
+        List<Enemy> enemies; // List of Enemies in the current game world
+        readonly EnemyManager manageEnemies;
+
+        // Object init
+        public enum OBJECTS //Object statemachine 
+        {
+        ITEM,
+        DOOR
+        };
+        readonly ObjectManager[] manageObjects; // holds all object managers for easy reading
         List<Item> items; // Items in the current game world
-        Item identifyerItem;
-
-        List<Enemy> enemies; // Enemies in the current game world
-        Enemy identifyerEnemy;
-
-        List<Door> doors;
-        Door identifyerDoor;
+        List<Door> doors; // Doors in the current game world
 
         // constructor
         public GameManager()
@@ -41,19 +45,23 @@ namespace Text_Based_RPG_Shell_Knight
             Console.CursorVisible = false;
             _gameState = GAMESTATE.CHANGEMAP;
 
+            //init fields
             map = new Map();
             camera = new Camera(map);
-            player = new Player(Global.PLAYER_DEFAULTNAME, Global.PLAYER_AVATAR, hud);
+            player = new Player(Global.PLAYER_DEFAULTNAME, Global.PLAYER_AVATAR);
             hud = new HUD(player.Name());
-
-            list = new ListManager();
-            items = new List<Item>();
             enemies = new List<Enemy>();
+            manageEnemies = new EnemyManager();
+
+            //init object manager
+            manageObjects = new ObjectManager[2];
+            items = new List<Item>();
+            manageObjects[(int)OBJECTS.ITEM] = new ItemManager();
             doors = new List<Door>();
+            manageObjects[(int)OBJECTS.DOOR] = new DoorManager();
         }
 
         // ----- gets/sets
-        public int GameState() { return (int)_gameState; }
         public void GameOverPlayerDeath() // checks for player death and sets game over
         {
             if (player.AliveInWorld() == false) { _gameState = GAMESTATE.GAMEOVER; }
@@ -73,8 +81,6 @@ namespace Text_Based_RPG_Shell_Knight
             }
         }
 
-
-
         // ----- Manager Methods
         public void UpdateDisplay()// updates display screen to represent the selected Map
         {
@@ -89,41 +95,40 @@ namespace Text_Based_RPG_Shell_Knight
             camera.GameWorldGetMap();
 
             // adding gameplay elements to Display 
-            items = list.Init<Item>(map.getItemHold(), map, identifyerItem);
-            enemies = list.Init<Enemy>(map.getEnemyHold(), map, identifyerEnemy);
-            doors = list.Init<Door>(map.getDoorHold(), map, identifyerDoor);
-            
-            
+            enemies = manageEnemies.Init(map.getEnemyHold().Split('|'));
+            items = (manageObjects[(int)OBJECTS.ITEM] as ItemManager).Init(map.getItemHold().Split('|'));
+            doors = (manageObjects[(int)OBJECTS.DOOR] as DoorManager).Init(map.getDoorHold().Split('|'));
+
+
+            Draw();
             hud.Update(player, items);
-            //sDraw();
         }
         public void Draw()
         {
             //draw gameplay elements to gameworld, Heirarchy: lowest is on top
-
-            list.Draw(items, camera, identifyerItem);
-            list.Draw(enemies, camera, identifyerEnemy);
-            list.Draw(doors, camera, identifyerDoor);
+            (manageObjects[(int)OBJECTS.DOOR] as DoorManager).Draw(doors, camera);
+            (manageObjects[(int)OBJECTS.ITEM] as ItemManager).Draw(items, camera);
+            manageEnemies.Draw(enemies, camera);
             
-            player.Draw(map, camera, hud, toolkit);
+            player.Draw(camera);
 
             // draw GameWorld
             camera.Draw(player);
-        }
-        public void Update()
-        {
-            //update by prioity
-
-            hud.Update(player, items);
-            player.Update(enemies, doors, map, camera, items, hud, toolkit);
-
-            list.Update(items, player, toolkit, hud);
-            list.Update(enemies, player, map, camera, toolkit, hud, identifyerEnemy, 0); // 
-
-            camera.Update(player); // updated last to catch all character and object updates on gameworld
 
             GameOverWinCondition(player.X(), player.Y(), hud);
             GameOverPlayerDeath(); // check for gameover
+        }
+        public void Update()
+        {
+            
+            //update by prioity
+            hud.Update(player, items);
+            player.Update(enemies, doors, map, camera, items, hud, toolkit);
+            (manageObjects[(int)OBJECTS.ITEM] as ItemManager).Update(items, player, hud);
+            manageEnemies.Update(enemies, player, map, camera, toolkit, hud);
+
+            hud.Update(player, items);
+            camera.Update(); // updated last to catch all character and object updates on gameworld
         }
         public void GameOver()
         {
@@ -131,16 +136,13 @@ namespace Text_Based_RPG_Shell_Knight
         }
         public void FixDisplay()
         {
-            camera.ResetConsole(hud); // checks for console size change and starts handling it
+            camera.FixModifyedConsole(hud, toolkit); // checks for console size change and starts handling it
             Console.CursorVisible = false;
         }
-
-
 
         // ----- Game loop
         public void Game()
         {
-            // fixes display if Console size changes
 
             // turns off cursor in gameplay
             if (Console.CursorVisible == true)
@@ -159,11 +161,15 @@ namespace Text_Based_RPG_Shell_Knight
                 }
                 else if (_gameState == GAMESTATE.MAP) // playing the Map screen;
                 {
+                    // fixes display if Console size changes
                     FixDisplay();
 
                     //gameplay
-                    Draw();
-                    Update();
+                    while (Console.KeyAvailable)
+                    {   // progress loop
+                        Update();
+                        Draw();
+                    }
                 }
                 else { }
             }

@@ -122,7 +122,7 @@ namespace Text_Based_RPG_Shell_Knight
             int playerX = player.X();
             int playerY = player.Y();
 
-            bool moveYAlongAxis = false; // if /true = y/ else /false = x/
+            bool moveYAlongAxis; // if /true = y/ else /false = x/
             
 
             //dont move
@@ -168,7 +168,7 @@ namespace Text_Based_RPG_Shell_Knight
             int playerX = player.X();
             int playerY = player.Y();
 
-            bool moveYAlongAxis = false; // if /true = y/ else /false = x/
+            bool moveYAlongAxis; // if /true = y/ else /false = x/
             
             //dont move
             if (x == playerX && y == playerY)
@@ -323,7 +323,7 @@ namespace Text_Based_RPG_Shell_Knight
         // ----- public methods
         public void Update(Player player, Map map, Camera camera, HUD hud, Toolkit toolkit)
         {
-            CheckForDying(camera, map, hud);
+            CheckForDying(camera, hud);
             if (aliveInWorld)
             {
                 switch(_ai)
