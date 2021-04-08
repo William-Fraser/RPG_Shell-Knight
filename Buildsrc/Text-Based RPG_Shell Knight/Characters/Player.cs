@@ -35,14 +35,11 @@ namespace Text_Based_RPG_Shell_Knight
         // ----- Private Methods
         private void GetInput() // recieves player input from a single keypress
         {
-            if (aliveInWorld)
-            {
-                // inital read key to stop
-                _playerInput = Console.ReadKey(true);
-                // every key press after is read from this ReadKey and once it's stopped so is the console display
-                while (Console.KeyAvailable)
-                _playerInput = Console.ReadKey(true);
-            }
+            // inital read key to stop
+            _playerInput = Console.ReadKey(true);
+            // every key press after is read from this ReadKey and once it's stopped so is the console display
+            while (Console.KeyAvailable)
+            _playerInput = Console.ReadKey(true);
         }
         private void DirectionalOutput()// checks or 'looks at' the direction output of the playes input
         {
@@ -148,55 +145,58 @@ namespace Text_Based_RPG_Shell_Knight
         }
         public void Update(List<Enemy> enemies, List<Door> doors, Map map, Camera camera, List<Item> item, HUD hud, Toolkit toolkit)
         {
-
             //Stops character update and ends game
             CheckForDying(camera, hud);
-            
-            // gets Input
-            GetInput();
 
-            // "Looks at" selected direction
-            DirectionalOutput();
-
-            // used in place of Directional, only Healing items currently
-            UseItemInventoryOutput(item[0], hud);// item is passed in blank because it's recognized inside the method this is for typing and can probably be done better
-
-
-            //check everything for collision
-            bool collision = false;
-            
-            //Enemy Collision / Attacking
-            for (int i = 0; i < enemies.Count; i++)
+            if (aliveInWorld)
             {
-                if (CheckForCharacterCollision(enemies[i].X(), enemies[i].Y(), enemies[i].AliveInWorld())) // enemy values read as zero on firstcontact, needs enemy locate to read adjesent tile's
-                {
-                    //collide
-                    collision = true;
-                    
-                    //collide to deal damage
-                    StartAttacking(enemies[i].Name(), enemies[i].AliveInWorld(), enemies[i].Health(), true, hud, toolkit);
-                }
-            }
 
-            //Door Collision / Unlocking
-            for (int i = 0; i < doors.Count; i++)
-            {
-                if (CheckForCharacterCollision(doors[i].X(), doors[i].Y(), doors[i].AliveInWorld()))
+                // gets Input
+                GetInput();
+
+                // "Looks at" selected direction
+                DirectionalOutput();
+
+                // used in place of Directional, only Healing items currently
+                UseItemInventoryOutput(item[0], hud);// item is passed in blank because it's recognized inside the method this is for typing and can probably be done better
+
+
+                //check everything for collision
+                bool collision = false;
+
+                //Enemy Collision / Attacking
+                for (int i = 0; i < enemies.Count; i++)
                 {
-                    // Use Key or not
-                    doors[i].OpenDoor(this, hud);
-                    
-                    //collide
-                    collision = true;
+                    if (CheckForCharacterCollision(enemies[i].X(), enemies[i].Y(), enemies[i].AliveInWorld())) // enemy values read as zero on firstcontact, needs enemy locate to read adjesent tile's
+                    {
+                        //collide
+                        collision = true;
+
+                        //collide to deal damage
+                        StartAttacking(enemies[i].Name(), enemies[i].AliveInWorld(), enemies[i].Health(), true, hud, toolkit);
+                    }
                 }
-            }
+
+                //Door Collision / Unlocking
+                for (int i = 0; i < doors.Count; i++)
+                {
+                    if (CheckForCharacterCollision(doors[i].X(), doors[i].Y(), doors[i].AliveInWorld()))
+                    {
+                        // Use Key or not
+                        doors[i].OpenDoor(this, hud);
+
+                        //collide
+                        collision = true;
+                    }
+                }
 
                 //toolkit.DisplayText($"checking at: {map.getTile(_XYHolder[0], _XYHolder[1])}"); //    --------- debugg
-            if (!CheckForWallCollision(map.getTile(_XYHolder[0], _XYHolder[1]-1), map.getWallHold()))
-            {
-                if (!collision)
+                if (!CheckForWallCollision(map.getTile(_XYHolder[0], _XYHolder[1] - 1), map.getWallHold()))
                 {
-                    Move();
+                    if (!collision)
+                    {
+                        Move();
+                    }
                 }
             }
         }

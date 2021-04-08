@@ -84,30 +84,23 @@ namespace Text_Based_RPG_Shell_Knight
         // ----- private methods
         protected private void CheckDirection(DIRECTION DIRECTION_) // "Looks at" specified direction if alive, else do nothing
         {
-            if (aliveInWorld)
-            {
-                //initalizes & re-inits holders for modifying
-                int XHolder = x;
-                int YHolder = y;
-                
-                //start Reading Input
-                if      (DIRECTION_ == DIRECTION.DOWN) { _directionMoving = DIRECTION.DOWN; _XYHolder[0] = XHolder; _XYHolder[1] = YHolder+=1;}
-                else if (DIRECTION_ == DIRECTION.UP)    { _directionMoving = DIRECTION.UP; _XYHolder[0] = XHolder; _XYHolder[1] = YHolder-=1; }
-                else if (DIRECTION_ == DIRECTION.LEFT) { _directionMoving = DIRECTION.LEFT; _XYHolder[0] = XHolder-=1; _XYHolder[1] = YHolder; } 
-                else if (DIRECTION_ == DIRECTION.RIGHT) { _directionMoving = DIRECTION.RIGHT; _XYHolder[0] = XHolder+=1; _XYHolder[1] = YHolder; } 
-            }
-            
+            //initalizes & re-inits holders for modifying
+            int XHolder = x;
+            int YHolder = y;
+
+            //start Reading Input
+            if      (DIRECTION_ == DIRECTION.DOWN)  { _directionMoving = DIRECTION.DOWN; _XYHolder[0] = XHolder; _XYHolder[1] = YHolder += 1; }
+            else if (DIRECTION_ == DIRECTION.UP)    { _directionMoving = DIRECTION.UP; _XYHolder[0] = XHolder; _XYHolder[1] = YHolder -= 1; }
+            else if (DIRECTION_ == DIRECTION.LEFT)  { _directionMoving = DIRECTION.LEFT; _XYHolder[0] = XHolder -= 1; _XYHolder[1] = YHolder; }
+            else if (DIRECTION_ == DIRECTION.RIGHT) { _directionMoving = DIRECTION.RIGHT; _XYHolder[0] = XHolder += 1; _XYHolder[1] = YHolder; }
         }
         protected private void Move() // moves the character and stops them at boundaries if alive, else do nothing
         {
-            if (aliveInWorld)
-            {
-                //finalize Reading Input
-                if      (_directionMoving == DIRECTION.DOWN && _XYHolder[1] < Map.height +1) { y++; }
-                else if (_directionMoving == DIRECTION.UP && _XYHolder[1] > 1)                      { y--; }
-                else if (_directionMoving == DIRECTION.LEFT && _XYHolder[0] > 0)                    { x--; }
-                else if (_directionMoving == DIRECTION.RIGHT && _XYHolder[0] < Map.width +1) { x++; }
-            }
+            //finalize Reading Input
+            if      (_directionMoving == DIRECTION.DOWN && _XYHolder[1] < Map.height + 1) { y++; }
+            else if (_directionMoving == DIRECTION.UP && _XYHolder[1] > 1)                { y--; }
+            else if (_directionMoving == DIRECTION.LEFT && _XYHolder[0] > 0)              { x--; }
+            else if (_directionMoving == DIRECTION.RIGHT && _XYHolder[0] < Map.width + 1) { x++; }
         }
         protected private void KillCharacter(string name, Camera camera, HUD hud) // kills character and displays that to HUD holds gameComepletionMessage
         {
@@ -127,9 +120,9 @@ namespace Text_Based_RPG_Shell_Knight
         }
 
         // Attack group
-        protected private void StartAttacking(string name, bool alive, int[] health, bool isEnemy, HUD hud, Toolkit toolkit, int[] shield = null) // attacks if colliding character is alive, else do nothing
+        protected private void StartAttacking(string name, bool victimIsAlive, int[] health, bool isEnemy, HUD hud, Toolkit toolkit, int[] shield = null) // attacks if colliding character is alive, else do nothing
         {
-            if (alive)
+            if (victimIsAlive)
             {
                 int damage = DealDamage(health, hud, toolkit, isEnemy, shield);
                 DisplayDamageToHUD(name, damage, health, hud, isEnemy);
@@ -137,53 +130,46 @@ namespace Text_Based_RPG_Shell_Knight
         }
         private int DealDamage(int[] health, HUD ui, Toolkit toolkit, bool isEnemy, int[] shield = null) // calculates damage and deals it out
         {
-            int damageToHealth;
-            if (aliveInWorld)
+            int damageToHealth = -1;
+
+            //calculate damage
+            damageToHealth = toolkit.RandomNumBetween(_damage[0], _damage[1]); //random runber between a high and low value
+            int damageToShield = damageToHealth; //names for convenience and to display to HUD textbox
+            int passDamage = 0; // null if not passing
+
+            if (shield != null) /// this if statement could alternatively be in enemy.dealdamage() but it was moved here and now makes more sense
             {
-                //calculate damage
-                damageToHealth = toolkit.RandomNumBetween(_damage[0], _damage[1]); //random runber between a high and low value
-                int damageToShield = damageToHealth; //names for convenience and to display to HUD textbox
-                int passDamage = 0; // null if not passing
-                
-                if (shield != null) /// this if statement could alternatively be in enemy.dealdamage() but it was moved here and now makes more sense
-                {
-                   
-                    // calculate spill damage
-                    int calcDamageSpill = damageToShield - shield[(int)STATUS.CURRENT];
 
-                    // deal damage to player shield 
-                    shield[(int)STATUS.CURRENT] -= damageToShield;
+                // calculate spill damage
+                int calcDamageSpill = damageToShield - shield[(int)STATUS.CURRENT];
 
-                    // passes spill damage and sets stat to limit
-                    if (shield[(int)STATUS.CURRENT] < 0) { passDamage = calcDamageSpill; }
-                    shield[(int)STATUS.CURRENT] = SetStatToLimits(shield[(int)STATUS.CURRENT], shield[(int)STATUS.MAX]);
-                }
+                // deal damage to player shield 
+                shield[(int)STATUS.CURRENT] -= damageToShield;
 
-                if (shield == null || shield[(int)STATUS.CURRENT] == 0)
-                {
-                    // calculate damage
-                    if (passDamage != 0) { damageToHealth = passDamage; } // sets the damage to the leftover shield break damage
-
-                    //deal damage to character health and checks the limits
-                    health[(int)STATUS.CURRENT] -= damageToHealth;
-                    health[(int)STATUS.CURRENT] = SetStatToLimits(health[(int)STATUS.CURRENT], health[(int)STATUS.MAX]); // does nothing if limit doesnt break
-                }
-
-                if (!isEnemy)
-                {
-                    //update player HUD bar
-                    ui.HudHealthAndShield(health, shield);
-                    ui.Draw();
-                }
-
-                //sets damage to total amount of damage done if it spills into health
-                if (passDamage != 0) { damageToHealth = damageToShield; }
+                // passes spill damage and sets stat to limit
+                if (shield[(int)STATUS.CURRENT] < 0) { passDamage = calcDamageSpill; }
+                shield[(int)STATUS.CURRENT] = SetStatToLimits(shield[(int)STATUS.CURRENT], shield[(int)STATUS.MAX]);
             }
-            else
+
+            if (shield == null || shield[(int)STATUS.CURRENT] == 0)
             {
-                //err character should not attack if dead
-                damageToHealth = -1;
+                // calculate damage
+                if (passDamage != 0) { damageToHealth = passDamage; } // sets the damage to the leftover shield break damage
+
+                //deal damage to character health and checks the limits
+                health[(int)STATUS.CURRENT] -= damageToHealth;
+                health[(int)STATUS.CURRENT] = SetStatToLimits(health[(int)STATUS.CURRENT], health[(int)STATUS.MAX]); // does nothing if limit doesnt break
             }
+
+            if (!isEnemy)
+            {
+                //update player HUD bar
+                ui.HudHealthAndShield(health, shield);
+                ui.Draw();
+            }
+
+            //sets damage to total amount of damage done if it spills into health
+            if (passDamage != 0) { damageToHealth = damageToShield; }
             return damageToHealth;
         }
         protected private void DisplayDamageToHUD(string name, int attackDamage, int[] health, HUD hud, bool isEnemy) // translates damage done into parsable message and displays it in the HUD
@@ -247,13 +233,10 @@ namespace Text_Based_RPG_Shell_Knight
             return false;
         }
         protected private void CheckForDying(Camera camera, HUD hud) // checks if player is alive and at 0 health, then kills them
-        { // if character is alive but at 0HP then death time
-            if (aliveInWorld)
+        { // if 0HP then death time
+            if (_health[(int)STATUS.CURRENT] <= 0)
             {
-                if (_health[(int)STATUS.CURRENT] <= 0)
-                {
-                    KillCharacter(_name, camera, hud);
-                }
+                KillCharacter(_name, camera, hud);
             }
         }
 

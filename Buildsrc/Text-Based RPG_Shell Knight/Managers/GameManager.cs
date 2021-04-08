@@ -82,7 +82,7 @@ namespace Text_Based_RPG_Shell_Knight
         }
 
         // ----- Manager Methods
-        public void UpdateDisplay()// updates display screen to represent the selected Map
+        public void ChangeDisplay()// updates display screen to represent the selected Map // set up for multiple map files
         {
             //clear objects
             items.Clear();
@@ -154,7 +154,7 @@ namespace Text_Based_RPG_Shell_Knight
                 if (_gameState == GAMESTATE.CHANGEMAP) // updates the map if the correct transition square is walked on
                 {
                     //update what the screen displays
-                    UpdateDisplay();
+                    ChangeDisplay();
 
                     //run the map changed to
                     _gameState = GAMESTATE.MAP;

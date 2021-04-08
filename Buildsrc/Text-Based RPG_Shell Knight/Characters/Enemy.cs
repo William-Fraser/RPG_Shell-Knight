@@ -323,9 +323,10 @@ namespace Text_Based_RPG_Shell_Knight
         // ----- public methods
         public void Update(Player player, Map map, Camera camera, HUD hud, Toolkit toolkit)
         {
-            CheckForDying(camera, hud);
+            if (aliveInWorld) CheckForDying(camera, hud); // checks for dying once and doesn't enter update if dead
+
             if (aliveInWorld)
-            {
+            {    
                 switch(_ai)
                 {
                     case AI.CHASE:
