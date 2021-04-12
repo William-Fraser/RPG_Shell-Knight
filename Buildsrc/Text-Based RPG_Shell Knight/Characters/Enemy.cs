@@ -323,7 +323,6 @@ namespace Text_Based_RPG_Shell_Knight
         // ----- public methods
         public void Update(Player player, Map map, Camera camera, HUD hud, Toolkit toolkit)
         {
-            if (aliveInWorld) CheckForDying(camera, hud); // checks for dying once and doesn't enter update if dead
 
             if (aliveInWorld)
             {    
@@ -348,6 +347,9 @@ namespace Text_Based_RPG_Shell_Knight
                 {
                     collision = true;
                     StartAttacking(player.Name(), player.AliveInWorld(), player.Health(), false, hud, toolkit, player.Shield());
+
+                    //Stops character update and ends game
+                    player.CheckForDying(camera, hud);
                 }
 
                 if (!CheckForWallCollision(map.getTile(_XYHolder[0], _XYHolder[1]-1), map.getWallHold())) // -1 to fix bug from result of other fix

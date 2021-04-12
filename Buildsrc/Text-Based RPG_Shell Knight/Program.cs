@@ -41,6 +41,7 @@ namespace Text_Based_RPG_Shell_Knight
                         game.Game();
 
                         //game ends
+                        if (game._gameState == GameManager.GAMESTATE.GAMEOVER)
                         _state = PROGRAMSTATE_GAMEOVER;
                         
                     }

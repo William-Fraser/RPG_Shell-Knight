@@ -232,7 +232,9 @@ namespace Text_Based_RPG_Shell_Knight
             }
             return false;
         }
-        protected private void CheckForDying(Camera camera, HUD hud) // checks if player is alive and at 0 health, then kills them
+
+        //public methods
+        public void CheckForDying(Camera camera, HUD hud) // checks if player is alive and at 0 health, then kills them
         { // if 0HP then death time
             if (_health[(int)STATUS.CURRENT] <= 0)
             {

@@ -64,7 +64,7 @@ namespace Text_Based_RPG_Shell_Knight
         // ----- gets/sets
         public void GameOverPlayerDeath() // checks for player death and sets game over
         {
-            if (player.AliveInWorld() == false) { _gameState = GAMESTATE.GAMEOVER; }
+            if (!player.AliveInWorld()) { _gameState = GAMESTATE.GAMEOVER; }
             else { }
         } 
         public void GameOverWinCondition(int CharacterX, int CharacterY, HUD hud) // checks if win condition is met and sets game over
@@ -114,9 +114,6 @@ namespace Text_Based_RPG_Shell_Knight
 
             // draw GameWorld
             camera.Draw(player);
-
-            GameOverWinCondition(player.X(), player.Y(), hud);
-            GameOverPlayerDeath(); // check for gameover
         }
         public void Update()
         {
@@ -143,24 +140,23 @@ namespace Text_Based_RPG_Shell_Knight
         // ----- Game loop
         public void Game()
         {
-
-            // turns off cursor in gameplay
-            if (Console.CursorVisible == true)
-            {  }
+            // check for gameover
+            GameOverWinCondition(player.X(), player.Y(), hud);
+            GameOverPlayerDeath();
 
             // game loop
-            while (_gameState != GAMESTATE.GAMEOVER)
+            switch (_gameState)
             {
-                if (_gameState == GAMESTATE.CHANGEMAP) // updates the map if the correct transition square is walked on
-                {
+                case GAMESTATE.CHANGEMAP:
+
                     //update what the screen displays
                     ChangeDisplay();
 
                     //run the map changed to
                     _gameState = GAMESTATE.MAP;
-                }
-                else if (_gameState == GAMESTATE.MAP) // playing the Map screen;
-                {
+                    break;
+                case GAMESTATE.MAP:
+
                     // fixes display if Console size changes
                     FixDisplay();
 
@@ -170,13 +166,12 @@ namespace Text_Based_RPG_Shell_Knight
                         Update();
                         Draw();
                     }
-                }
-                else { }
-            }
-            if (_gameState == GAMESTATE.GAMEOVER) // That's all folks
-            {
-                // display gameover
-                GameOver();
+                    break;
+                case GAMESTATE.GAMEOVER:
+
+                    // display gameover
+                    GameOver();
+                    break;
             }
         }
     }

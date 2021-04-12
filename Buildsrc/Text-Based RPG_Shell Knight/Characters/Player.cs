@@ -145,8 +145,6 @@ namespace Text_Based_RPG_Shell_Knight
         }
         public void Update(List<Enemy> enemies, List<Door> doors, Map map, Camera camera, List<Item> item, HUD hud, Toolkit toolkit)
         {
-            //Stops character update and ends game
-            CheckForDying(camera, hud);
 
             if (aliveInWorld)
             {
@@ -174,6 +172,9 @@ namespace Text_Based_RPG_Shell_Knight
 
                         //collide to deal damage
                         StartAttacking(enemies[i].Name(), enemies[i].AliveInWorld(), enemies[i].Health(), true, hud, toolkit);
+
+                        //Stops character update and ends game
+                        enemies[i].CheckForDying(camera, hud);
                     }
                 }
 
