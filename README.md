@@ -1,7 +1,8 @@
 
-Goal - Usurp the king, take his THRONE and crown
+Goal - Enter the Castle Usurp the King, take his THRONE, crown, and kingdom
 
- > sit in the castle throne <
+ > gain enterance to the desert
+ > sit in the castle throne
 
 MOVEMENT - WASD, ARROWKEYS
 
