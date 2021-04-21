@@ -8,7 +8,7 @@ namespace Text_Based_RPG_Shell_Knight
 {
     class GameManager
     {
-        //State machine
+        //State machines
         public enum GAMESTATE
         {
             GAMEOVER,
@@ -16,7 +16,13 @@ namespace Text_Based_RPG_Shell_Knight
             CHANGEMAP
         }
         public GAMESTATE _gameState;
+        public enum OBJECTS 
+        {
+            ITEM,
+            DOOR
+        };
 
+        //toolkit should change to static global tool
         readonly Toolkit toolkit = new Toolkit();
         
         // display init
@@ -30,11 +36,6 @@ namespace Text_Based_RPG_Shell_Knight
         readonly EnemyManager manageEnemies;
 
         // Object init
-        public enum OBJECTS //Object statemachine 
-        {
-        ITEM,
-        DOOR
-        };
         readonly ObjectManager[] manageObjects; // holds all object managers for easy reading
         List<Item> items; // Items in the current game world
         List<Door> doors; // Doors in the current game world

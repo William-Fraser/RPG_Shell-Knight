@@ -1,0 +1,71 @@
+﻿
+	*stretch goals for continuation project past extension
+	./Folder for organization (not namespace)
+
+	inventory system ./Display
+		class Inventory
+			string[,] _display
+			int[,] _stock
+			constructor() // creates the size of the inventory(init multi dimension arrays) and set's up it's draw
+			Draw() // displays inventory and all the available items
+			Input() // used to interact with the inventory / remove normal input / control console cursor, seperate icon for showing equiped items
+			Close() // returns to game screen / *quickAnimation? /
+		
+		class Global
+			enum STATE {INVENTORY}
+	
+	inventory specs,
+		openable inventory screen,
+		navigatable inventory via console cursor,
+		useable & equipable items by activating them,
+		stores how many of each item the player picked up,
+		once inventory is "exited" game returns to playable state in "MapMode".
+	
+
+
+
+	battle system ./Display
+		
+		class Battle
+			constructor(enemy) // creates new battle instance depending on enemy
+			Draw() // draws battle sequence / *avatars? /
+			Fight() // turn based combat, one starting fight attacks first
+			End() // stops the battle sequence / player victory
+			GameOver() // on player death
+		
+		class Global
+			enum STATE {BATTLE}
+	
+	battle specs, 
+		battle screen that opens on enemy collison,
+		battle progresses through multiple choice system,
+		system includes attacking, defending and item usage,
+		attacking accesses current weapon/current player damage,
+		two battle endings, player victory & gameover,
+		once battle is won, game returns to playable state in Map State.
+	
+
+
+
+	weapons system ./Objects ./ SUCCSESS
+		
+		class Weapon : Obejct
+			int[] _damageRange // current weapons damage range
+			constructor() // sets weapon to Fists
+			IdentifyEquip() // set item stats when equiping from inventory
+		
+		class Global
+			enum WEAPON { FISTS, DAGGER, SHORTSWORD, BROADSWORD, LONGSWORD, CLAYMORE, KALIBURN }
+			string[] { "@", "┼──", "─┼═══─", "──╬═════─", "o────╬■■■▄▄▄▄▄▄■■■■▀▀", "├═┼══╣█████████■", "╔──┼──╬■■█■■■■■■▄▄▄_" }
+			string[] WEAPON_NAME { "Fists", "Dagger", "Short Sword", "Broad Sword", "Long Sword", "Claymore", "Kaliburn" }
+			int[,] WEAPON_DAMAGERANGE {{5, 10},{7, 17},{20, 32},{27, 40},{40, 57},{55, 68},{70, 100}}
+			enum RANGE { LOW, HIGH }
+		
+		class Player
+			Weapon _weapon
+	
+	weapon specs,
+		const structs for avatar(datatype string not char), name & damage range, that read into arrays which corrospond to an enum quantifying & labeling the structs,
+		damage range array that holds current weapons range,
+		defaults to fists / empty hands,
+		weapon class does not change the players current weapon this should be done by an inventory input, the idea is to contain the different weapons in one accessor to change between them

@@ -47,6 +47,7 @@
     <Compile Include="Managers\DoorManager.cs" />
     <Compile Include="Managers\EnemyManager.cs" />
     <Compile Include="Managers\ObjectManager.cs" />
+    <Compile Include="Objects\Weapon.cs" />
     <Compile Include="Settings\Global.cs" />
     <Compile Include="Display\Camera.cs" />
     <Compile Include="Objects\Door.cs" />
@@ -70,6 +71,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Legend.txt" />
+    <Content Include="extended specs.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

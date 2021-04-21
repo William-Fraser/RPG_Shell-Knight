@@ -27,7 +27,7 @@ namespace Text_Based_RPG_Shell_Knight
             {
                 while (_state == PROGRAMSTATE_PLAYMENU) // Main Menu
                 {
-                    string mainMenu = "@ SHELL KNIGHT ";
+                    string mainMenu = Global.START_SCREEN_TITLE;
                     //Display Main Menu and obtain choice
                     TwoOptionMenu(mainMenu, "Start", PROGRAMSTATE_PLAYGAME, "Exit",  PROGRAMSTATE_GAMEOVER);
                 }

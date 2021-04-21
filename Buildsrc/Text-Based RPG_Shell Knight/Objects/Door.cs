@@ -48,7 +48,7 @@ namespace Text_Based_RPG_Shell_Knight
                 if (stock[(int)HUD.ITEM.KEYSMALL] > 0)
                 {
 
-                    player.RemoveItemFromInventory((int)HUD.ITEM.KEYSMALL, hud);
+                    player.UseItem((int)HUD.ITEM.KEYSMALL, hud);
                     hud.Draw(); // updates visible inventory
                     aliveInWorld = false;
                     hud.DisplayText($"< {player.Name()} {Global.MESSAGE_DOORSMALLOPEN} >");
@@ -63,7 +63,7 @@ namespace Text_Based_RPG_Shell_Knight
             {
                 if (stock[(int)HUD.ITEM.KEYBIG] > 0)
                 {
-                    player.RemoveItemFromInventory((int)HUD.ITEM.KEYBIG, hud);
+                    player.UseItem((int)HUD.ITEM.KEYBIG, hud);
                     hud.Draw(); // updates visible inventory
                     aliveInWorld = false;
                     hud.DisplayText($"< {player.Name()} {Global.MESSAGE_DOORBIGOPEN} >");

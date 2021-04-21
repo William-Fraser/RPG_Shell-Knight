@@ -10,18 +10,21 @@ namespace Text_Based_RPG_Shell_Knight
     {
         private ConsoleKeyInfo _playerInput;
 
-        private readonly int[] _shield; // displayed as Shell, set states: 0 = current, 1 = max, health follows the same number convention
+        private int[] _shield; // displayed as Shell, set states: 0 = current, 1 = max, health follows the same number convention
+        private Weapon equipedWeapon;
 
         //constructor
         public Player(string name, char avatar) : base(name, avatar, Global.PLAYER_HEALTH)
         {
             //init fields
+            equipedWeapon = new Weapon(Global.WEAPON.CLAYMORE);
+            int[] damageRange = equipedWeapon.damageRange();
             _shield = new int[] { Global.PLAYER_SHIELD, Global.PLAYER_SHIELD };
-            _damage = new int[] { Global.PLAYER_DAMGERANGE[0], Global.PLAYER_DAMGERANGE[1] };
+            _damage = new int[] { damageRange[(int)Global.RANGE.LOW], damageRange[(int)Global.RANGE.HIGH] };
 
             //init spawn
             x = Global.PLAYER_SPAWNPOINT[0];
-            y = Global.PLAYER_SPAWNPOINT[1];
+            y = Global.PLAYER_SPAWNPOINT[1]; // magic numbers explained in 
 
             this.aliveInWorld = true;
         }
@@ -90,7 +93,7 @@ namespace Text_Based_RPG_Shell_Knight
                 if (stock[(int)HUD.ITEM.POTHEAL] > 0)
                 {
                     HealHealth(item.Power(avatar[(int)HUD.ITEM.POTHEAL]));
-                    RemoveItemFromInventory((int)HUD.ITEM.POTHEAL, hud);
+                    UseItem((int)HUD.ITEM.POTHEAL, hud);
 
                     //update HUD bar and display to HUD text box
                     hud.HudHealthAndShield(_health, _shield);
@@ -110,7 +113,7 @@ namespace Text_Based_RPG_Shell_Knight
             {
                 if (stock[(int)HUD.ITEM.POTSHELL] > 0)
                 {
-                    RemoveItemFromInventory((int)HUD.ITEM.POTSHELL, hud);
+                    UseItem((int)HUD.ITEM.POTSHELL, hud);
                     HealShell(item.Power(avatar[(int)HUD.ITEM.POTSHELL]));
 
                     //update HUD bar and display to HUD text box
@@ -138,7 +141,7 @@ namespace Text_Based_RPG_Shell_Knight
             base.Draw(camera);
             ///toolkit.DisplayText("drawing");
         }
-        public void RemoveItemFromInventory(int index, HUD ui) // used to distinguish function
+        public void UseItem(int index, HUD ui) // used to distinguish function
         {
             int[] stock = ui.InventoryStock();
             ui.InventoryStockItem(index, stock[index] - 1);
@@ -158,7 +161,6 @@ namespace Text_Based_RPG_Shell_Knight
                 // used in place of Directional, only Healing items currently
                 UseItemInventoryOutput(item[0], hud);// item is passed in blank because it's recognized inside the method this is for typing and can probably be done better
 
-
                 //check everything for collision
                 bool collision = false;
 
@@ -167,6 +169,8 @@ namespace Text_Based_RPG_Shell_Knight
                 {
                     if (CheckForCharacterCollision(enemies[i].X(), enemies[i].Y(), enemies[i].AliveInWorld())) // enemy values read as zero on firstcontact, needs enemy locate to read adjesent tile's
                     {
+                        //access weapons damage
+
                         //collide
                         collision = true;
 
