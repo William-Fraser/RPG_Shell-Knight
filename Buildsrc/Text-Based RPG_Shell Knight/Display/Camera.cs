@@ -37,7 +37,7 @@ namespace Text_Based_RPG_Shell_Knight
 
         
         //constructor
-        public Camera(Map map)
+        public Camera(Map map = null)
         {
             // pass map
             this.map = map;
@@ -185,8 +185,8 @@ namespace Text_Based_RPG_Shell_Knight
                 {
                     // set up display for new size
                     Console.Clear();
-                    hud.AdjustTextBox();
-                    hud.Draw();
+                    hud.UpdateTextBox();
+                    //hud.Draw();
                     DrawBorder(); // border
                 }
             }

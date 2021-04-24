@@ -24,8 +24,17 @@ using System.Threading.Tasks;
 
 namespace Text_Based_RPG_Shell_Knight
 {
+    enum ITEM // to be moved to global with other Item constants when Item class is updated //its important to note that if iterating through the actual number is off by 1
+    {
+        POTHEAL,
+        POTSHELL,
+        KEYBIG,
+        KEYSMALL,
+        TOTALITEMS // used to quantify enum
+    };
     class Item : Object
     {
+        private ITEM type;
         private bool _pickedUpByPlayer;
         private int _power; // value the item contains
 
@@ -34,7 +43,6 @@ namespace Text_Based_RPG_Shell_Knight
         {
             ReadItemInfo(itemInfo);
 
-            //constant
             _pickedUpByPlayer = false;
             aliveInWorld = true;
         }
@@ -68,7 +76,7 @@ namespace Text_Based_RPG_Shell_Knight
             //
 
             string identifyed = "";
-            if (identity == 'ö') ///ö   - Health Potion / health +50 /
+            if      (identity == 'ö') ///ö   - Health Potion / health +50 /
             {
                 identifyed += "Health Potion;";
                 identifyed += "50";
@@ -88,41 +96,43 @@ namespace Text_Based_RPG_Shell_Knight
             }
             return identifyed; 
         }
-        
+
         // gets
+        public bool PickedUpByPlayer()
+        {
+            return _pickedUpByPlayer;
+        }
+        public void PickedUpByPlayer(bool value)
+        {
+            _pickedUpByPlayer = value;
+        }
         public int Power(char identity) 
         {
-            string[] itemInfo = RecognizeInfo(identity).Split(';');
-            _power = Int32.Parse(itemInfo[1]); // reads one because 0 is name and 1 is power
             return _power; 
         }
-        public bool PickedUp() { return _pickedUpByPlayer; }
-        public void PickedUp(bool value) { _pickedUpByPlayer = value; }
 
         // private methods
-        private bool PickUpItem(Player player, List<Item> items, HUD ui)
+        private void PickUpOnColl(Player player, List<Item> items, Inventory inventory, HUD hud )
         {
-            if (aliveInWorld)
+            if (x == player.X())
             {
-                if (x == player.X())
+                if (y == player.Y())
                 {
-                    if (y == player.Y())
-                    {
-                        aliveInWorld = false; _pickedUpByPlayer = true; //removes sprite from stage and tells game to add it in HUD
-                        ui.AdjustInvetory(items);
-                        ui.Draw();
-                        ui.DisplayText($"< {player.Name()} picked up {_name} [{_avatar}] >", false);
-                        return true;
-                    }
+                    this._pickedUpByPlayer = true;
+                    aliveInWorld = false;
+                    inventory.PickupIfFound(player, items, hud);
                 }
             }
-            return false;
+
         }
 
         // public methods
-        public void Update(Player player, List<Item> items, HUD ui)
+        public void Update(Player player, List<Item> items, Inventory inventory, HUD ui)
         {
-            PickUpItem(player, items, ui);
+            if (aliveInWorld)
+            {
+                PickUpOnColl(player, items, inventory, ui);
+            }
         }
     }
 }

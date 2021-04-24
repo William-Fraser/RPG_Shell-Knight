@@ -6,21 +6,17 @@ using System.Threading.Tasks;
 
 namespace Text_Based_RPG_Shell_Knight
 {
+    enum GAMESTATE
+    {
+        GAMEOVER,
+        CHANGEMAP,
+        MAP,
+        BATTLE,
+        INVENTORY
+    }
     class GameManager
     {
-        //State machines
-        public enum GAMESTATE
-        {
-            GAMEOVER,
-            MAP,
-            CHANGEMAP
-        }
         public GAMESTATE _gameState;
-        public enum OBJECTS 
-        {
-            ITEM,
-            DOOR
-        };
 
         //toolkit should change to static global tool
         readonly Toolkit toolkit = new Toolkit();
@@ -29,6 +25,8 @@ namespace Text_Based_RPG_Shell_Knight
         readonly Camera camera; // frames the map for gameplay
         readonly Map map; // gameworld for all game objects to be drawn on and saved to (player isn't saved on map)
         readonly HUD hud; // appears under camera to give player information
+        readonly Inventory inventory; // changes game state to interactable inventory
+        readonly Battle battle;
 
         // Character init
         readonly Player player; // controls the player
@@ -49,6 +47,8 @@ namespace Text_Based_RPG_Shell_Knight
             //init fields
             map = new Map();
             camera = new Camera(map);
+            inventory = new Inventory();
+            battle = new Battle();
             player = new Player(Global.PLAYER_DEFAULTNAME, Global.PLAYER_AVATAR);
             hud = new HUD(player.Name());
             enemies = new List<Enemy>();
@@ -77,7 +77,7 @@ namespace Text_Based_RPG_Shell_Knight
                     string victoryMessage;
                     victoryMessage = $"< {Global.MESSAGE_PLAYERVICTORY} > ";
                     hud.DisplayText(victoryMessage);
-                    _gameState = GameManager.GAMESTATE.GAMEOVER;
+                    _gameState = GAMESTATE.GAMEOVER;
                 }
             }
         }
@@ -85,6 +85,7 @@ namespace Text_Based_RPG_Shell_Knight
         // ----- Manager Methods
         public void ChangeDisplay()// updates display screen to represent the selected Map // set up for multiple map files
         {
+            Console.Clear();
             //clear objects
             items.Clear();
             enemies.Clear();
@@ -92,7 +93,7 @@ namespace Text_Based_RPG_Shell_Knight
 
             //read new map info
             map.loadMap();
-            hud.AdjustTextBox();
+            hud.UpdateTextBox();
             camera.GameWorldGetMap();
 
             // adding gameplay elements to Display 
@@ -102,7 +103,7 @@ namespace Text_Based_RPG_Shell_Knight
 
 
             Draw();
-            hud.Update(player, items);
+            hud.Update(player, inventory);
         }
         public void Draw()
         {
@@ -115,17 +116,18 @@ namespace Text_Based_RPG_Shell_Knight
 
             // draw GameWorld
             camera.Draw(player);
+            camera.DrawBorder();
         }
         public void Update()
         {
             
             //update by prioity
-            hud.Update(player, items);
-            player.Update(enemies, doors, map, camera, items, hud, toolkit);
-            (manageObjects[(int)OBJECTS.ITEM] as ItemManager).Update(items, player, hud);
-            manageEnemies.Update(enemies, player, map, camera, toolkit, hud);
-
-            hud.Update(player, items);
+            hud.Update(player, inventory);
+            _gameState = player.Update(enemies, doors, map, camera, items, hud, toolkit, inventory, _gameState, battle);
+            (manageObjects[(int)OBJECTS.ITEM] as ItemManager).Update(items, player, inventory, hud);
+            _gameState = manageEnemies.Update(enemies, player, map, camera, toolkit, hud, battle, _gameState);
+            
+            hud.Update(player, inventory);
             camera.Update(); // updated last to catch all character and object updates on gameworld
         }
         public void GameOver()
@@ -141,6 +143,8 @@ namespace Text_Based_RPG_Shell_Knight
         // ----- Game loop
         public void Game()
         {
+            FixDisplay();   
+
             // check for gameover
             GameOverWinCondition(player.X(), player.Y(), hud);
             GameOverPlayerDeath();
@@ -158,15 +162,29 @@ namespace Text_Based_RPG_Shell_Knight
                     break;
                 case GAMESTATE.MAP:
 
-                    // fixes display if Console size changes
-                    FixDisplay();
-
-                    //gameplay
-                    while (Console.KeyAvailable)
-                    {   // progress loop
+                    Draw();
+                    //Main Gameplay Loop
                         Update();
                         Draw();
-                    }
+                    break;
+                case GAMESTATE.BATTLE:
+
+                    // Battle sequence
+                    hud.UpdateHotBar(player, inventory);
+                    hud.Draw();
+                    battle.drawBorder();
+                    _gameState = battle.BattleController(player,  hud, toolkit, _gameState, items[0], inventory); // item is passed to use power method
+
+                    break;
+                case GAMESTATE.INVENTORY:
+
+                    //Invetory Menu
+                    hud.UpdateHotBar(player, inventory);
+                    hud.Draw();
+                    inventory.Draw();
+                    inventory.Update(player, hud);
+                    _gameState = inventory.Navigate(_gameState, player, items[0]);
+
                     break;
                 case GAMESTATE.GAMEOVER:
 
@@ -174,6 +192,7 @@ namespace Text_Based_RPG_Shell_Knight
                     GameOver();
                     break;
             }
+           
         }
     }
 }

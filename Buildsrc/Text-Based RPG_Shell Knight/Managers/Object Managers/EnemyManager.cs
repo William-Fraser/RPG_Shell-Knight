@@ -27,12 +27,13 @@ namespace Text_Based_RPG_Shell_Knight
                 enemies[i].Draw(camera);
             }
         }
-        public void Update(List<Enemy> enemies, Player player, Map map, Camera camera, Toolkit toolkit, HUD hud) // update list of enemies in a for loop
+        public GAMESTATE Update(List<Enemy> enemies, Player player, Map map, Camera camera, Toolkit toolkit, HUD hud, Battle battle, GAMESTATE gameState) // update list of enemies in a for loop
         {
             for (int i = 0; i < enemies.Count; i++)
             {
-                enemies[i].Update(player, map, camera, hud, toolkit);
+                gameState = enemies[i].Update(player, map, camera, hud, toolkit, battle, gameState);
             }
+            return gameState;
         }
     }
 }

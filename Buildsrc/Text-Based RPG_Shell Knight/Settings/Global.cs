@@ -6,6 +6,18 @@ using System.Threading.Tasks;
 
 namespace Text_Based_RPG_Shell_Knight
 {
+    //STATEs
+    public enum OBJECTS
+    {
+        ITEM,
+        DOOR
+    };
+    
+    public enum RANGE // used with RANGE data like damage / range data is often used with the random method in toolkit
+    { 
+        LOW, 
+        HIGH 
+    } 
     class Global
     {
         //Characters
@@ -21,16 +33,17 @@ namespace Text_Based_RPG_Shell_Knight
         public static readonly int[] PLAYER_DAMGERANGE = { 30, 67 }; // the range of damage the player can do, change to weapon system
 
         //Weapons
-        public enum WEAPON                          {              FISTS,                                       DAGGER,                                         SHORTSWORD,                                         BROADSWORD,                                         LONGSWORD,                                              CLAYMORE,                                        KALIBURN };
-        public static string WEAPON_NAME(WEAPON w)         { switch (w) { case WEAPON.FISTS: return "Fists";           case WEAPON.DAGGER: return "Dagger";            case WEAPON.SHORTSWORD: return "Short Sword";       case WEAPON.BROADSWORD: return "Broad Sword";       case WEAPON.LONGSWORD: return "Long Sword";             case WEAPON.CLAYMORE: return "Claymore";         case WEAPON.KALIBURN: return "Kaliburn";               default: return String.Empty; } }
-        public static string WEAPON_AVATAR(WEAPON w)      { switch (w) { case WEAPON.FISTS: return "@";               case WEAPON.DAGGER: return "┼──";               case WEAPON.SHORTSWORD: return "─┼═══─";            case WEAPON.BROADSWORD: return "──╬═════─";         case WEAPON.LONGSWORD: return "o────╬■■■▄▄▄▄▄▄■■■■▀▀";  case WEAPON.CLAYMORE: return "├═┼══╣█████████■"; case WEAPON.KALIBURN: return "╔──┼──╬■■█■■■■■■▄▄▄_";   default: return String.Empty; } }
-        public static int[] WEAPON_DAMAGERANGE(WEAPON w)   { switch (w) { case WEAPON.FISTS: return fistsRange;        case WEAPON.DAGGER: return daggerRange;         case WEAPON.SHORTSWORD: return shortswordRange;     case WEAPON.BROADSWORD: return broadswordRange;     case WEAPON.LONGSWORD: return longswordRange;           case WEAPON.CLAYMORE: return claymoreRange;      case WEAPON.KALIBURN: return kaliburnRange;            default: return null; } }
-                                                            public static int[] fistsRange = { 5, 10 };  public static int[] daggerRange = { 7, 17 };    public static int[] shortswordRange = { 20, 32 };   public static int[] broadswordRange = { 27, 40 };   public static int[] longswordRange = { 40, 57 };        public static int[] claymoreRange = { 55, 68 };  public static int[] kaliburnRange = { 70, 100 };
-        public enum RANGE { LOW, HIGH } // used with RANGE data like damage / range data is often used with the random method in toolkit
+        public static string WEAPON_NAME(WEAPON w)          { switch (w) { case WEAPON.FISTS: return "Fists";           case WEAPON.DAGGER: return "Dagger";            case WEAPON.SHORTSWORD: return "Short Sword";       case WEAPON.BROADSWORD: return "Broad Sword";       case WEAPON.LONGSWORD: return "Long Sword";             case WEAPON.CLAYMORE: return "Claymore";         case WEAPON.KALIBURN: return "Kaliburn";               default: return String.Empty; } }
+        public static string WEAPON_AVATAR(WEAPON w)        { switch (w) { case WEAPON.FISTS: return "@";               case WEAPON.DAGGER: return "┼──";               case WEAPON.SHORTSWORD: return "─┼═══─";            case WEAPON.BROADSWORD: return "──╬═════─";         case WEAPON.LONGSWORD: return "o────╬■■■▄▄▄▄▄▄■■■■▀▀";  case WEAPON.CLAYMORE: return "├═┼══╣█████████■"; case WEAPON.KALIBURN: return "╔──┼──╬■■█■■■■■■▄▄▄_";   default: return String.Empty; } }
+        public static int[] WEAPON_DAMAGERANGE(WEAPON w)    { switch (w) { case WEAPON.FISTS: return fistsRange;        case WEAPON.DAGGER: return daggerRange;         case WEAPON.SHORTSWORD: return shortswordRange;     case WEAPON.BROADSWORD: return broadswordRange;     case WEAPON.LONGSWORD: return longswordRange;           case WEAPON.CLAYMORE: return claymoreRange;      case WEAPON.KALIBURN: return kaliburnRange;            default: return null; } }
+                                                                    public static int[] fistsRange = { 5, 10 };  public static int[] daggerRange = { 7, 17 };    public static int[] shortswordRange = { 20, 32 };   public static int[] broadswordRange = { 27, 40 };   public static int[] longswordRange = { 40, 57 };        public static int[] claymoreRange = { 55, 68 };  public static int[] kaliburnRange = { 70, 100 };
+        //Items
+        public static char ITEM_AVATAR(ITEM i) { switch (i) { case ITEM.POTHEAL: return 'ö'; case ITEM.POTSHELL: return 'ï'; case ITEM.KEYBIG: return 'K'; case ITEM.KEYSMALL: return 'k'; default: return String.Empty[0]; } }
+
 
         //messages
             //general
-        public const string START_SCREEN_TITLE = "";
+        public const string START_SCREEN_TITLE = "@ SHELL KNIGHT                                    By William.Fr";
         public const string MESSAGE_GAMEOVER = " > GAME OVER < ";
         public const string MESSAGE_PLAYERVICTORY = "The King has been userped, A new Lord has been crowned!";
 

@@ -39,19 +39,19 @@ namespace Text_Based_RPG_Shell_Knight
         public bool PickedUp() { return _opened; }
 
         // ----- private methods
-        public void OpenDoor(Player player, HUD hud)
+        public void OpenDoor(Player player, HUD hud, Inventory inventory)
         {
-            int[] stock = hud.InventoryStock();
+            int[] stock = inventory.ItemStock ();
 
             if (this._avatar == 'd')
             {
-                if (stock[(int)HUD.ITEM.KEYSMALL] > 0)
+                if (stock[(int)ITEM.KEYSMALL] > 0)
                 {
 
-                    player.UseItem((int)HUD.ITEM.KEYSMALL, hud);
+                    inventory.UseItem(ITEM.KEYSMALL);
                     hud.Draw(); // updates visible inventory
                     aliveInWorld = false;
-                    hud.DisplayText($"< {player.Name()} {Global.MESSAGE_DOORSMALLOPEN} >");
+                    hud.DisplayText($"< {player.Name()} {Global.MESSAGE_DOORSMALLOPEN} >", false);
                     _opened = true;
                 }
                 else
@@ -61,12 +61,12 @@ namespace Text_Based_RPG_Shell_Knight
             }
             if (this._avatar == 'D')
             {
-                if (stock[(int)HUD.ITEM.KEYBIG] > 0)
+                if (stock[(int)ITEM.KEYBIG] > 0)
                 {
-                    player.UseItem((int)HUD.ITEM.KEYBIG, hud);
+                    inventory.UseItem(ITEM.KEYBIG);
                     hud.Draw(); // updates visible inventory
                     aliveInWorld = false;
-                    hud.DisplayText($"< {player.Name()} {Global.MESSAGE_DOORBIGOPEN} >");
+                    hud.DisplayText($"< {player.Name()} {Global.MESSAGE_DOORBIGOPEN} >", false);
                     _opened = true;
                 }
                 else

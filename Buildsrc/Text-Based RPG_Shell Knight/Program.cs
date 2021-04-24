@@ -2,114 +2,58 @@
 
 namespace Text_Based_RPG_Shell_Knight
 {
+    enum PROGRAMSTATE
+    {
+        START,
+        PLAYGAME,
+        RETRY,
+        END
+    }
     class Program
     {
-        // program states / change to enum and switch
-        private static int _state;
-        private static readonly int PROGRAMSTATE_GAMEOVER = 0;
-        private static readonly int PROGRAMSTATE_PLAYGAME = 1;
-        private static readonly int PROGRAMSTATE_PLAYMENU = 2;
-        private static readonly int PROGRAMSTATE_ENDING = 3;
-
         // menu controls
-        private static bool retryMenu = false;
-        private static ConsoleKeyInfo decision;
-        private static ConsoleKeyInfo savedReset; // set to null on purpose, for resetting choice 
-        static GameManager game;
+        private static GameManager game;
+        
 
         static void Main()
         {
+            PROGRAMSTATE _programState = PROGRAMSTATE.START;
             game = new GameManager();
-            _state = PROGRAMSTATE_PLAYMENU;
+            bool play = true;
 
-            //only exits if program is in ending state
-            while (_state != PROGRAMSTATE_ENDING)
+            while (play)
             {
-                while (_state == PROGRAMSTATE_PLAYMENU) // Main Menu
+                switch (_programState)
                 {
-                    string mainMenu = Global.START_SCREEN_TITLE;
-                    //Display Main Menu and obtain choice
-                    TwoOptionMenu(mainMenu, "Start", PROGRAMSTATE_PLAYGAME, "Exit",  PROGRAMSTATE_GAMEOVER);
-                }
-                //skip gameplay if exiting in gameover state
-                while (_state != PROGRAMSTATE_GAMEOVER)
-                {
-                    //plays game while in play state
-                    if (_state == PROGRAMSTATE_PLAYGAME)
-                    {
-                        // start game
+                    case PROGRAMSTATE.START:
+                        string mainMenu = Global.START_SCREEN_TITLE;
+                        //Display Main Menu and obtain choice
+                        _programState = (PROGRAMSTATE)Toolkit.TwoOptionMenu(mainMenu, (int)_programState, 
+                            "Start", (int)PROGRAMSTATE.PLAYGAME, "Exit", (int)PROGRAMSTATE.END);
+                        break;
+                    case PROGRAMSTATE.PLAYGAME:
                         game.Game();
 
                         //game ends
-                        if (game._gameState == GameManager.GAMESTATE.GAMEOVER)
-                        _state = PROGRAMSTATE_GAMEOVER;
-                        
-                    }
+                        if (game._gameState == GAMESTATE.GAMEOVER)
+                            _programState = PROGRAMSTATE.RETRY;
+                        break;
+                    case PROGRAMSTATE.RETRY:
+                        // ask to return to menu
+                        string returnToMenu = "Return to Menu?";
+                        _programState = (PROGRAMSTATE)Toolkit.TwoOptionMenu(returnToMenu, (int)_programState, 
+                            "Menu", (int)PROGRAMSTATE.START, "Exit", (int)PROGRAMSTATE.END);
+                        break;
+                    case PROGRAMSTATE.END:
+                        Console.Clear();
+                        Console.WriteLine("\n     END OF PROGRAM");
+                        Console.ReadKey(true);
+                        break;
                 }
-                ////ask to return to menu
-                //string returnToMenu = "Return to Menu?";
-                //TwoOptionMenu(returnToMenu, "Start Screen", PROGRAMSTATE_PLAYMENU, "Exit Game", PROGRAMSTATE_ENDING);
-
-                //set to exit by default
-                Console.Clear();
-                Console.WriteLine("\n");
-                Console.WriteLine("     END OF PROGRAM");
-                Console.ReadKey(true);
-                if (_state == PROGRAMSTATE_GAMEOVER)
-                    _state = PROGRAMSTATE_ENDING;
             }
+
         }
-
-        //used for program menus
-        public static void TwoOptionMenu(string MenuDisplay, string optionS, int resultS, string optionE,int resultE)
-        {
-            
-            //choices
-            if (decision.Key == ConsoleKey.S || decision.Key == ConsoleKey.E) 
-            {
-
-                retryMenu = false;
-
-                switch (decision.Key)
-                {
-                    case ConsoleKey.S:
-                        
-                        decision = savedReset;
-                        _state = resultS;
-                        return;
-
-                    case ConsoleKey.E:
-                        decision = savedReset;
-                        _state = resultE;
-                        return;
-                }
-
-                //reset Menu
-                
-                Console.ReadKey(true);
-            }
-            //menu
-            else
-            {
-                
-                // if player has failed to perform operation ask for proper value
-                if (retryMenu)
-                {
-                    Console.WriteLine();
-                    Console.WriteLine(" please enter a menu value");
-                }
-
-                //menu and decision
-                Console.WriteLine();
-                Console.WriteLine($"     {MenuDisplay}\n        S - {optionS}\n        E - {optionE}");
-                decision = Console.ReadKey(true);
-
-                //sets to ask for proper value if trying again
-                retryMenu = true;
-
-            }
-            Console.Clear();
-        }
+        
     }
 }
 

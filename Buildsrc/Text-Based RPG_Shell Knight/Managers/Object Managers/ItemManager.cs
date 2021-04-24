@@ -28,11 +28,11 @@ namespace Text_Based_RPG_Shell_Knight
                 items[i].Draw(camera);
             }
         }
-        public void Update(List<Item> items, Player player, HUD hud) // update a list of items with a for loop
+        public void Update(List<Item> items, Player player, Inventory inventory, HUD hud) // update a list of items with a for loop
         {
             for (int i = 0; i < items.Count; i++)
             {
-                items[i].Update(player, items, hud);
+                items[i].Update(player, items, inventory, hud);
             }
         }
     }

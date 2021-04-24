@@ -43,10 +43,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Managers\ItemManager.cs" />
-    <Compile Include="Managers\DoorManager.cs" />
-    <Compile Include="Managers\EnemyManager.cs" />
-    <Compile Include="Managers\ObjectManager.cs" />
+    <Compile Include="Display\Battle.cs" />
+    <Compile Include="Display\Inventory.cs" />
+    <Compile Include="Managers\Object Managers\ItemManager.cs" />
+    <Compile Include="Managers\Object Managers\DoorManager.cs" />
+    <Compile Include="Managers\Object Managers\EnemyManager.cs" />
+    <Compile Include="Managers\Object Managers\ObjectManager.cs" />
     <Compile Include="Objects\Weapon.cs" />
     <Compile Include="Settings\Global.cs" />
     <Compile Include="Display\Camera.cs" />

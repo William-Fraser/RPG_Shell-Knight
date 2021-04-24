@@ -6,6 +6,17 @@ using System.Threading.Tasks;
 
 namespace Text_Based_RPG_Shell_Knight
 {
+    enum WEAPON //its important to note that if iterating through the actual number is off by 1
+    {
+        FISTS,
+        DAGGER,
+        SHORTSWORD,
+        BROADSWORD,
+        LONGSWORD,
+        CLAYMORE,
+        KALIBURN,
+        TOTALWEAPONS // used to quantify enum
+    };
     class Weapon : Object
     {
         // current weapons damage range
@@ -13,19 +24,19 @@ namespace Text_Based_RPG_Shell_Knight
         private int[] _damageRange;
 
         // sets first Weapon / usually fists
-        public Weapon(Global.WEAPON w)
+        public Weapon(WEAPON w)
         {
-            IdentifyEquip(w);
+            IdentifyAndEquip(w);
         }
 
         // ----- gets/ sets
-        public string avatarWeapon() { return _avatarWeapon; }
-        public int[] damageRange() { return _damageRange; }
+        new public string Avatar() { return _avatarWeapon; }
+        public int[] DamageRange() { return _damageRange; }
 
-        // ----- private methods
+        // ----- public methods
 
         // set item stats when equiping item
-        private void IdentifyEquip(Global.WEAPON w) // used in Inventory
+        public void IdentifyAndEquip(WEAPON w) // used in Inventory // remodel other object accessors after this
         {
             _name = Global.WEAPON_NAME(w);
             _avatarWeapon = Global.WEAPON_AVATAR(w);
