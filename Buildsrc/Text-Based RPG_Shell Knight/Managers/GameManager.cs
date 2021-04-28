@@ -18,9 +18,6 @@ namespace Text_Based_RPG_Shell_Knight
     {
         public GAMESTATE _gameState;
 
-        //toolkit should change to static global tool
-        readonly Toolkit toolkit = new Toolkit();
-        
         // display init
         readonly Camera camera; // frames the map for gameplay
         readonly Map map; // gameworld for all game objects to be drawn on and saved to (player isn't saved on map)
@@ -46,10 +43,10 @@ namespace Text_Based_RPG_Shell_Knight
 
             //init fields
             map = new Map();
-            camera = new Camera(map);
-            inventory = new Inventory();
+            camera = new Camera();
             battle = new Battle();
             player = new Player(Global.PLAYER_DEFAULTNAME, Global.PLAYER_AVATAR);
+            inventory = new Inventory(player);
             hud = new HUD(player.Name());
             enemies = new List<Enemy>();
             manageEnemies = new EnemyManager();
@@ -62,137 +59,106 @@ namespace Text_Based_RPG_Shell_Knight
             manageObjects[(int)OBJECTS.DOOR] = new DoorManager();
         }
 
-        // ----- gets/sets
-        public void GameOverPlayerDeath() // checks for player death and sets game over
+        // ----- Manager Methods
+        private static GAMESTATE GameOverPlayerDeath(Player player, GAMESTATE gameState) // checks for player death and sets game over
         {
-            if (!player.AliveInWorld()) { _gameState = GAMESTATE.GAMEOVER; }
+            if (!player.AliveInWorld()) { gameState = GAMESTATE.GAMEOVER; }
             else { }
-        } 
-        public void GameOverWinCondition(int CharacterX, int CharacterY, HUD hud) // checks if win condition is met and sets game over
+            return gameState;
+        }
+        private static GAMESTATE GameOverWinCondition(Player player, HUD hud, GAMESTATE gameState) // checks if win condition is met and sets game over
         { /// current win condition, reach the goal point
-            if (CharacterX == Global.PLAYER_WINPOINT[0])
+            if (player.X() == Global.PLAYER_WINPOINT[0])
             {
-                if (CharacterY == Global.PLAYER_WINPOINT[1])
+                if (player.Y() == Global.PLAYER_WINPOINT[1])
                 {
                     string victoryMessage;
                     victoryMessage = $"< {Global.MESSAGE_PLAYERVICTORY} > ";
                     hud.DisplayText(victoryMessage);
-                    _gameState = GAMESTATE.GAMEOVER;
+                    gameState = GAMESTATE.GAMEOVER;
                 }
             }
+            return gameState;
         }
-
-        // ----- Manager Methods
-        public void ChangeDisplay()// updates display screen to represent the selected Map // set up for multiple map files
-        {
-            Console.Clear();
-            //clear objects
-            items.Clear();
-            enemies.Clear();
-            doors.Clear();
-
-            //read new map info
-            map.loadMap();
-            hud.UpdateTextBox();
-            camera.GameWorldGetMap();
-
-            // adding gameplay elements to Display 
-            enemies = manageEnemies.Init(map.getEnemyHold().Split('|'));
-            items = (manageObjects[(int)OBJECTS.ITEM] as ItemManager).Init(map.getItemHold().Split('|'));
-            doors = (manageObjects[(int)OBJECTS.DOOR] as DoorManager).Init(map.getDoorHold().Split('|'));
-
-
-            Draw();
-            hud.Update(player, inventory);
-        }
-        public void Draw()
-        {
-            //draw gameplay elements to gameworld, Heirarchy: lowest is on top
-            (manageObjects[(int)OBJECTS.DOOR] as DoorManager).Draw(doors, camera);
-            (manageObjects[(int)OBJECTS.ITEM] as ItemManager).Draw(items, camera);
-            manageEnemies.Draw(enemies, camera);
-            
-            player.Draw(camera);
-
-            // draw GameWorld
-            camera.Draw(player);
-            camera.DrawBorder();
-        }
-        public void Update()
-        {
-            
-            //update by prioity
-            hud.Update(player, inventory);
-            _gameState = player.Update(enemies, doors, map, camera, items, hud, toolkit, inventory, _gameState, battle);
-            (manageObjects[(int)OBJECTS.ITEM] as ItemManager).Update(items, player, inventory, hud);
-            _gameState = manageEnemies.Update(enemies, player, map, camera, toolkit, hud, battle, _gameState);
-            
-            hud.Update(player, inventory);
-            camera.Update(); // updated last to catch all character and object updates on gameworld
-        }
-        public void GameOver()
+        private void GameOverMessage()
         {
             hud.DisplayText(Global.MESSAGE_GAMEOVER);
-        }
-        public void FixDisplay()
-        {
-            camera.FixModifyedConsole(hud, toolkit); // checks for console size change and starts handling it
-            Console.CursorVisible = false;
         }
 
         // ----- Game loop
         public void Game()
         {
-            FixDisplay();   
+            Toolkit.FixDisplay(camera, hud);   
 
             // check for gameover
-            GameOverWinCondition(player.X(), player.Y(), hud);
-            GameOverPlayerDeath();
+            GameOverPlayerDeath(player, _gameState);
+            GameOverWinCondition(player, hud, _gameState);
 
             // game loop
             switch (_gameState)
             {
+                //update what the screen displays
                 case GAMESTATE.CHANGEMAP:
-
-                    //update what the screen displays
-                    ChangeDisplay();
-
-                    //run the map changed to
+                    #region Change Map
+                    //clear console & objects
+                    Console.Clear();
+                    items.Clear();
+                    enemies.Clear();
+                    doors.Clear();
+                    //read new map info/ load it into the camera
+                    map.loadMap();
+                    camera.GameWorldGetMap(map);
+                    //create camera border /reload TextBox(change to create new hud for every map)
+                    camera.DrawBorder();
+                    hud.DrawTextBox();
+                    // creating object managers
+                    enemies = manageEnemies.Init(map.getEnemyHold().Split('|'));
+                    items = (manageObjects[(int)OBJECTS.ITEM] as ItemManager).Init(map.getItemHold().Split('|'));
+                    doors = (manageObjects[(int)OBJECTS.DOOR] as DoorManager).Init(map.getDoorHold().Split('|'));
+                    //change state to display the freshly loaded map & objects
                     _gameState = GAMESTATE.MAP;
+                    #endregion
                     break;
+                
                 case GAMESTATE.MAP:
+                    #region Play Map
+                    //DRAW
+                    //gameplay elements to gameworld, Heirarchy: bottomlayer is on top
+                    (manageObjects[(int)OBJECTS.ITEM] as ItemManager).Draw(items, camera);
+                    (manageObjects[(int)OBJECTS.DOOR] as DoorManager).Draw(doors, camera);
+                    manageEnemies.Draw(enemies, camera);
+                    player.Draw(camera);
+                    //GameWorld / including objects added above
+                    camera.Draw(player);
 
-                    Draw();
-                    //Main Gameplay Loop
-                        Update();
-                        Draw();
+                    //UPDATE
+                    //by prioity, Heirarchy: highest is on top
+                    hud.Update(player, inventory);
+                    _gameState = player.Update(enemies, doors, items, map, camera, hud, battle, inventory, _gameState);
+                    _gameState = manageEnemies.Update(enemies, player, map, camera, hud, battle, inventory, _gameState);
+                    (manageObjects[(int)OBJECTS.ITEM] as ItemManager).Update(items, player, inventory, hud);
+                    camera.Update(map); // updated last to catch all character and object updates on gameworld
+                    #endregion
                     break;
+                
                 case GAMESTATE.BATTLE:
-
-                    // Battle sequence
-                    hud.UpdateHotBar(player, inventory);
-                    hud.Draw();
-                    battle.drawBorder();
-                    _gameState = battle.BattleController(player,  hud, toolkit, _gameState, items[0], inventory); // item is passed to use power method
-
+                    //DRAW
+                    battle.Draw();
+                    //UPDATE
+                    _gameState = battle.Update(player, _gameState, items[0], inventory);
                     break;
+                
                 case GAMESTATE.INVENTORY:
-
-                    //Invetory Menu
-                    hud.UpdateHotBar(player, inventory);
-                    hud.Draw();
+                    //DRAW
                     inventory.Draw();
-                    inventory.Update(player, hud);
-                    _gameState = inventory.Navigate(_gameState, player, items[0]);
-
+                    //UPDATE
+                    _gameState = inventory.Update(_gameState, player, items[0], inventory);
                     break;
+                
                 case GAMESTATE.GAMEOVER:
-
-                    // display gameover
-                    GameOver();
+                    GameOverMessage();
                     break;
             }
-           
         }
     }
 }

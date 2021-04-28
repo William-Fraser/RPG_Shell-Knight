@@ -6,20 +6,8 @@ using System.Threading.Tasks;
 
 namespace Text_Based_RPG_Shell_Knight
 {
-    //STATEs
-    public enum OBJECTS
-    {
-        ITEM,
-        DOOR
-    };
-    
-    public enum RANGE // used with RANGE data like damage / range data is often used with the random method in toolkit
-    { 
-        LOW, 
-        HIGH 
-    } 
     class Global
-    {
+    { 
         //Characters
         public const char CHARACTER_DEADAVATAR = 'X';
 
@@ -38,8 +26,9 @@ namespace Text_Based_RPG_Shell_Knight
         public static int[] WEAPON_DAMAGERANGE(WEAPON w)    { switch (w) { case WEAPON.FISTS: return fistsRange;        case WEAPON.DAGGER: return daggerRange;         case WEAPON.SHORTSWORD: return shortswordRange;     case WEAPON.BROADSWORD: return broadswordRange;     case WEAPON.LONGSWORD: return longswordRange;           case WEAPON.CLAYMORE: return claymoreRange;      case WEAPON.KALIBURN: return kaliburnRange;            default: return null; } }
                                                                     public static int[] fistsRange = { 5, 10 };  public static int[] daggerRange = { 7, 17 };    public static int[] shortswordRange = { 20, 32 };   public static int[] broadswordRange = { 27, 40 };   public static int[] longswordRange = { 40, 57 };        public static int[] claymoreRange = { 55, 68 };  public static int[] kaliburnRange = { 70, 100 };
         //Items
+        public static string ITEM_NAME(ITEM i) { switch (i) { case ITEM.POTHEAL: return "Health Potion"; case ITEM.POTSHELL: return "Shell Banding"; case ITEM.KEYBIG: return "Big Key"; case ITEM.KEYSMALL: return "Small Key"; default: return String.Empty; } }
         public static char ITEM_AVATAR(ITEM i) { switch (i) { case ITEM.POTHEAL: return 'ö'; case ITEM.POTSHELL: return 'ï'; case ITEM.KEYBIG: return 'K'; case ITEM.KEYSMALL: return 'k'; default: return String.Empty[0]; } }
-
+        public static int ITEM_POWER(ITEM i) { switch (i) { case ITEM.POTHEAL: return 50; case ITEM.POTSHELL: return 30; default: return 0; } }
 
         //messages
             //general

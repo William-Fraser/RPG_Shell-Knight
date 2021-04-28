@@ -6,45 +6,27 @@ using System.Threading.Tasks;
 
 namespace Text_Based_RPG_Shell_Knight
 {
+    public enum RANGE // used with RANGE data like damage / range data is often used with the random method in toolkit
+    {
+        LOW,
+        HIGH
+    }
     class Battle
     {
-        Camera camera;
         string[,] _display = new string[Camera.borderHeight, Camera.borderWidth];
+        Camera camera;
+        HUD hud;
         Enemy opponent;
 
         bool turn; // true if player's turn
+        //constructor
         public Battle()
         {
             camera = new Camera();
         }
-        private void BattleDisplay() // graphical design for battles
-        { 
-        
-        }
 
-        public GAMESTATE Begin(Enemy enemy, HUD hud)
-        {
-            opponent = enemy;
-            Console.Clear();
-            hud.UpdateTextBox();
-            return GAMESTATE.BATTLE;
-        }
-        public GAMESTATE BattleController(Player player, HUD hud, Toolkit toolkit, GAMESTATE gameState, Item item, Inventory inventory)
-        {
-            Fight(player, opponent, hud, toolkit, item, inventory);
-            
-            // ends fight
-            if (player.Health()[(int)STATUS.CURRENT] == 0)
-            { return GameOver(); }
-            if (opponent.Health()[(int)STATUS.CURRENT] == 0)
-            { return End(); }
-            return gameState;
-        }
-        public void drawBorder() 
-        {
-            camera.DrawBorder();
-        }
-        public void Fight(Player player, Enemy enemy, HUD hud,Toolkit toolkit, Item item, Inventory inventory) // turn based combat, one starting fight attacks first
+        // ----- private methods
+        private void Fight(Player player, Enemy enemy, Item item, Inventory inventory) // turn based combat, one starting fight attacks first
         {
             int damage;
             if (turn)
@@ -53,56 +35,68 @@ namespace Text_Based_RPG_Shell_Knight
                 ConsoleKeyInfo battleDecision = Console.ReadKey(true);
                 if (battleDecision.Key == ConsoleKey.Spacebar)
                 {
-                    damage = player.DealDamage(enemy.Health(), hud, toolkit, true);
+                    damage = player.DealDamage(enemy.Health(), hud, true);
                     player.DisplayDamageToHUD(enemy.Name(), damage, enemy.Health(), hud, true);
                 }
-                else { }
-
-                while (Console.KeyAvailable)
+                
+                if (battleDecision.Key == ConsoleKey.X)
                 {
-                    if (battleDecision.Key == ConsoleKey.X && inventory.ItemStock()[(int)ITEM.POTHEAL] > 0)
-                    {
-                        player.HealHealth(item.Power(inventory.ItemAvatars()[(int)ITEM.POTHEAL]));
-                        inventory.UseItem((int)ITEM.POTHEAL);
-                        hud.DisplayText($"< {player.Name()} {Global.MESSAGE_POTHEALTHDRINK} >", false);
-
-                    }
-                    else
-                    {
-                        hud.DisplayText($"< {player.Name()} {Global.MESSAGE_POTHEALTHMISSING} >", false);
-                    }
-
-                    if (battleDecision.Key == ConsoleKey.Z && inventory.ItemStock()[(int)ITEM.POTHEAL] > 0)
-                    {
-                        player.HealShell(item.Power(inventory.ItemAvatars()[(int)ITEM.POTSHELL]));
-                        inventory.UseItem(ITEM.POTSHELL);
-                        hud.DisplayText($"< {player.Name()} {Global.MESSAGE_POTSHIELDDRINK} >", false);
-                    }
-                    else
-                    {
-                        hud.DisplayText($"< {player.Name()} {Global.MESSAGE_POTSHIELDMISSING} >", false);
-                    }
+                    inventory.UseHealthPot(player, item, hud);
                 }
-            turn = false;
+
+                if (battleDecision.Key == ConsoleKey.Z)
+                {
+                    inventory.UseShieldPot(player, item, hud);
+                }
+                turn = false;
             }
             else
             {
-                damage = enemy.DealDamage(player.Health(), hud, toolkit, false, player.Shield());
+                damage = enemy.DealDamage(player.Health(), hud, false, player.Shield());
                 enemy.DisplayDamageToHUD(player.Name(), damage, player.Health(), hud, false);
 
                 turn = true;
             }
         }
-        public GAMESTATE End() // stops the battle sequence / player victory
+        // display visuals method?
+        private GAMESTATE End() // stops the battle sequence / player victory
         {
             // if enemy dies
             return GAMESTATE.MAP;
         }
-        public GAMESTATE GameOver() // on player death
+        private GAMESTATE GameOver() // on player death
         {
-
             return GAMESTATE.GAMEOVER;
         }
-        
+
+        // ----- public methods
+        public void Draw() 
+        {
+            hud.Draw();
+            camera.DrawBorder();
+        }
+        public GAMESTATE Begin(Player player, Enemy enemy, Inventory inventory, bool isPlayer = false)
+        {
+            turn = isPlayer;
+            opponent = enemy;
+            hud = new HUD(player.Name());
+            Console.Clear();
+            hud.Update(player, inventory);
+            hud.DrawTextBox();
+            return GAMESTATE.BATTLE;
+        }
+        public GAMESTATE Update(Player player, GAMESTATE gameState, Item item, Inventory inventory)
+        {
+            hud.Update(player, inventory);
+            Fight(player, opponent, item, inventory);
+
+            // ends fight
+            if (player.Health()[(int)STATUS.CURRENT] == 0)
+            { return GameOver(); }
+            if (opponent.Health()[(int)STATUS.CURRENT] == 0)
+            {   opponent.CheckForDying(camera, hud);
+                return End(); }
+            return gameState;
+        }
     }
 }

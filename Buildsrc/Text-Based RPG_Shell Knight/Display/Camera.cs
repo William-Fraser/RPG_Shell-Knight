@@ -8,9 +8,6 @@ namespace Text_Based_RPG_Shell_Knight
 {
     class Camera
     {
-        // map holder
-        readonly Map map;
-        char[,] _map;
         //full map with objects placed on it
         private char[,] _gameWorld;
 
@@ -37,11 +34,8 @@ namespace Text_Based_RPG_Shell_Knight
 
         
         //constructor
-        public Camera(Map map = null)
-        {
-            // pass map
-            this.map = map;
-
+        public Camera()
+        { 
             // instantiate camera fields
             _gameWorld = new char[Map.height, Map.width];
             _display = new char[displayHeight, displayWidth];
@@ -49,18 +43,13 @@ namespace Text_Based_RPG_Shell_Knight
         }
 
         // ----- gets / sets
-        public void GameWorldGetMap() // set
+        public void GameWorldGetMap(Map map) // set
         {
-            _map = map.getMap();
-            _gameWorld = _map;
+            _gameWorld = map.getMap();
         }
         public void GameWorldTile(char avatar, int x, int y) // set
         {
             _gameWorld[y -1, x] = avatar; // y-1 because of the gap on top of the consoleMinSize
-        }
-        public char GameWorldTile(int x, int y) // get
-        {
-            return _gameWorld[y - 1, x]; // y-1 because of the gap on top of the consoleMinSize
         }
 
         // ----- private methods
@@ -164,7 +153,7 @@ namespace Text_Based_RPG_Shell_Knight
 
             SetDisplay(yStart, yEnd, xStart, xEnd);
         }
-        public void FixModifyedConsole(HUD hud, Toolkit toolkit) // resets the display if the console is modifyed
+        public void FixModifyedConsole(HUD hud) // resets the display if the console is modifyed
         {
             //only activates if console is modifyed
             if (Console.WindowHeight != savedHeight || Console.WindowWidth != savedWidth)
@@ -177,7 +166,7 @@ namespace Text_Based_RPG_Shell_Knight
                 if (Console.WindowHeight < minConsoleSizeHeight || Console.WindowWidth < minConsoleSizeWidth)
                 {
                     Console.WindowHeight = minConsoleSizeHeight; Console.WindowWidth = minConsoleSizeWidth;
-                    FixModifyedConsole(hud, toolkit);
+                    FixModifyedConsole(hud);
                 }
 
                 //set up display if console isnt too small
@@ -185,16 +174,15 @@ namespace Text_Based_RPG_Shell_Knight
                 {
                     // set up display for new size
                     Console.Clear();
-                    hud.UpdateTextBox();
-                    //hud.Draw();
                     DrawBorder(); // border
+                    hud.DrawTextBox();
                 }
             }
         }
-        public void Update()
+        public void Update(Map map)
         {
-            map.loadMap();
-            GameWorldGetMap();
+            map.ReadMap();
+            //GameWorldGetMap(map);
         }
 
         //camera border

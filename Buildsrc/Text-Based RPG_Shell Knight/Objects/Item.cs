@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 
 namespace Text_Based_RPG_Shell_Knight
 {
-    enum ITEM // to be moved to global with other Item constants when Item class is updated //its important to note that if iterating through the actual number is off by 1
+    enum ITEM// to be moved to global with other Item constants when Item class is updated //its important to note that if iterating through the actual number is off by 1
     {
         POTHEAL,
         POTSHELL,
@@ -34,7 +34,6 @@ namespace Text_Based_RPG_Shell_Knight
     };
     class Item : Object
     {
-        private ITEM type;
         private bool _pickedUpByPlayer;
         private int _power; // value the item contains
 
@@ -76,23 +75,25 @@ namespace Text_Based_RPG_Shell_Knight
             //
 
             string identifyed = "";
-            if      (identity == 'ö') ///ö   - Health Potion / health +50 /
+            if      (identity == Global.ITEM_AVATAR(ITEM.POTHEAL)) ///ö   - Health Potion / health +50 /
             {
-                identifyed += "Health Potion;";
-                identifyed += "50";
+                identifyed += Global.ITEM_NAME(ITEM.POTHEAL);
+                identifyed += ";";
+                identifyed += Global.ITEM_POWER(ITEM.POTHEAL);
             } 
-            else if (identity == 'ï') /// ï   - Shell Banding / shield +30 /
+            else if (identity == Global.ITEM_AVATAR(ITEM.POTSHELL)) /// ï   - Shell Banding / shield +30 /
             {
-                identifyed += "Shell Banding;";
-                identifyed += "30";
+                identifyed += Global.ITEM_NAME(ITEM.POTSHELL);
+                identifyed += ";";
+                identifyed += Global.ITEM_POWER(ITEM.POTSHELL);
             }
-            else if (identity == 'k') /// k   - Small Key / opens small doors /
+            else if (identity == Global.ITEM_AVATAR(ITEM.KEYSMALL)) /// k   - Small Key / opens small doors /
             {
-                identifyed += "Small Key";
+                identifyed += Global.ITEM_NAME(ITEM.KEYSMALL);
             }
-            else if (identity == 'K') /// K   - Big Key / opens big doors /
+            else if (identity == Global.ITEM_AVATAR(ITEM.KEYBIG)) /// K   - Big Key / opens big doors /
             {
-                identifyed += "Big Key";
+                identifyed += Global.ITEM_NAME(ITEM.KEYBIG);
             }
             return identifyed; 
         }
@@ -120,7 +121,7 @@ namespace Text_Based_RPG_Shell_Knight
                 {
                     this._pickedUpByPlayer = true;
                     aliveInWorld = false;
-                    inventory.PickupIfFound(player, items, hud);
+                    inventory.PickupFoundItems(player, items, hud);
                 }
             }
 

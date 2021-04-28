@@ -107,29 +107,24 @@ namespace Text_Based_RPG_Shell_Knight
 
             //show dead Charcter
             _avatar = Global.CHARACTER_DEADAVATAR;
-            Draw(camera);
+            Draw(camera); //immediately update sprite
 
             //draw death to HUD
             string deathMessage = $"< {name} {Global.MESSAGE_SLAIN} >";
-            hud.DisplayText(deathMessage, false);
+            hud.DisplayText(deathMessage);
         }
         new public void Draw(Camera camera) // Draws character to game world
         {
             camera.GameWorldTile(_avatar, x, y);
         }
-
-        // Attack group
-        protected private GAMESTATE StartAttacking(bool victimIsAlive, Battle battle, Enemy enemy, GAMESTATE gameState, HUD hud) // attacks if colliding character is alive, else do nothing
+        protected private GAMESTATE StartAttacking(bool victimIsAlive, Battle battle, Player player, Enemy enemy, GAMESTATE gameState, Inventory inventory) // attacks if colliding character is alive, else do nothing
         {
             if (victimIsAlive)
             {
-                
-                gameState = battle.Begin(enemy, hud);
+                gameState = battle.Begin(player, enemy, inventory);
             }
             return gameState;
         }
-        
-        
 
         // character checks
         protected private bool CheckForWallCollision(char map, string walls) // checks for collision and returns true is collides, else false
@@ -191,14 +186,14 @@ namespace Text_Based_RPG_Shell_Knight
             { damageMessage += $"[{health[(int)STATUS.CURRENT]}/{health[(int)STATUS.MAX]}] >"; }
             else
             { damageMessage += $">"; }
-            hud.DisplayText(damageMessage);
+            hud.DisplayText(damageMessage, false);
         }
-        public int DealDamage(int[] health, HUD ui, Toolkit toolkit, bool isEnemy, int[] shield = null) // calculates damage and deals it out
+        public int DealDamage(int[] health, HUD ui, bool isEnemy, int[] shield = null) // calculates damage and deals it out
         {
             int damageToHealth = -1;
 
             //calculate damage
-            damageToHealth = toolkit.RandomNumBetween(_damage[0], _damage[1]); //random runber between a high and low value
+            damageToHealth = Toolkit.RandomNumBetween(_damage[0], _damage[1]); //random runber between a high and low value
             int damageToShield = damageToHealth; //names for convenience and to display to HUD textbox
             int passDamage = 0; // null if not passing
 
@@ -237,13 +232,15 @@ namespace Text_Based_RPG_Shell_Knight
             if (passDamage != 0) { damageToHealth = damageToShield; }
             return damageToHealth;
         }
-        public void CheckForDying(Camera camera, HUD hud) // checks if player is alive and at 0 health, then kills them
+        public void CheckForDying(Camera camera, HUD hud) // checks if character is alive and at 0 health, then kills them
         { // if 0HP then death time
-            if (_health[(int)STATUS.CURRENT] <= 0)
+            if (aliveInWorld)
             {
-                KillCharacter(_name, camera, hud);
+                if (_health[(int)STATUS.CURRENT] <= 0)
+                {
+                    KillCharacter(_name, camera, hud);
+                }
             }
         }
-
     }
 }

@@ -19,7 +19,7 @@ namespace Text_Based_RPG_Shell_Knight
             //init fields
             equipedWeapon = new Weapon(WEAPON.FISTS);
             int[] damageRange = equipedWeapon.DamageRange();
-            _shield = new int[] { 6, Global.PLAYER_SHIELD };
+            _shield = new int[] { Global.PLAYER_SHIELD, Global.PLAYER_SHIELD };
             _damage = new int[] { damageRange[(int)RANGE.LOW], damageRange[(int)RANGE.HIGH] };
 
             //init spawn
@@ -34,9 +34,10 @@ namespace Text_Based_RPG_Shell_Knight
         {
             return equipedWeapon;
         }
-        public void EquipedWeaponDamageRange(int[] value)
+        public void EquipWeapon(WEAPON w)
         {
-            _damage = value;
+            equipedWeapon.IdentifyAndEquip(w);
+            _damage = equipedWeapon.DamageRange();
         }
         public int[] Shield()
         {
@@ -77,15 +78,11 @@ namespace Text_Based_RPG_Shell_Knight
                 _XYHolder[1] = y;
             }
         }
-        private GAMESTATE UseItemHotbarOutput(Item item, HUD hud, Inventory inventory, GAMESTATE gameState, Battle battle, Enemy enemy)// uses item if player inputs
+        private GAMESTATE OpenInventoryOutput(Inventory inventory, GAMESTATE gameState, Battle battle, Enemy enemy)
         {
-
-            // init values for easy reading
-            char[] avatar = inventory.ItemAvatars();
-            int[] stock = inventory.ItemStock();
-
-            if (_playerInput.Key == ConsoleKey.I)
+            if (_playerInput.Key == ConsoleKey.E)
             {
+                inventory.InitInventory(this, gameState);
                 gameState = GAMESTATE.INVENTORY;
                 return gameState;
             }
@@ -93,48 +90,23 @@ namespace Text_Based_RPG_Shell_Knight
             //used to start and debug battles
             if (_playerInput.Key == ConsoleKey.P)
             {
-                return battle.Begin(enemy, hud);
+                return battle.Begin(this, enemy, inventory, true);
             }
 
+            return gameState;
+        }
+        private GAMESTATE UseItemOutput(Item item, HUD hud, Inventory inventory, GAMESTATE gameState)// uses item if player inputs
+        {
             // Use Health Pot
             if (_playerInput.Key == ConsoleKey.X)
             {
-                if (stock[(int)ITEM.POTHEAL] > 0)
-                {
-                    HealHealth(item.Power(avatar[(int)ITEM.POTHEAL]));
-                    inventory.UseItem((int)ITEM.POTHEAL);
-
-                    //update HUD bar and display to HUD text box
-                    hud.setHudHealthAndShield(_health, _shield);
-                    hud.Draw();// updates visible inventory
-                    hud.UpdateHotBar(this, inventory);
-                    hud.DisplayText($"< {_name} {Global.MESSAGE_POTHEALTHDRINK} >", false);
-                    
-                }
-                else
-                {
-                    hud.DisplayText($"< {_name} {Global.MESSAGE_POTHEALTHMISSING} >", false);
-                }
+                inventory.UseHealthPot(this, item, hud);
             }
 
             // Use Shield Pot
             if (_playerInput.Key == ConsoleKey.Z)
             {
-                if (stock[(int)ITEM.POTSHELL] > 0)
-                {
-                    inventory.UseItem(ITEM.POTSHELL);
-                    HealShell(item.Power(avatar[(int)ITEM.POTSHELL]));
-
-                    //update HUD bar and display to HUD text box
-                    hud.setHudHealthAndShield(_health, _shield);
-                    hud.Draw();// updates visible inventory
-                    hud.UpdateHotBar(this, inventory);
-                    hud.DisplayText($"< {_name} {Global.MESSAGE_POTSHIELDDRINK} >", false);
-                }
-                else
-                {
-                    hud.DisplayText($"< {_name} {Global.MESSAGE_POTSHIELDMISSING} >", false);
-                }
+                inventory.UseShieldPot(this, item, hud);
             }
             return gameState;
         }
@@ -162,11 +134,12 @@ namespace Text_Based_RPG_Shell_Knight
             base.Draw(camera);
             ///toolkit.DisplayText("drawing");
         }
-        public GAMESTATE Update(List<Enemy> enemies, List<Door> doors, Map map, Camera camera, List<Item> item, HUD hud, Toolkit toolkit, Inventory inventory, GAMESTATE gameState, Battle battle)
+        public GAMESTATE Update(List<Enemy> enemies, List<Door> doors, List<Item> item, Map map, Camera camera, HUD hud, Battle battle, Inventory inventory, GAMESTATE gameState)
         {
 
             if (aliveInWorld)
             {
+                CheckForDying(camera, hud);
 
                 // gets Input
                 GetInput();
@@ -174,9 +147,11 @@ namespace Text_Based_RPG_Shell_Knight
                 // "Looks at" selected direction
                 DirectionalOutput();
 
-                // used in place of Directional, only Healing items currently
+                // used in place of Directional, Opens inventory (and debug battle if not disabled)
+                gameState = OpenInventoryOutput(inventory, gameState, battle, enemies[0]); // battle and enemies used for debug
 
-                gameState = UseItemHotbarOutput(item[0], hud, inventory, gameState, battle, enemies[0]);// item is passed in blank because it's recognized inside the method this is for typing and can probably be done better
+                // used in place of Directional, only Healing items currently
+                gameState = UseItemOutput(item[0], hud, inventory, gameState);// item is passed in blank because it's recognized inside the method this is for typing and can probably be done better
                 
                 //check everything for collision
                 bool collision = false;
@@ -192,10 +167,7 @@ namespace Text_Based_RPG_Shell_Knight
                         collision = true;
 
                         //collide to deal damage
-                        gameState = StartAttacking(enemies[i].AliveInWorld(), battle, enemies[i], gameState, hud);
-
-                        //Stops character update and ends game
-                        enemies[i].CheckForDying(camera, hud);
+                        gameState = StartAttacking(enemies[i].AliveInWorld(), battle, this, enemies[i], gameState, inventory);
                     }
                 }
 

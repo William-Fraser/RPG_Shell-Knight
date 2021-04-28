@@ -321,9 +321,8 @@ namespace Text_Based_RPG_Shell_Knight
 
 
         // ----- public methods
-        public GAMESTATE Update(Player player, Map map, Camera camera, HUD hud, Toolkit toolkit, Battle battle, GAMESTATE gameState)
+        public GAMESTATE Update(Player player, Map map, Camera camera, HUD hud, Battle battle, Inventory inventory, GAMESTATE gameState)
         {
-
             if (aliveInWorld)
             {    
                 switch(_ai)
@@ -346,10 +345,7 @@ namespace Text_Based_RPG_Shell_Knight
                 if (CheckForCharacterCollision(player.X(), player.Y(), player.AliveInWorld())) // enemy values read as zero on firstcontact, needs enemy locate to read adjesent tile's
                 {
                     collision = true;
-                    gameState = StartAttacking(aliveInWorld, battle, this, gameState, hud);
-
-                    //Stops character update and ends game
-                    player.CheckForDying(camera, hud);
+                    gameState = StartAttacking(aliveInWorld, battle, player, this, gameState, inventory);
                 }
 
                 if (!CheckForWallCollision(map.getTile(_XYHolder[0], _XYHolder[1]-1), map.getWallHold())) // -1 to fix bug from result of other fix
@@ -359,6 +355,7 @@ namespace Text_Based_RPG_Shell_Knight
                         Move();
                     }
                 }
+                CheckForDying(camera, hud);
             }
             return gameState;
         }

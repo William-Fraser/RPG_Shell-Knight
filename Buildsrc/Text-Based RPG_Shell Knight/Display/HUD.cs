@@ -15,7 +15,6 @@ namespace Text_Based_RPG_Shell_Knight
         private string status; // health and shield in string form
         private int[] health = { 0, 0 };
         private int[] shield = { 0, 0 };
-        private string arm;
         private string hotbar;
 
         //text box
@@ -197,7 +196,7 @@ namespace Text_Based_RPG_Shell_Knight
             Console.Write("║");
             
         }
-        public void UpdateTextBox()
+        public void DrawTextBox()
         {
             // init position
             int moveUI = (Console.WindowWidth / 2) - (Camera.displayWidth / 2);
@@ -231,6 +230,55 @@ namespace Text_Based_RPG_Shell_Knight
             Console.Write("╚");
             for (int i = 0; i < 117; i++) { Console.Write("═"); }
             Console.Write("╝");
+        }
+        public void ReloadText()
+        {
+            int moveUI = (Console.WindowWidth / 2) - (Camera.displayWidth / 2);
+            if (moveUI < 0) { moveUI = 0; }
+
+            if (Console.WindowHeight != Camera.minConsoleSizeHeight || Console.WindowWidth != Camera.minConsoleSizeWidth)
+            { Console.SetCursorPosition(moveUI + 1, Console.WindowHeight - 3); }
+            else
+            { Console.SetCursorPosition(1, Console.WindowHeight - 3); }
+            Console.Write(blank);
+            if (Console.WindowHeight != Camera.minConsoleSizeHeight || Console.WindowWidth != Camera.minConsoleSizeWidth)
+            { Console.SetCursorPosition(moveUI + 1, Console.WindowHeight - 3); }
+            else
+            { Console.SetCursorPosition(1, Console.WindowHeight - 3); }
+            Console.Write(currentMessage);
+
+            if (Console.WindowHeight != Camera.minConsoleSizeHeight || Console.WindowWidth != Camera.minConsoleSizeWidth)
+            { Console.SetCursorPosition(moveUI + 1, Console.WindowHeight - 4); }
+            else
+            { Console.SetCursorPosition(1, Console.WindowHeight - 4); }
+            Console.Write(blank);
+            if (Console.WindowHeight != Camera.minConsoleSizeHeight || Console.WindowWidth != Camera.minConsoleSizeWidth)
+            { Console.SetCursorPosition(moveUI + 1, Console.WindowHeight - 4); }
+            else
+            { Console.SetCursorPosition(1, Console.WindowHeight - 4); }
+            Console.Write(recentMessage);
+
+            if (Console.WindowHeight != Camera.minConsoleSizeHeight || Console.WindowWidth != Camera.minConsoleSizeWidth)
+            { Console.SetCursorPosition(moveUI + 1, Console.WindowHeight - 5); }
+            else
+            { Console.SetCursorPosition(1, Console.WindowHeight - 5); }
+            Console.Write(blank);
+            if (Console.WindowHeight != Camera.minConsoleSizeHeight || Console.WindowWidth != Camera.minConsoleSizeWidth)
+            { Console.SetCursorPosition(moveUI + 1, Console.WindowHeight - 5); }
+            else
+            { Console.SetCursorPosition(1, Console.WindowHeight - 5); }
+            Console.Write(middleMessage);
+
+            if (Console.WindowHeight != Camera.minConsoleSizeHeight || Console.WindowWidth != Camera.minConsoleSizeWidth)
+            { Console.SetCursorPosition(moveUI + 1, Console.WindowHeight - 6); }
+            else
+            { Console.SetCursorPosition(1, Console.WindowHeight - 6); }
+            Console.Write(blank);
+            if (Console.WindowHeight != Camera.minConsoleSizeHeight || Console.WindowWidth != Camera.minConsoleSizeWidth)
+            { Console.SetCursorPosition(moveUI + 1, Console.WindowHeight - 6); }
+            else
+            { Console.SetCursorPosition(1, Console.WindowHeight - 6); }
+            Console.Write(decayingMessage);
         }
         public void UpdateHotBar(Player player, Inventory inventory) // fixes hotbar to represent important invetory items
         {
@@ -305,10 +353,10 @@ namespace Text_Based_RPG_Shell_Knight
         }
         public void Update(Player player, Inventory inventory)
         {
-            //UpdateTextBox();
-            UpdateHotBar(player, inventory);
             setHudHealthAndShield(player.Health(), player.Shield());
-            Draw();
+            UpdateHotBar(player, inventory);
+            ReloadText();
+            Draw(); // hud is a special case where it should redraw at the end of every update
         }
 
         //scrolling text
