@@ -12,7 +12,8 @@ namespace Text_Based_RPG_Shell_Knight
         CHANGEMAP,
         MAP,
         BATTLE,
-        INVENTORY
+        INVENTORY,
+        TRADING
     }
     class GameManager
     {
@@ -29,6 +30,9 @@ namespace Text_Based_RPG_Shell_Knight
         readonly Player player; // controls the player
         List<Enemy> enemies; // List of Enemies in the current game world
         readonly EnemyManager manageEnemies;
+
+        List<Vendor> vendors;
+        readonly VendorManager manageVendors;
 
         // Object init
         readonly ObjectManager[] manageObjects; // holds all object managers for easy reading
@@ -50,6 +54,9 @@ namespace Text_Based_RPG_Shell_Knight
             hud = new HUD(player.Name());
             enemies = new List<Enemy>();
             manageEnemies = new EnemyManager();
+
+            vendors = new List<Vendor>();
+            manageVendors = new VendorManager();
 
             //init object manager
             manageObjects = new ObjectManager[2];
