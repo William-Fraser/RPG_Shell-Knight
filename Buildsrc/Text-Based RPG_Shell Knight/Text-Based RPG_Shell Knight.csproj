@@ -48,6 +48,7 @@
     <Compile Include="Characters\Vendor.cs" />
     <Compile Include="Display\Battle.cs" />
     <Compile Include="Display\Inventory.cs" />
+    <Compile Include="Display\TradeMenu.cs" />
     <Compile Include="Managers\Object Managers\ItemManager.cs" />
     <Compile Include="Managers\Object Managers\DoorManager.cs" />
     <Compile Include="Managers\Object Managers\EnemyManager.cs" />
