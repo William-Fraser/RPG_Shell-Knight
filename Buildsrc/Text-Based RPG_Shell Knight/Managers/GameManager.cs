@@ -25,6 +25,7 @@ namespace Text_Based_RPG_Shell_Knight
         readonly HUD hud; // appears under camera to give player information
         readonly Inventory inventory; // changes game state to interactable inventory
         readonly Battle battle;
+        readonly TradeMenu tradeMenu;
 
         // Character init
         readonly Player player; // controls the player
@@ -49,6 +50,7 @@ namespace Text_Based_RPG_Shell_Knight
             map = new Map();
             camera = new Camera();
             battle = new Battle();
+            tradeMenu = new TradeMenu();
             player = new Player(Global.PLAYER_DEFAULTNAME, Global.PLAYER_AVATAR);
             inventory = new Inventory(player);
             hud = new HUD(player.Name());
@@ -112,6 +114,7 @@ namespace Text_Based_RPG_Shell_Knight
                     items.Clear();
                     enemies.Clear();
                     doors.Clear();
+                    vendors.Clear();
                     //read new map info/ load it into the camera
                     map.loadMap();
                     camera.GameWorldGetMap(map);
@@ -122,6 +125,8 @@ namespace Text_Based_RPG_Shell_Knight
                     enemies = manageEnemies.Init(map.getEnemyHold().Split('|'));
                     items = (manageObjects[(int)OBJECTS.ITEM] as ItemManager).Init(map.getItemHold().Split('|'));
                     doors = (manageObjects[(int)OBJECTS.DOOR] as DoorManager).Init(map.getDoorHold().Split('|'));
+                    vendors = manageVendors.Init(map.getVendorHold().Split('|'));
+
                     //change state to display the freshly loaded map & objects
                     _gameState = GAMESTATE.MAP;
                     #endregion
@@ -134,6 +139,7 @@ namespace Text_Based_RPG_Shell_Knight
                     (manageObjects[(int)OBJECTS.ITEM] as ItemManager).Draw(items, camera);
                     (manageObjects[(int)OBJECTS.DOOR] as DoorManager).Draw(doors, camera);
                     manageEnemies.Draw(enemies, camera);
+                    manageVendors.Draw(vendors, camera);
                     player.Draw(camera);
                     //GameWorld / including objects added above
                     camera.Draw(player);
@@ -141,8 +147,9 @@ namespace Text_Based_RPG_Shell_Knight
                     //UPDATE
                     //by prioity, Heirarchy: highest is on top
                     hud.Update(player, inventory);
-                    _gameState = player.Update(enemies, doors, items, map, camera, hud, battle, inventory, _gameState);
+                    _gameState = player.Update(enemies, doors, items, map, camera, hud, battle, inventory, _gameState, vendors, tradeMenu);
                     _gameState = manageEnemies.Update(enemies, player, map, camera, hud, battle, inventory, _gameState);
+                    _gameState = manageVendors.Update(vendors, player, map, camera, hud, battle, inventory, _gameState);
                     (manageObjects[(int)OBJECTS.ITEM] as ItemManager).Update(items, player, inventory, hud);
                     camera.Update(map); // updated last to catch all character and object updates on gameworld
                     #endregion
@@ -165,6 +172,11 @@ namespace Text_Based_RPG_Shell_Knight
                 case GAMESTATE.GAMEOVER:
                     GameOverMessage();
                     break;
+                case GAMESTATE.TRADING:
+                    tradeMenu.Draw();
+                    _gameState = tradeMenu.Update(player, _gameState, items[0], inventory);
+                    break;
+
             }
         }
     }

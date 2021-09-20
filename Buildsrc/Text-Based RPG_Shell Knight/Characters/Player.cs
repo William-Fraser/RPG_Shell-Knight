@@ -8,6 +8,7 @@ namespace Text_Based_RPG_Shell_Knight
 {
     class Player : Character
     {
+        public int currentMoney;
         private ConsoleKeyInfo _playerInput;
 
         private int[] _shield; // displayed as Shell, set states: 0 = current, 1 = max, health follows the same number convention
@@ -21,6 +22,7 @@ namespace Text_Based_RPG_Shell_Knight
             int[] damageRange = equipedWeapon.DamageRange();
             _shield = new int[] { Global.PLAYER_SHIELD, Global.PLAYER_SHIELD };
             _damage = new int[] { damageRange[(int)RANGE.LOW], damageRange[(int)RANGE.HIGH] };
+            currentMoney = 0;
 
             //init spawn
             x = Global.PLAYER_SPAWNPOINT[0];
@@ -134,7 +136,7 @@ namespace Text_Based_RPG_Shell_Knight
             base.Draw(camera);
             ///toolkit.DisplayText("drawing");
         }
-        public GAMESTATE Update(List<Enemy> enemies, List<Door> doors, List<Item> item, Map map, Camera camera, HUD hud, Battle battle, Inventory inventory, GAMESTATE gameState)
+        public GAMESTATE Update(List<Enemy> enemies, List<Door> doors, List<Item> item, Map map, Camera camera, HUD hud, Battle battle, Inventory inventory, GAMESTATE gameState, List<Vendor> vendors, TradeMenu tradeMenu)
         {
 
             if (aliveInWorld)
@@ -168,6 +170,25 @@ namespace Text_Based_RPG_Shell_Knight
 
                         //collide to deal damage
                         gameState = StartAttacking(enemies[i].AliveInWorld(), battle, this, enemies[i], gameState, inventory);
+                    }
+                }
+                for (int i = 0; i < vendors.Count; i++)
+                {
+                    if (CheckForCharacterCollision(vendors[i].X(), vendors[i].Y(), vendors[i].AliveInWorld())) // enemy values read as zero on firstcontact, needs enemy locate to read adjesent tile's
+                    {
+                        //access weapons damage
+
+                        //collide
+                        //collision = true;
+
+                        hud.Draw();
+                        hud.DisplayText($"< This is a Vendor, Press 'T' to Trade >", false);
+
+                        if (_playerInput.Key == ConsoleKey.T)
+                        {
+                            gameState = StartTrading(vendors[i].AliveInWorld(), tradeMenu, this, vendors[i], gameState, inventory);
+                            
+                        }
                     }
                 }
 

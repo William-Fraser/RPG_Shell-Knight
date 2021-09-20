@@ -125,6 +125,14 @@ namespace Text_Based_RPG_Shell_Knight
             }
             return gameState;
         }
+        protected private GAMESTATE StartTrading(bool vendorIsAlive, TradeMenu tradeMenu, Player player, Vendor vendor, GAMESTATE gameState, Inventory inventory) // attacks if colliding character is alive, else do nothing
+        {
+            if (vendorIsAlive)
+            {
+                gameState = tradeMenu.Begin(player, vendor, inventory);
+            }
+            return gameState;
+        }
 
         // character checks
         protected private bool CheckForWallCollision(char map, string walls) // checks for collision and returns true is collides, else false

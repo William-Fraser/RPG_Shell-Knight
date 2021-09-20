@@ -303,6 +303,7 @@ namespace Text_Based_RPG_Shell_Knight
 
             //weapon update
             this.hotbar += " Arm: " + weapon.Avatar();
+            this.hotbar += " | Money: $" + player.currentMoney;
         }
         public void DisplayText(string message, bool waitForKey = true) // bool for game over text
         {

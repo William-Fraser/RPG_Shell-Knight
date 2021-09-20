@@ -25,19 +25,21 @@ namespace Text_Based_RPG_Shell_Knight
        
         private void readVendorInfo(string vendorInfo)
         {
+            //recognize item info
             string[] avatarAndPos = vendorInfo.Split(':');
-            string avatarHold = avatarAndPos[0];
-            string posHold = avatarAndPos[1];
+            string[] recognizedItem = RecognizeInfo(vendorInfo[0]).Split(';'); ;
 
-            // reading identity for creating
-            char identity = avatarHold[0];
-            string[] identifyed = RecognizeInfo(identity).Split(';');
+            //set item fields
+            _avatar = vendorInfo[0];
+            _name = "Vendor";
 
-            // creating enemy form identity
-
-            //init of fields
-            _avatar = avatarHold[0];
-            _name = identifyed[0];
+            //set position
+            string[] posHold = avatarAndPos[1].Split(',');
+            int[] posXY = new int[2];
+            for (int i = 0; i < posHold.Length; i++)
+            { posXY[i] = Int32.Parse(posHold[i]); }
+            x = posXY[0];
+            y = posXY[1];
         }
 
         private string RecognizeInfo(char identity)
@@ -48,13 +50,15 @@ namespace Text_Based_RPG_Shell_Knight
             {
                 identifyed += "Black Smith;";
                 type = Type.BLACKSMITH;
-                
+                aliveInWorld = true;
+
             }
-            else if (identity == '&') 
+            else if (identity == 'P') 
             {
                 identifyed += "Potioneer;";
                 type = Type.POTIONEER;
-               
+                aliveInWorld = true;
+
             }
 
             return identifyed;

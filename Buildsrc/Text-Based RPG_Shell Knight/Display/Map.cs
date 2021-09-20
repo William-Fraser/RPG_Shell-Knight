@@ -15,6 +15,7 @@ namespace Text_Based_RPG_Shell_Knight
         public List<string> enemyHold = new List<string>();
         public List<string> itemHold = new List<string>();
         public List<string> doorHold = new List<string>();
+        public List<string> vendorHold = new List<string>();
 
         // Map File Lines/Info Readers
         private string[] allRowsAndInfo = File.ReadAllLines("Map_test.txt");// this changes to string constant is _test for now
@@ -99,6 +100,19 @@ namespace Text_Based_RPG_Shell_Knight
             }
             return allItems;
         }
+        public string getVendorHold()
+        {
+            string allVendors = "";
+            for (int i = 0; i < vendorHold.Count; i++)
+            {
+                allVendors += vendorHold[i];
+                if (i != vendorHold.Count - 1)
+                {
+                    allVendors += "|";
+                }
+            }
+            return allVendors;
+        }
 
         // ----- Public Methods
         public void loadMap()// loads the map from a text file
@@ -123,6 +137,10 @@ namespace Text_Based_RPG_Shell_Knight
             for (int i = 0; i < doorHold.Count; i++)
             {
                 doorHold.Remove(doorHold[i]);
+            }
+            for (int i = 0; i < vendorHold.Count; i++)
+            {
+                vendorHold.Remove(vendorHold[i]);
             }
 
             // check for file
@@ -158,6 +176,11 @@ namespace Text_Based_RPG_Shell_Knight
             for (int i = 0; i < (doorInfo.Length); i++)
             {
                 doorHold.Add(doorInfo[i]);
+            }
+            string[] vendorInfo = readInfo[4].ToString().Split('|');
+            for (int i = 0; i < (vendorInfo.Length); i++)
+            {
+                vendorHold.Add(vendorInfo[i]);
             }
 
 

@@ -59,7 +59,7 @@ namespace Text_Based_RPG_Shell_Knight
 			_stockItems = new int[(int)ITEM.TOTALITEMS];
 			for (ITEM i = 0; i < ITEM.TOTALITEMS; i++)
 			{
-				_stockItems[(int)i] = 3;
+				_stockItems[(int)i] = 0;
 			}
 
 			_stockWeapons = new bool[(int)WEAPON.TOTALWEAPONS];
