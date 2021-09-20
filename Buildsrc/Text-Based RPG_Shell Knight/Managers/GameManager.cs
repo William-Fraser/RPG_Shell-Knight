@@ -173,7 +173,7 @@ namespace Text_Based_RPG_Shell_Knight
                     GameOverMessage();
                     break;
                 case GAMESTATE.TRADING:
-                    tradeMenu.Draw();
+                    //tradeMenu.Draw();
                     _gameState = tradeMenu.Update(player, _gameState, items[0], inventory);
                     break;
 

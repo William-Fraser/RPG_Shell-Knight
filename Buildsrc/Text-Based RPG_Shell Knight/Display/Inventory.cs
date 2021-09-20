@@ -16,6 +16,13 @@ namespace Text_Based_RPG_Shell_Knight
 		HUD hud;
 
 		//set entry state for return
+		public bool daggerOwned = false;
+		public bool shortswordOwned = false;
+		public bool broadswordOwned = false;
+		public bool longswordOwned = false;
+		public bool claymoreOwned = false;
+		public bool kaliburnOwned = false;
+
 		private GAMESTATE returnto;
 
 		//border dimensions
@@ -23,7 +30,7 @@ namespace Text_Based_RPG_Shell_Knight
 		readonly int width = Camera.displayWidth;
 
 		//holds the inventory border
-		string[,] backround;
+		string[,] background;
 
 		//moving the cursor
 		ConsoleKeyInfo menuInput;
@@ -54,7 +61,7 @@ namespace Text_Based_RPG_Shell_Knight
 		public Inventory(Player player) // creates the size of the inventory
 		{
 			hud = new HUD(player.Name());
-			backround = new string[height, width];
+			background = new string[height, width];
 
 			_stockItems = new int[(int)ITEM.TOTALITEMS];
 			for (ITEM i = 0; i < ITEM.TOTALITEMS; i++)
@@ -167,12 +174,12 @@ namespace Text_Based_RPG_Shell_Knight
 
 			///weapons / BOOL
 			if (_stockWeapons[(int)WEAPON.FISTS]) { SetPosition(WEAPON.FISTS); Console.Write(Global.WEAPON_AVATAR(WEAPON.FISTS)); }
-			if (_stockWeapons[(int)WEAPON.DAGGER]) { SetPosition(WEAPON.DAGGER); Console.Write(Global.WEAPON_AVATAR(WEAPON.DAGGER)); }
-			if (_stockWeapons[(int)WEAPON.SHORTSWORD]) { SetPosition(WEAPON.SHORTSWORD); Console.Write(Global.WEAPON_AVATAR(WEAPON.SHORTSWORD)); }
-			if (_stockWeapons[(int)WEAPON.BROADSWORD]) { SetPosition(WEAPON.BROADSWORD); Console.Write(Global.WEAPON_AVATAR(WEAPON.BROADSWORD)); }
-			if (_stockWeapons[(int)WEAPON.LONGSWORD]) { SetPosition(WEAPON.LONGSWORD); Console.Write(Global.WEAPON_AVATAR(WEAPON.LONGSWORD)); }
-			if (_stockWeapons[(int)WEAPON.CLAYMORE]) { SetPosition(WEAPON.CLAYMORE); Console.Write(Global.WEAPON_AVATAR(WEAPON.CLAYMORE)); }
-			if (_stockWeapons[(int)WEAPON.KALIBURN]) { SetPosition(WEAPON.KALIBURN); Console.Write(Global.WEAPON_AVATAR(WEAPON.KALIBURN)); }
+			if (_stockWeapons[(int)WEAPON.DAGGER]) { SetPosition(WEAPON.DAGGER); if (daggerOwned == false) { } else { Console.Write(Global.WEAPON_AVATAR(WEAPON.DAGGER)); } }
+			if (_stockWeapons[(int)WEAPON.SHORTSWORD]) { SetPosition(WEAPON.SHORTSWORD); if (shortswordOwned == false) { } else { Console.Write(Global.WEAPON_AVATAR(WEAPON.SHORTSWORD)); } }
+			if (_stockWeapons[(int)WEAPON.BROADSWORD]) { SetPosition(WEAPON.BROADSWORD); if (broadswordOwned == false) { } else { Console.Write(Global.WEAPON_AVATAR(WEAPON.BROADSWORD)); } }
+			if (_stockWeapons[(int)WEAPON.LONGSWORD]) { SetPosition(WEAPON.LONGSWORD); if (longswordOwned == false) { } else { Console.Write(Global.WEAPON_AVATAR(WEAPON.LONGSWORD)); } }
+			if (_stockWeapons[(int)WEAPON.CLAYMORE]) { SetPosition(WEAPON.CLAYMORE); if (claymoreOwned == false) { } else { Console.Write(Global.WEAPON_AVATAR(WEAPON.CLAYMORE)); } }
+			if (_stockWeapons[(int)WEAPON.KALIBURN]) { SetPosition(WEAPON.KALIBURN); if (kaliburnOwned == false) { } else { Console.Write(Global.WEAPON_AVATAR(WEAPON.KALIBURN)); } }
 		}
 		#endregion
 
@@ -249,12 +256,12 @@ namespace Text_Based_RPG_Shell_Knight
 
 				//weapon slots
 				else if (navigator == 20 && _stockWeapons[(int)WEAPON.FISTS]) { player.EquipWeapon(WEAPON.FISTS); hud.DisplayText($"< {player.Name()} Equiped {weapon.Name()} >", false); }
-				else if (navigator == 21 && _stockWeapons[(int)WEAPON.DAGGER]) { player.EquipWeapon(WEAPON.DAGGER); hud.DisplayText($"< {player.Name()} Equiped {weapon.Name()} >", false); }
-				else if (navigator == 22 && _stockWeapons[(int)WEAPON.SHORTSWORD]) { player.EquipWeapon(WEAPON.SHORTSWORD); hud.DisplayText($"< {player.Name()} Equiped {weapon.Name()} >", false); }
-				else if (navigator == 23 && _stockWeapons[(int)WEAPON.BROADSWORD]) { player.EquipWeapon(WEAPON.BROADSWORD); hud.DisplayText($"< {player.Name()} Equiped {weapon.Name()} >", false); }
-				else if (navigator == 24 && _stockWeapons[(int)WEAPON.LONGSWORD]) { player.EquipWeapon(WEAPON.LONGSWORD); hud.DisplayText($"< {player.Name()} Equiped {weapon.Name()} >", false); }
-				else if (navigator == 25 && _stockWeapons[(int)WEAPON.CLAYMORE]) { player.EquipWeapon(WEAPON.CLAYMORE); hud.DisplayText($"< {player.Name()} Equiped {weapon.Name()} >", false); }
-				else if (navigator == 26 && _stockWeapons[(int)WEAPON.KALIBURN]) { player.EquipWeapon(WEAPON.KALIBURN); hud.DisplayText($"< {player.Name()} Equiped {weapon.Name()} >", false); }
+				else if (navigator == 21 && _stockWeapons[(int)WEAPON.DAGGER]) { if (daggerOwned == false) { hud.DisplayText($"< {player.Name()} Equiped nothing... >", false); } else { player.EquipWeapon(WEAPON.DAGGER); hud.DisplayText($"< {player.Name()} Equiped {weapon.Name()} >", false); } }
+				else if (navigator == 22 && _stockWeapons[(int)WEAPON.SHORTSWORD]) { if (shortswordOwned == false) { hud.DisplayText($"< {player.Name()} Equiped nothing... >", false); } else { player.EquipWeapon(WEAPON.SHORTSWORD); hud.DisplayText($"< {player.Name()} Equiped {weapon.Name()} >", false); } }
+				else if (navigator == 23 && _stockWeapons[(int)WEAPON.BROADSWORD]) { if (broadswordOwned == false) { hud.DisplayText($"< {player.Name()} Equiped nothing... >", false); } else { player.EquipWeapon(WEAPON.BROADSWORD); hud.DisplayText($"< {player.Name()} Equiped {weapon.Name()} >", false); } }
+				else if (navigator == 24 && _stockWeapons[(int)WEAPON.LONGSWORD]) { if (longswordOwned == false) { hud.DisplayText($"< {player.Name()} Equiped nothing... >", false); } else { player.EquipWeapon(WEAPON.LONGSWORD); hud.DisplayText($"< {player.Name()} Equiped {weapon.Name()} >", false); } }
+				else if (navigator == 25 && _stockWeapons[(int)WEAPON.CLAYMORE]) { if (claymoreOwned == false) { hud.DisplayText($"< {player.Name()} Equiped nothing... >", false); } else { player.EquipWeapon(WEAPON.CLAYMORE); hud.DisplayText($"< {player.Name()} Equiped {weapon.Name()} >", false); } }
+				else if (navigator == 26 && _stockWeapons[(int)WEAPON.KALIBURN]) { if (kaliburnOwned == false) { hud.DisplayText($"< {player.Name()} Equiped nothing... >", false); } else { player.EquipWeapon(WEAPON.KALIBURN); hud.DisplayText($"< {player.Name()} Equiped {weapon.Name()} >", false); } }
 
 				hud.UpdateHotBar(player, this); // update hotbar on inventory use
 			}
@@ -296,7 +303,7 @@ namespace Text_Based_RPG_Shell_Knight
 				string[] borderX = borderY[i].Split(','); // used for .Length and to Map the Xcoordinates on 
 				for (int j = 0; j < borderX.Length; j++)
 				{
-					backround[i, j] = borderX[j];
+					background[i, j] = borderX[j];
 				}
 			}
 		}
@@ -333,7 +340,7 @@ namespace Text_Based_RPG_Shell_Knight
 				for (int x = 0; x < Camera.displayWidth - 1; x++)
 				{
 					//write the display
-					Console.Write(backround[y, x]);
+					Console.Write(background[y, x]);
 				}
 
 				//move down a line

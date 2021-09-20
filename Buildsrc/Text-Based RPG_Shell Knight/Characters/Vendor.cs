@@ -10,18 +10,17 @@ namespace Text_Based_RPG_Shell_Knight
 
     {
         //different types of vendors
-        private enum Type
+        public enum Type
         {
             BLACKSMITH,
             POTIONEER
         }
-        private Type type;
+        public Type type;
 
         public Vendor(string vendorInfo, string name = "vendor", char avatar = '!') :base(name, avatar, 0)
         {
             readVendorInfo(vendorInfo);
         }
-
        
         private void readVendorInfo(string vendorInfo)
         {

@@ -9,7 +9,7 @@ namespace Text_Based_RPG_Shell_Knight
     class Player : Character
     {
         public int currentMoney;
-        private ConsoleKeyInfo _playerInput;
+        public ConsoleKeyInfo _playerInput;
 
         private int[] _shield; // displayed as Shell, set states: 0 = current, 1 = max, health follows the same number convention
         private Weapon equipedWeapon;
@@ -22,7 +22,7 @@ namespace Text_Based_RPG_Shell_Knight
             int[] damageRange = equipedWeapon.DamageRange();
             _shield = new int[] { Global.PLAYER_SHIELD, Global.PLAYER_SHIELD };
             _damage = new int[] { damageRange[(int)RANGE.LOW], damageRange[(int)RANGE.HIGH] };
-            currentMoney = 0;
+            currentMoney = 500;
 
             //init spawn
             x = Global.PLAYER_SPAWNPOINT[0];
