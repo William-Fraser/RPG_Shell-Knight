@@ -459,14 +459,14 @@ namespace Text_Based_RPG_Shell_Knight
 		}
         #endregion
 
-        public GAMESTATE Update(GAMESTATE gameState, Player player, Item item, Inventory inventory) // used to interact with the inventory / remove normal input / control console cursor
+        public GAMESTATE Update(GAMESTATE gameState, Player player, Item item, Inventory inventory, TradeMenu tradeMenu) // used to interact with the inventory / remove normal input / control console cursor
 		{
 			hud.Update(player, inventory);
 			Input();
 
 			//Output
 			gameState = NavigateOutput(gameState);
-			UseInvetoryOutput(player, item);
+			UseInvetoryOutput(player, item, tradeMenu);
 
 			return gameState;
 		}	

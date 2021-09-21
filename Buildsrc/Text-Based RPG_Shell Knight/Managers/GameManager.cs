@@ -166,7 +166,7 @@ namespace Text_Based_RPG_Shell_Knight
                     //DRAW
                     inventory.Draw();
                     //UPDATE
-                    _gameState = inventory.Update(_gameState, player, items[0], inventory);
+                    _gameState = inventory.Update(_gameState, player, items[0], inventory, tradeMenu);
                     break;
                 
                 case GAMESTATE.GAMEOVER:

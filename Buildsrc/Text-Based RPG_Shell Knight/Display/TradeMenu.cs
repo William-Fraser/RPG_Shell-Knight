@@ -25,6 +25,7 @@ namespace Text_Based_RPG_Shell_Knight
 
         private int buffChance;
         private int tradeBuff;
+        private int buffSet = 5;
         
 
         public TradeMenu()
@@ -121,7 +122,7 @@ namespace Text_Based_RPG_Shell_Knight
         }
         private void BuyOrSellWeapon(WEAPON weapon, Inventory inventory, Player player)
         {
-            buffChance = rnd.Next(15);
+            tradeBuff = 0;
             Draw();
             Console.SetCursorPosition(10, 5); Console.WriteLine("Are you buying or selling.....");
             Console.SetCursorPosition(10, 7); Console.WriteLine("1 - Buy -$" + tradePrice);
@@ -157,17 +158,17 @@ namespace Text_Based_RPG_Shell_Knight
         }
         private void CompleteWeaponTransaction(WEAPON weapon, Player player, Inventory inventory)
         {
-            tradeBuff = 0;
+            buffChance = rnd.Next(buffSet);
             if (player.currentMoney < tradePrice) { hud.Draw(); hud.DisplayText($"< " + player.Name() + " doesn't have enough money! >", false); }
-            if (buffChance == 15) { tradeBuff = rnd.Next(2, 3); }
             else 
             {
-                if (weapon == WEAPON.DAGGER) { inventory.daggerOwned = true; hud.Draw(); hud.DisplayText($"< " + player.Name() + " bought a " + Global.WEAPON_NAME(WEAPON.DAGGER) + " >", false); player.currentMoney = player.currentMoney - tradePrice; daggerDamageMultiplier = tradeBuff; }
-                else if (weapon == WEAPON.SHORTSWORD) { inventory.shortswordOwned = true; hud.Draw(); hud.DisplayText($"< " + player.Name() + " bought a " + Global.WEAPON_NAME(WEAPON.SHORTSWORD) + " >", false); player.currentMoney = player.currentMoney - tradePrice; shortswordDamageMultiplier = tradeBuff; }
-                else if (weapon == WEAPON.BROADSWORD) { inventory.broadswordOwned = true; hud.Draw(); hud.DisplayText($"< " + player.Name() + " bought a " + Global.WEAPON_NAME(WEAPON.BROADSWORD) + " >", false); player.currentMoney = player.currentMoney - tradePrice; broadswordDamageMultplier = tradeBuff; }
-                else if (weapon == WEAPON.LONGSWORD) { inventory.longswordOwned = true; hud.Draw(); hud.DisplayText($"< " + player.Name() + " bought a " + Global.WEAPON_NAME(WEAPON.LONGSWORD) + " >", false); player.currentMoney = player.currentMoney - tradePrice; longswordDamageMultplier = tradeBuff; }
-                else if (weapon == WEAPON.CLAYMORE) { inventory.claymoreOwned = true; hud.Draw(); hud.DisplayText($"< " + player.Name() + " bought a " + Global.WEAPON_NAME(WEAPON.CLAYMORE) + " >", false); player.currentMoney = player.currentMoney - tradePrice; claymoreDamageMultiplier = tradeBuff; }
-                else if (weapon == WEAPON.KALIBURN) { inventory.kaliburnOwned = true; hud.Draw(); hud.DisplayText($"< " + player.Name() + " bought a " + Global.WEAPON_NAME(WEAPON.KALIBURN) + " >", false); player.currentMoney = player.currentMoney - tradePrice; kaliburnDamageMultiplier = tradeBuff; }
+                if (buffChance == buffSet) { tradeBuff = rnd.Next(2, 3); }
+                if (weapon == WEAPON.DAGGER) { inventory.daggerOwned = true; hud.Draw(); hud.DisplayText($"< " + player.Name() + " bought a " + Global.WEAPON_NAME(WEAPON.DAGGER) + " with a X" + tradeBuff + " buff! >", false); player.currentMoney = player.currentMoney - tradePrice; daggerDamageMultiplier = tradeBuff; }
+                else if (weapon == WEAPON.SHORTSWORD) { inventory.shortswordOwned = true; hud.Draw(); hud.DisplayText($"< " + player.Name() + " bought a " + Global.WEAPON_NAME(WEAPON.SHORTSWORD) + " with a X" + tradeBuff + " buff! >", false); player.currentMoney = player.currentMoney - tradePrice; shortswordDamageMultiplier = tradeBuff; }
+                else if (weapon == WEAPON.BROADSWORD) { inventory.broadswordOwned = true; hud.Draw(); hud.DisplayText($"< " + player.Name() + " bought a " + Global.WEAPON_NAME(WEAPON.BROADSWORD) + " with a X" + tradeBuff + " buff! >", false); player.currentMoney = player.currentMoney - tradePrice; broadswordDamageMultplier = tradeBuff; }
+                else if (weapon == WEAPON.LONGSWORD) { inventory.longswordOwned = true; hud.Draw(); hud.DisplayText($"< " + player.Name() + " bought a " + Global.WEAPON_NAME(WEAPON.LONGSWORD) + " with a X" + tradeBuff + " buff! >", false); player.currentMoney = player.currentMoney - tradePrice; longswordDamageMultplier = tradeBuff; }
+                else if (weapon == WEAPON.CLAYMORE) { inventory.claymoreOwned = true; hud.Draw(); hud.DisplayText($"< " + player.Name() + " bought a " + Global.WEAPON_NAME(WEAPON.CLAYMORE) + " with a X" + tradeBuff + " buff! >", false); player.currentMoney = player.currentMoney - tradePrice; claymoreDamageMultiplier = tradeBuff; }
+                else if (weapon == WEAPON.KALIBURN) { inventory.kaliburnOwned = true; hud.Draw(); hud.DisplayText($"< " + player.Name() + " bought a " + Global.WEAPON_NAME(WEAPON.KALIBURN) + " with a X" + tradeBuff + " buff! >", false); player.currentMoney = player.currentMoney - tradePrice; kaliburnDamageMultiplier = tradeBuff; }
             }
         }
         private void CompleteItemTransaction(ITEM item, Player player, Inventory inventory)
