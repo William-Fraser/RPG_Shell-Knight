@@ -41,6 +41,10 @@ namespace Text_Based_RPG_Shell_Knight
             equipedWeapon.IdentifyAndEquip(w);
             _damage = equipedWeapon.DamageRange();
         }
+        public void UnEquipWeapon()
+        {
+            equipedWeapon.IdentifyAndEquip(WEAPON.FISTS);
+        }
         public int[] Shield()
         {
             return _shield;

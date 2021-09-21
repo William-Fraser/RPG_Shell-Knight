@@ -21,7 +21,7 @@ namespace Text_Based_RPG_Shell_Knight
 		public bool broadswordOwned = false;
 		public bool longswordOwned = false;
 		public bool claymoreOwned = false;
-		public bool kaliburnOwned = true;
+		public bool kaliburnOwned = false;
 
 		private GAMESTATE returnto;
 
