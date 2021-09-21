@@ -35,7 +35,8 @@ namespace Text_Based_RPG_Shell_Knight
                 ConsoleKeyInfo battleDecision = Console.ReadKey(true);
                 if (battleDecision.Key == ConsoleKey.Spacebar)
                 {
-                    damage = player.DealDamage(enemy.Health(), hud, true);
+                    //HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    damage = player.DealDamage(enemy.Health(), hud, true) * player.damageMultiplier;
                     player.DisplayDamageToHUD(enemy.Name(), damage, enemy.Health(), hud, true);
                 }
                 

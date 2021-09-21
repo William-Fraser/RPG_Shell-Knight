@@ -10,6 +10,7 @@ namespace Text_Based_RPG_Shell_Knight
     {
         public int currentMoney;
         public ConsoleKeyInfo _playerInput;
+        public int damageMultiplier;
 
         private int[] _shield; // displayed as Shell, set states: 0 = current, 1 = max, health follows the same number convention
         private Weapon equipedWeapon;
@@ -40,10 +41,6 @@ namespace Text_Based_RPG_Shell_Knight
         {
             equipedWeapon.IdentifyAndEquip(w);
             _damage = equipedWeapon.DamageRange();
-        }
-        public void UnEquipWeapon()
-        {
-            equipedWeapon.IdentifyAndEquip(WEAPON.FISTS);
         }
         public int[] Shield()
         {

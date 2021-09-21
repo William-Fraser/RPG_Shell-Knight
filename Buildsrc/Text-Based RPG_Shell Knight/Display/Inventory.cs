@@ -87,10 +87,20 @@ namespace Text_Based_RPG_Shell_Knight
 			return _stockItems;
 		}
 
-        // ----- private methods
+		public bool ItemIsAvailable(ITEM item)
+        {
+			if (_stockItems[(int)item] <= 0) { return false; }
+            else { return true; }
+        }
+		public void IncreaseStock(ITEM item)// FindItem Child
+		{
+			_stockItems[(int)item]++;
+		}
 
-        #region Display Methods
-        private void SetPosition(ITEM item) //DrawObj Child / HOLDS ITEM DISPLAY POSITIONS /// fill index from least to greatest, if a number is skipped the cursor wont find it however it will still display
+		// ----- private methods
+
+		#region Display Methods
+		private void SetPosition(ITEM item) //DrawObj Child / HOLDS ITEM DISPLAY POSITIONS /// fill index from least to greatest, if a number is skipped the cursor wont find it however it will still display
 		{
 			//second value is always static, use pos to chose position /
 			int pos;
@@ -226,7 +236,7 @@ namespace Text_Based_RPG_Shell_Knight
 
 			return gameState;
 		}  
-		private void UseInvetoryOutput(Player player, Item item) // SpaceBar Input / HOLDS OBJECT USE SLOTS / 
+		private void UseInvetoryOutput(Player player, Item item, TradeMenu tradeMenu) // SpaceBar Input / HOLDS OBJECT USE SLOTS / 
 		{
 			Weapon weapon = player.EquipedWeapon();
 
@@ -256,12 +266,12 @@ namespace Text_Based_RPG_Shell_Knight
 
 				//weapon slots
 				else if (navigator == 20 && _stockWeapons[(int)WEAPON.FISTS]) { player.EquipWeapon(WEAPON.FISTS); hud.DisplayText($"< {player.Name()} Equiped {weapon.Name()} >", false); }
-				else if (navigator == 21 && _stockWeapons[(int)WEAPON.DAGGER]) { if (daggerOwned == false) { hud.DisplayText($"< {player.Name()} Equiped nothing... >", false); } else { player.EquipWeapon(WEAPON.DAGGER); hud.DisplayText($"< {player.Name()} Equiped {weapon.Name()} >", false); } }
-				else if (navigator == 22 && _stockWeapons[(int)WEAPON.SHORTSWORD]) { if (shortswordOwned == false) { hud.DisplayText($"< {player.Name()} Equiped nothing... >", false); } else { player.EquipWeapon(WEAPON.SHORTSWORD); hud.DisplayText($"< {player.Name()} Equiped {weapon.Name()} >", false); } }
-				else if (navigator == 23 && _stockWeapons[(int)WEAPON.BROADSWORD]) { if (broadswordOwned == false) { hud.DisplayText($"< {player.Name()} Equiped nothing... >", false); } else { player.EquipWeapon(WEAPON.BROADSWORD); hud.DisplayText($"< {player.Name()} Equiped {weapon.Name()} >", false); } }
-				else if (navigator == 24 && _stockWeapons[(int)WEAPON.LONGSWORD]) { if (longswordOwned == false) { hud.DisplayText($"< {player.Name()} Equiped nothing... >", false); } else { player.EquipWeapon(WEAPON.LONGSWORD); hud.DisplayText($"< {player.Name()} Equiped {weapon.Name()} >", false); } }
-				else if (navigator == 25 && _stockWeapons[(int)WEAPON.CLAYMORE]) { if (claymoreOwned == false) { hud.DisplayText($"< {player.Name()} Equiped nothing... >", false); } else { player.EquipWeapon(WEAPON.CLAYMORE); hud.DisplayText($"< {player.Name()} Equiped {weapon.Name()} >", false); } }
-				else if (navigator == 26 && _stockWeapons[(int)WEAPON.KALIBURN]) { if (kaliburnOwned == false) { hud.DisplayText($"< {player.Name()} Equiped nothing... >", false); } else { player.EquipWeapon(WEAPON.KALIBURN); hud.DisplayText($"< {player.Name()} Equiped {weapon.Name()} >", false); } }
+				else if (navigator == 21 && _stockWeapons[(int)WEAPON.DAGGER]) { if (daggerOwned == false) { hud.DisplayText($"< {player.Name()} Equiped nothing... >", false); } else { player.damageMultiplier = tradeMenu.daggerDamageMultiplier; player.EquipWeapon(WEAPON.DAGGER); hud.DisplayText($"< {player.Name()} Equiped {weapon.Name()} >", false); } }
+				else if (navigator == 22 && _stockWeapons[(int)WEAPON.SHORTSWORD]) { if (shortswordOwned == false) { hud.DisplayText($"< {player.Name()} Equiped nothing... >", false); } else { player.damageMultiplier = tradeMenu.shortswordDamageMultiplier; player.EquipWeapon(WEAPON.SHORTSWORD); hud.DisplayText($"< {player.Name()} Equiped {weapon.Name()} >", false); } }
+				else if (navigator == 23 && _stockWeapons[(int)WEAPON.BROADSWORD]) { if (broadswordOwned == false) { hud.DisplayText($"< {player.Name()} Equiped nothing... >", false); } else { player.damageMultiplier = tradeMenu.broadswordDamageMultplier; player.EquipWeapon(WEAPON.BROADSWORD); hud.DisplayText($"< {player.Name()} Equiped {weapon.Name()} >", false); } }
+				else if (navigator == 24 && _stockWeapons[(int)WEAPON.LONGSWORD]) { if (longswordOwned == false) { hud.DisplayText($"< {player.Name()} Equiped nothing... >", false); } else { player.damageMultiplier = tradeMenu.longswordDamageMultplier; player.EquipWeapon(WEAPON.LONGSWORD); hud.DisplayText($"< {player.Name()} Equiped {weapon.Name()} >", false); } }
+				else if (navigator == 25 && _stockWeapons[(int)WEAPON.CLAYMORE]) { if (claymoreOwned == false) { hud.DisplayText($"< {player.Name()} Equiped nothing... >", false); } else { player.damageMultiplier = tradeMenu.claymoreDamageMultiplier; player.EquipWeapon(WEAPON.CLAYMORE); hud.DisplayText($"< {player.Name()} Equiped {weapon.Name()} >", false); } }
+				else if (navigator == 26 && _stockWeapons[(int)WEAPON.KALIBURN]) { if (kaliburnOwned == false) { hud.DisplayText($"< {player.Name()} Equiped nothing... >", false); } else { player.damageMultiplier = tradeMenu.kaliburnDamageMultiplier;  player.EquipWeapon(WEAPON.KALIBURN); hud.DisplayText($"< {player.Name()} Equiped {weapon.Name()} >", false); } }
 
 				hud.UpdateHotBar(player, this); // update hotbar on inventory use
 			}
@@ -310,10 +320,6 @@ namespace Text_Based_RPG_Shell_Knight
 		private GAMESTATE ReturnLastGameState() // NavigateOutput Child / returns to game screen 
 		{
 			return returnto;
-		}
-		private void IncreaseStock(ITEM item)// FindItem Child
-		{
-			_stockItems[(int)item]++;
 		}
 
 		// ----- public methods

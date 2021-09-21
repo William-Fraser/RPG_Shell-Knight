@@ -16,7 +16,7 @@ namespace Text_Based_RPG_Shell_Knight
         public static readonly int[] PLAYER_WINPOINT = { 213, 19 }; //X and Y  // should finish the game in the throne
         public const string PLAYER_DEFAULTNAME = "PLAYER"; // playername shoule be no more than 16 chars
         public const char PLAYER_AVATAR = '@';
-        public const int PLAYER_HEALTH = 100; // the value of the current and max health
+        public const int PLAYER_HEALTH = 10000; // the value of the current and max health
         public const int PLAYER_SHIELD = 77; // the value of the current and max shield
         public static readonly int[] PLAYER_DAMGERANGE = { 30, 67 }; // the range of damage the player can do, change to weapon system
 
