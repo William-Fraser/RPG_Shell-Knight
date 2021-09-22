@@ -22,7 +22,7 @@ namespace Text_Based_RPG_Shell_Knight
     abstract class Character : Object
     {
         /// Initialization
-
+        public int currentMoney;
         // direction the character "looks at"
         protected private int[] _XYHolder = new int[2]; // 0 = X, 1 = Y
 

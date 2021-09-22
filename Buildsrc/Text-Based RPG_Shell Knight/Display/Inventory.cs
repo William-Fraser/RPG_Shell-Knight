@@ -21,7 +21,11 @@ namespace Text_Based_RPG_Shell_Knight
 		public bool broadswordOwned = false;
 		public bool longswordOwned = false;
 		public bool claymoreOwned = false;
-		public bool kaliburnOwned = false;
+		public bool kaliburnOwned = true;
+
+		public int buffedHealthPotions;
+		public int buffedShellHeal;
+
 
 		private GAMESTATE returnto;
 
@@ -421,14 +425,13 @@ namespace Text_Based_RPG_Shell_Knight
         {
 			if (_stockItems[(int)ITEM.POTHEAL] > 0)
 			{
-				player.HealHealth(item.Power(Global.ITEM_AVATAR(ITEM.POTHEAL)));
+				player.HealHealth(item.Power(Global.ITEM_AVATAR(ITEM.POTHEAL)), this, hud);
 				DecreaseStock(ITEM.POTHEAL);
 
 				//update HUD bar and display to HUD text box
 				hud.setHudHealthAndShield(player.Health(), player.Shield());
 				hud.Draw();// updates visible inventory
 				hud.UpdateHotBar(player, this);
-				hud.DisplayText($"< {player.Name()} {Global.MESSAGE_POTHEALTHDRINK} >", false);
 			}
 			else
 			{
@@ -440,13 +443,12 @@ namespace Text_Based_RPG_Shell_Knight
 			if (_stockItems[(int)ITEM.POTSHELL] > 0)
 			{
 				DecreaseStock(ITEM.POTSHELL);
-				player.HealShell(item.Power(Global.ITEM_AVATAR(ITEM.POTSHELL)));
+				player.HealShell(item.Power(Global.ITEM_AVATAR(ITEM.POTSHELL)), this, hud);
 
 				//update HUD bar and display to HUD text box
 				hud.setHudHealthAndShield(player.Health(), player.Shield());
 				hud.Draw();// updates visible inventory
 				hud.UpdateHotBar(player, this);
-				hud.DisplayText($"< {player.Name()} {Global.MESSAGE_POTSHIELDDRINK} >", false);
 			}
 			else
 			{

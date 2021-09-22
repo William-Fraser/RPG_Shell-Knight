@@ -8,9 +8,9 @@ namespace Text_Based_RPG_Shell_Knight
 {
     class Player : Character
     {
-        public int currentMoney;
         public ConsoleKeyInfo _playerInput;
         public int damageMultiplier;
+        public int effectMultiplier;
 
         private int[] _shield; // displayed as Shell, set states: 0 = current, 1 = max, health follows the same number convention
         private Weapon equipedWeapon;
@@ -23,7 +23,8 @@ namespace Text_Based_RPG_Shell_Knight
             int[] damageRange = equipedWeapon.DamageRange();
             _shield = new int[] { Global.PLAYER_SHIELD, Global.PLAYER_SHIELD };
             _damage = new int[] { damageRange[(int)RANGE.LOW], damageRange[(int)RANGE.HIGH] };
-            currentMoney = 10000000;
+            currentMoney = 100;
+            
 
             //init spawn
             x = Global.PLAYER_SPAWNPOINT[0];
@@ -115,17 +116,20 @@ namespace Text_Based_RPG_Shell_Knight
         }
 
         // ----- Public Methods
-        public void HealHealth(int value)// restores health and values to limits if broken
+        public void HealHealth(int value, Inventory inventory, HUD hud)// restores health and values to limits if broken
         {
             int[] health = Health();
-            health[(int)STATUS.CURRENT] += value;
+            if (inventory.buffedHealthPotions <= 0) { health[(int)STATUS.CURRENT] += value; hud.DisplayText($"< {Name()} {Global.MESSAGE_POTHEALTHDRINK} [+" + value + "] >", false); }
+            else { health[(int)STATUS.CURRENT] += value * effectMultiplier; inventory.buffedHealthPotions--; hud.DisplayText($"< {Name()} {Global.MESSAGE_POTHEALTHDRINK} [+" + value + " X" + effectMultiplier + "] >", false); }
             health[(int)STATUS.CURRENT] = SetStatToLimits(health[(int)STATUS.CURRENT], health[(int)STATUS.MAX]);
         }
-        public void HealShell(int value)// restores shield and values to limits if broken
+        public void HealShell(int value, Inventory inventory, HUD hud)// restores shield and values to limits if broken
         {
             int[] shield = Shield();
-            shield[(int)STATUS.CURRENT] += value;
+            if (inventory.buffedShellHeal <= 0) { shield[(int)STATUS.CURRENT] += value - 20; hud.DisplayText($"< {Name()} {Global.MESSAGE_POTSHIELDDRINK} [+" + (value-20) + "] >", false);}
+            else { shield[(int)STATUS.CURRENT] += value - 20 * effectMultiplier; inventory.buffedShellHeal--; hud.DisplayText($"< {Name()} {Global.MESSAGE_POTSHIELDDRINK} [+" + (value-20) + " X" + effectMultiplier + "] >", false); }
             shield[(int)STATUS.CURRENT] = SetStatToLimits(shield[(int)STATUS.CURRENT], shield[(int)STATUS.MAX]);
+            
         }
         new public void Draw(Camera camera) // Draws to HUD bar then calls base
         {   ///   Legacy

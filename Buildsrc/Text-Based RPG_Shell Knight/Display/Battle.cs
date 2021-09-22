@@ -20,6 +20,7 @@ namespace Text_Based_RPG_Shell_Knight
 
         bool turn; // true if player's turn
         //constructor
+        
         public Battle()
         {
             camera = new Camera();
@@ -35,7 +36,8 @@ namespace Text_Based_RPG_Shell_Knight
                 ConsoleKeyInfo battleDecision = Console.ReadKey(true);
                 if (battleDecision.Key == ConsoleKey.Spacebar)
                 {
-                    damage = player.DealDamage(enemy.Health(), hud, true) * player.damageMultiplier;
+                    if (player.damageMultiplier <= 0) { damage = player.DealDamage(enemy.Health(), hud, true); }
+                    else { damage = player.DealDamage(enemy.Health(), hud, true) * player.damageMultiplier; }
                     player.DisplayDamageToHUD(enemy.Name(), damage, enemy.Health(), hud, true);
                 }
                 
@@ -95,6 +97,8 @@ namespace Text_Based_RPG_Shell_Knight
             { return GameOver(); }
             if (opponent.Health()[(int)STATUS.CURRENT] == 0)
             {   opponent.CheckForDying(camera, hud);
+                hud.DisplayText($"< " + player.Name() + " has picked up $" + opponent.currentMoney + " that the " + opponent.Name() + " dropped! >");
+                player.currentMoney = player.currentMoney + opponent.currentMoney;
                 return End(); }
             return gameState;
         }

@@ -16,7 +16,7 @@ namespace Text_Based_RPG_Shell_Knight
         public static readonly int[] PLAYER_WINPOINT = { 213, 19 }; //X and Y  // should finish the game in the throne
         public const string PLAYER_DEFAULTNAME = "PLAYER"; // playername shoule be no more than 16 chars
         public const char PLAYER_AVATAR = '@';
-        public const int PLAYER_HEALTH = 10000; // the value of the current and max health
+        public const int PLAYER_HEALTH = 100; // the value of the current and max health
         public const int PLAYER_SHIELD = 77; // the value of the current and max shield
         public static readonly int[] PLAYER_DAMGERANGE = { 30, 67 }; // the range of damage the player can do, change to weapon system
 
@@ -40,9 +40,9 @@ namespace Text_Based_RPG_Shell_Knight
             //general
         public const string MESSAGE_SLAIN = "has been slain";
             //items
-        public const string MESSAGE_POTHEALTHDRINK = "drinks a Health Potion [+50 HP]";
+        public const string MESSAGE_POTHEALTHDRINK = "drinks a Health Potion";
         public const string MESSAGE_POTHEALTHMISSING = "looked for a HealthPotion but found none";
-        public const string MESSAGE_POTSHIELDDRINK = "used some Shell Banding [+30 SP]";
+        public const string MESSAGE_POTSHIELDDRINK = "used some Shell Banding";
         public const string MESSAGE_POTSHIELDMISSING = "is fresh out of Shell Banding";
         public const string MESSAGE_DOORSMALLOPEN = "opened a small door with a small key";
         public const string MESSAGE_DOORSMALLLOCKED = "tried to open the small door, but it was locked";
