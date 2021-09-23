@@ -126,8 +126,8 @@ namespace Text_Based_RPG_Shell_Knight
         public void HealShell(int value, Inventory inventory, HUD hud)// restores shield and values to limits if broken
         {
             int[] shield = Shield();
-            if (inventory.buffedShellHeal <= 0) { shield[(int)STATUS.CURRENT] += value - 20; hud.DisplayText($"< {Name()} {Global.MESSAGE_POTSHIELDDRINK} [+" + (value-20) + "] >", false);}
-            else { shield[(int)STATUS.CURRENT] += value - 20 * effectMultiplier; inventory.buffedShellHeal--; hud.DisplayText($"< {Name()} {Global.MESSAGE_POTSHIELDDRINK} [+" + (value-20) + " X" + effectMultiplier + "] >", false); }
+            if (inventory.buffedShellHeal <= 0) { shield[(int)STATUS.CURRENT] += (value - 20); hud.DisplayText($"< {Name()} {Global.MESSAGE_POTSHIELDDRINK} [+" + (value-20) + "] >", false);}
+            else { shield[(int)STATUS.CURRENT] += (value - 20) * effectMultiplier; inventory.buffedShellHeal--; hud.DisplayText($"< {Name()} {Global.MESSAGE_POTSHIELDDRINK} [+" + (value-20) + " X" + effectMultiplier + "] >", false); }
             shield[(int)STATUS.CURRENT] = SetStatToLimits(shield[(int)STATUS.CURRENT], shield[(int)STATUS.MAX]);
             
         }

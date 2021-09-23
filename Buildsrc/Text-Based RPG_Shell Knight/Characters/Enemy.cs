@@ -30,7 +30,6 @@ namespace Text_Based_RPG_Shell_Knight
             IDLEANDCHASE
         }
         private AI _ai;
-        private Random rnd = new Random();
         //constructor
         public Enemy(string enemyInfo, string name = "errBlank", char avatar = '!') : base(name, avatar, 0) 
         {
@@ -90,7 +89,6 @@ namespace Text_Based_RPG_Shell_Knight
                 identifyed += "20,20;";
                 identifyed += "7,17;";
                 identifyed += ((int)AI.FLEEANDCHASE).ToString();
-                currentMoney = rnd.Next(5, 20);
             }
             else if (identity == '&') /// &    - Goblin / Health: 70 / Attack: 9-25 / AI: Chase
             {
@@ -98,7 +96,6 @@ namespace Text_Based_RPG_Shell_Knight
                 identifyed += "70,70;";
                 identifyed += "9,25;";
                 identifyed += ((int)AI.CHASE).ToString();
-                currentMoney = rnd.Next(25, 55);
             }
             else if (identity == '%') /// %   - Knight / Health: 150 / Attack: 17-40 / AI: Idle to Chase in prox
             {
@@ -106,7 +103,6 @@ namespace Text_Based_RPG_Shell_Knight
                 identifyed += "150,150;";
                 identifyed += "17,40;";
                 identifyed += ((int) AI.IDLEANDCHASE).ToString();
-                currentMoney = rnd.Next(60, 150);
             }
             else if (identity == '$') /// $   - King / Health: 275 / Attack: 20-50 / AI: Idle to Chase in prox
             {
@@ -114,7 +110,6 @@ namespace Text_Based_RPG_Shell_Knight
                 identifyed += "275,275;";
                 identifyed += "20,50;";
                 identifyed += ((int)AI.IDLEANDCHASE).ToString();
-                currentMoney = rnd.Next(300, 2000);
             } 
             return identifyed;
         }

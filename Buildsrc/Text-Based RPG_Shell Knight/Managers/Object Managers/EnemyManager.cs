@@ -8,6 +8,7 @@ namespace Text_Based_RPG_Shell_Knight
 {
     class EnemyManager:ObjectManager
     {
+        private Random rnd = new Random();
         public List<Enemy> Init(string[] enemyInfo) // init enemy group in a for loop
         {
             List<Enemy> enemies = new List<Enemy>();
@@ -25,6 +26,10 @@ namespace Text_Based_RPG_Shell_Knight
             for (int i = 0; i < enemies.Count; i++)
             {
                 enemies[i].Draw(camera);
+                if (enemies[i].Name() == "Spider") { enemies[i].currentMoney = rnd.Next(5, 20); }
+                if (enemies[i].Name() == "Goblin") { enemies[i].currentMoney = rnd.Next(25, 55); }
+                if (enemies[i].Name() == "Knight") { enemies[i].currentMoney = rnd.Next(60, 150); }
+                if (enemies[i].Name() == "King") { enemies[i].currentMoney = rnd.Next(300, 2000); }
             }
         }
         public GAMESTATE Update(List<Enemy> enemies, Player player, Map map, Camera camera, HUD hud, Battle battle, Inventory inventory, GAMESTATE gameState) // update list of enemies in a for loop

@@ -157,7 +157,7 @@ namespace Text_Based_RPG_Shell_Knight
         }
         private void CompleteWeaponTransaction(WEAPON weapon, Player player, Inventory inventory)
         {
-            buffChance = rnd.Next(1, buffSet);
+            buffChance = rnd.Next(1, buffSet + 1);
             if (player.currentMoney < tradePrice) {hud.DisplayText($"< " + player.Name() + " doesn't have enough money! >", false); }
             else 
             {
@@ -172,12 +172,12 @@ namespace Text_Based_RPG_Shell_Knight
         }
         private void CompleteItemTransaction(ITEM item, Player player, Inventory inventory)
         {
-            buffChance = rnd.Next(1, buffSet);
+            buffChance = rnd.Next(1, buffSet + 1);
             if (player.currentMoney < tradePrice) { hud.DisplayText($"< " + player.Name() + " doesn't have enough money! >", false); }
             else
             {
                 if (buffChance == buffSet) { tradeBuff = 2; }
-                if (item == ITEM.POTSHELL) { player.currentMoney = player.currentMoney - tradePrice; inventory.IncreaseStock(ITEM.POTSHELL); hud.DisplayText($"< " + player.Name() + " bought a " + Global.ITEM_NAME(ITEM.POTSHELL) + " with a X" + inventory.buffedShellHeal + " buff! >", false); shellpEffectMultiplier = tradeBuff; inventory.buffedShellHeal++; if (buffChance == buffSet) { player.effectMultiplier = shellpEffectMultiplier; } }
+                if (item == ITEM.POTSHELL) { player.currentMoney = player.currentMoney - tradePrice; inventory.IncreaseStock(ITEM.POTSHELL); hud.DisplayText($"< " + player.Name() + " bought a " + Global.ITEM_NAME(ITEM.POTSHELL) + " with a X" + tradeBuff + " buff! >", false); shellpEffectMultiplier = tradeBuff; inventory.buffedShellHeal++; if (buffChance == buffSet) { player.effectMultiplier = shellpEffectMultiplier; } }
                 else if (item == ITEM.POTHEAL) { player.currentMoney = player.currentMoney - tradePrice; inventory.IncreaseStock(ITEM.POTHEAL); hud.DisplayText($"< " + player.Name() + " bought a " + Global.ITEM_NAME(ITEM.POTHEAL) + " with a X" + tradeBuff + " buff! >", false); healthpEffectMultiplier = tradeBuff; inventory.buffedHealthPotions++; if (buffChance == buffSet) { player.effectMultiplier = healthpEffectMultiplier; } }
                 
             }
