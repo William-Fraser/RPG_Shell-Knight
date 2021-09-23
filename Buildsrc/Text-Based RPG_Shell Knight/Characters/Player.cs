@@ -23,7 +23,7 @@ namespace Text_Based_RPG_Shell_Knight
             int[] damageRange = equipedWeapon.DamageRange();
             _shield = new int[] { Global.PLAYER_SHIELD, Global.PLAYER_SHIELD };
             _damage = new int[] { damageRange[(int)RANGE.LOW], damageRange[(int)RANGE.HIGH] };
-            currentMoney = 100;
+            currentMoney = 200;
             
 
             //init spawn
