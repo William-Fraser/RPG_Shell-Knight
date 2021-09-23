@@ -13,6 +13,7 @@ namespace Text_Based_RPG_Shell_Knight
         HUD hud;
         Vendor vendorBeingTradedWith;
 
+        //ints to keep track of specific buff on specific items
         //weapons
         public int daggerDamageMultiplier = 0;
         public int shortswordDamageMultiplier = 0;
@@ -48,7 +49,7 @@ namespace Text_Based_RPG_Shell_Knight
         }
         public void ChooseItem(Inventory inventory, Player player)
         {
-            
+            //UI and decisions based on type of vendor, here player can choose an item to either buy or sell
             if (vendorBeingTradedWith.type == Vendor.Type.BLACKSMITH)
             {
                 Console.SetCursorPosition(10, 5); Console.WriteLine("Choose a weapon to either buy or sell.....");
@@ -61,6 +62,7 @@ namespace Text_Based_RPG_Shell_Knight
                 Console.SetCursorPosition(10, 20); Console.WriteLine("Esc X 2 - Leave");
 
                 ConsoleKeyInfo weaponDecision = Console.ReadKey(true);
+                //random generated buy and sell prices prices for all items
                 if (weaponDecision.Key == ConsoleKey.D1) { tradePrice = rnd.Next(100, 500); BuyOrSellWeapon(WEAPON.DAGGER, inventory, player); }
                 if (weaponDecision.Key == ConsoleKey.D2) { tradePrice = rnd.Next(200, 600); BuyOrSellWeapon(WEAPON.SHORTSWORD, inventory, player); }
                 if (weaponDecision.Key == ConsoleKey.D3) { tradePrice = rnd.Next(300, 800); BuyOrSellWeapon(WEAPON.BROADSWORD, inventory, player);  }
@@ -103,6 +105,8 @@ namespace Text_Based_RPG_Shell_Knight
         }
         private void BuyOrSellItem(ITEM item, Inventory inventory, Player player)
         {
+            // this is for when you choose an item to buy or sell, items chosen will check things like your amount of money for buying and, check your items for selling.......
+            //if you have no items to sell, the deal is cancle as well as if you have not enough money to buy
             tradeBuff = 0;
             Draw();
             Console.SetCursorPosition(10, 5); Console.WriteLine("Are you buying or selling.....");
@@ -125,6 +129,8 @@ namespace Text_Based_RPG_Shell_Knight
         }
         private void BuyOrSellWeapon(WEAPON weapon, Inventory inventory, Player player)
         {
+            // this is for when you choose an weapon to buy or sell, items chosen will check things like your amount of money for buying and, check your items for selling.......
+            //if you have no items to sell, the deal is cancle as well as if you have not enough money to buy
             tradeBuff = 0;
             Draw();
             Console.SetCursorPosition(10, 5); Console.WriteLine("Are you buying or selling.....");
@@ -136,6 +142,7 @@ namespace Text_Based_RPG_Shell_Knight
             Console.SetCursorPosition(10, 5); Console.WriteLine("Press any button to continue.....");
             if (tradeDecision.Key == ConsoleKey.D1) 
             {
+                //always equips fist when wepon is boughten or sold to prevent weapon being in still in hand when sold bug
                 player.EquipWeapon(WEAPON.FISTS);
                 if (weapon == WEAPON.DAGGER) { if (inventory.daggerOwned == true) {hud.DisplayText($"< " + player.Name() + " already owns a " + Global.WEAPON_NAME(WEAPON.DAGGER) + " >", false); } else { CompleteWeaponTransaction(WEAPON.DAGGER, player, inventory); } }
                 else if (weapon == WEAPON.SHORTSWORD) { if (inventory.shortswordOwned == true) {hud.DisplayText($"< " + player.Name() + " already owns a " + Global.WEAPON_NAME(WEAPON.SHORTSWORD) + " >", false); } else { CompleteWeaponTransaction(WEAPON.SHORTSWORD, player, inventory); } }
@@ -155,8 +162,10 @@ namespace Text_Based_RPG_Shell_Knight
                 else if (weapon == WEAPON.KALIBURN) { if (inventory.kaliburnOwned == false) { hud.DisplayText($"< " + player.Name() + " does not own a " + Global.WEAPON_NAME(WEAPON.KALIBURN) + " to sell! >", false); } else { kaliburnDamageMultiplier = 0; inventory.kaliburnOwned = false; hud.DisplayText($"< " + player.Name() + " sold a " + Global.WEAPON_NAME(WEAPON.KALIBURN) + " >", false); player.currentMoney = player.currentMoney + tradePrice; } }
             }
         }
+        //these methods are for buying weapons and items (execute bigger things to handle) to prevent code clogging......
         private void CompleteWeaponTransaction(WEAPON weapon, Player player, Inventory inventory)
         {
+            //buff chance is randomized if the set number is chosen player will recieve a buff on next boughten item
             buffChance = rnd.Next(1, buffSet + 1);
             if (player.currentMoney < tradePrice) {hud.DisplayText($"< " + player.Name() + " doesn't have enough money! >", false); }
             else 

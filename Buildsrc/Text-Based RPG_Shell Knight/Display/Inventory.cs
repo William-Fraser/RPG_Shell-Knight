@@ -15,7 +15,7 @@ namespace Text_Based_RPG_Shell_Knight
 		//create inventory hud
 		HUD hud;
 
-		//set entry state for return
+		//booleans to determine weither or not the player owns specific weapons
 		public bool daggerOwned = false;
 		public bool shortswordOwned = false;
 		public bool broadswordOwned = false;
@@ -23,6 +23,7 @@ namespace Text_Based_RPG_Shell_Knight
 		public bool claymoreOwned = false;
 		public bool kaliburnOwned = false;
 
+		//these ints are to keep track of exactly how many items are buffed and which are not.....
 		public int buffedHealthPotions;
 		public int buffedShellHeal;
 

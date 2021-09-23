@@ -44,7 +44,7 @@ namespace Text_Based_RPG_Shell_Knight
         private string RecognizeInfo(char identity)
         {
             string identifyed = "";
-
+            //identifies different shop types based on appearance
             if (identity == 'B') 
             {
                 identifyed += "Black Smith;";
@@ -65,40 +65,7 @@ namespace Text_Based_RPG_Shell_Knight
 
         public GAMESTATE Update(Player player, Map map, Camera camera, HUD hud, Battle battle, Inventory inventory, GAMESTATE gameState)
         {
-            //if (aliveInWorld)
-            //{
-                //switch (_ai)
-                //{
-                   // case AI.CHASE:
-                        //AIMoveChasePlayer(player);
-                        //break;
-                    //case AI.FLEE:
-                        //AIMoveFleePlayer(player);
-                       // break;
-                    //case AI.FLEEANDCHASE:
-                        //AIMoveFleeThenChaseInProx(player);
-                        //break;
-                    //case AI.IDLEANDCHASE:
-                        //AIIdleThenChaseInProx(player);
-                        //break;
-                //}
-
-                //bool collision = false;
-                //if (CheckForCharacterCollision(player.X(), player.Y(), player.AliveInWorld())) // enemy values read as zero on firstcontact, needs enemy locate to read adjesent tile's
-                //{
-                    //collision = true;
-                    //gameState = StartAttacking(aliveInWorld, battle, player, this, gameState, inventory);
-                //}
-
-                //if (!CheckForWallCollision(map.getTile(_XYHolder[0], _XYHolder[1] - 1), map.getWallHold())) // -1 to fix bug from result of other fix
-                //{
-                    //if (!collision)
-                    //{
-                       // Move();
-                   // }
-               // }
-                //CheckForDying(camera, hud);
-            //}
+            //Shop keeper have no AI, they are always stationary
             return gameState;
         }
 

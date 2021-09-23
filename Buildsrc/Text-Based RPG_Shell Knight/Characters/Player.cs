@@ -119,6 +119,7 @@ namespace Text_Based_RPG_Shell_Knight
         public void HealHealth(int value, Inventory inventory, HUD hud)// restores health and values to limits if broken
         {
             int[] health = Health();
+            //different messages for buffed items, if there are no buffed items, then regular message is displayed 
             if (inventory.buffedHealthPotions <= 0) { health[(int)STATUS.CURRENT] += value; hud.DisplayText($"< {Name()} {Global.MESSAGE_POTHEALTHDRINK} [+" + value + "] >", false); }
             else { health[(int)STATUS.CURRENT] += value * effectMultiplier; inventory.buffedHealthPotions--; hud.DisplayText($"< {Name()} {Global.MESSAGE_POTHEALTHDRINK} [+" + value + " X" + effectMultiplier + "] >", false); }
             health[(int)STATUS.CURRENT] = SetStatToLimits(health[(int)STATUS.CURRENT], health[(int)STATUS.MAX]);
@@ -126,6 +127,7 @@ namespace Text_Based_RPG_Shell_Knight
         public void HealShell(int value, Inventory inventory, HUD hud)// restores shield and values to limits if broken
         {
             int[] shield = Shield();
+            // bug temporarly patched shield used to heal 50 points instead of desired 30....
             if (inventory.buffedShellHeal <= 0) { shield[(int)STATUS.CURRENT] += (value - 20); hud.DisplayText($"< {Name()} {Global.MESSAGE_POTSHIELDDRINK} [+" + (value-20) + "] >", false);}
             else { shield[(int)STATUS.CURRENT] += (value - 20) * effectMultiplier; inventory.buffedShellHeal--; hud.DisplayText($"< {Name()} {Global.MESSAGE_POTSHIELDDRINK} [+" + (value-20) + " X" + effectMultiplier + "] >", false); }
             shield[(int)STATUS.CURRENT] = SetStatToLimits(shield[(int)STATUS.CURRENT], shield[(int)STATUS.MAX]);
@@ -189,6 +191,7 @@ namespace Text_Based_RPG_Shell_Knight
                         hud.Draw();
                         hud.DisplayText($"< This is a Vendor, Press 'T' to Trade >", false);
 
+                        //if player hits "T" when colliding with a vendor it will start a trade between the two....
                         if (_playerInput.Key == ConsoleKey.T)
                         {
                             gameState = StartTrading(vendors[i].AliveInWorld(), tradeMenu, this, vendors[i], gameState, inventory);

@@ -8,7 +8,7 @@ namespace Text_Based_RPG_Shell_Knight
 {
     class VendorManager:ObjectManager
     {
-        public List<Vendor> Init(string[] vendorInfo) // init enemy group in a for loop
+        public List<Vendor> Init(string[] vendorInfo) // init vendor group in a for loop
         {
             List<Vendor> vendors = new List<Vendor>();
 
@@ -20,7 +20,7 @@ namespace Text_Based_RPG_Shell_Knight
 
             return vendors;
         }
-        public void Draw(List<Vendor> vendors, Camera camera) // draw all enemies in list in a for loop
+        public void Draw(List<Vendor> vendors, Camera camera) // draw all vendors in list in a for loop
         {
             for (int i = 0; i < vendors.Count; i++)
             {
