@@ -9,18 +9,19 @@ namespace Text_Based_RPG_Shell_Knight
     public enum OBJECTS
     {
         ITEM,
-        DOOR
+        DOOR,
+        CHARACTER,
+        WEAPON
     };
     abstract class Object
     {
-        //
         //protected Toolkit toolkit = new Toolkit();
 
         protected int x;
         protected int y;
 
-        protected string _name;
         protected char _avatar;
+        protected string _name;
         protected private bool aliveInWorld = true;
 
         // ----- gets

@@ -20,6 +20,8 @@ namespace Text_Based_RPG_Shell_Knight
         public const int PLAYER_SHIELD = 77; // the value of the current and max shield
         public static readonly int[] PLAYER_DAMGERANGE = { 30, 67 }; // the range of damage the player can do, change to weapon system
 
+
+
         //Weapons
         public static string WEAPON_NAME(WEAPON w)          { switch (w) { case WEAPON.FISTS: return "Fists";           case WEAPON.DAGGER: return "Dagger";            case WEAPON.SHORTSWORD: return "Short Sword";       case WEAPON.BROADSWORD: return "Broad Sword";       case WEAPON.LONGSWORD: return "Long Sword";             case WEAPON.CLAYMORE: return "Claymore";         case WEAPON.KALIBURN: return "Kaliburn";               default: return String.Empty; } }
         public static string WEAPON_AVATAR(WEAPON w)        { switch (w) { case WEAPON.FISTS: return "@";               case WEAPON.DAGGER: return "┼──";               case WEAPON.SHORTSWORD: return "─┼═══─";            case WEAPON.BROADSWORD: return "──╬═════─";         case WEAPON.LONGSWORD: return "o────╬■■■▄▄▄▄▄▄■■■■▀▀";  case WEAPON.CLAYMORE: return "├═┼══╣█████████■"; case WEAPON.KALIBURN: return "╔──┼──╬■■█■■■■■■▄▄▄_";   default: return String.Empty; } }
@@ -29,7 +31,7 @@ namespace Text_Based_RPG_Shell_Knight
         public static string ITEM_NAME(ITEM i) { switch (i) { case ITEM.POTHEAL: return "Health Potion"; case ITEM.POTSHELL: return "Shell Banding"; case ITEM.KEYBIG: return "Big Key"; case ITEM.KEYSMALL: return "Small Key"; default: return String.Empty; } }
         public static char ITEM_AVATAR(ITEM i) { switch (i) { case ITEM.POTHEAL: return 'ö'; case ITEM.POTSHELL: return 'ï'; case ITEM.KEYBIG: return 'K'; case ITEM.KEYSMALL: return 'k'; default: return String.Empty[0]; } }
         public static int ITEM_POWER(ITEM i) { switch (i) { case ITEM.POTHEAL: return 50; case ITEM.POTSHELL: return 30; default: return 0; } }
-
+        
         //messages
             //general
         public const string START_SCREEN_TITLE = "@ SHELL KNIGHT                                    By William.Fr";

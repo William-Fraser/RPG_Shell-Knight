@@ -45,7 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Characters\Vendor.cs" />
+    <Compile Include="Objects\Characters\Vendor.cs" />
     <Compile Include="Display\Battle.cs" />
     <Compile Include="Display\Inventory.cs" />
     <Compile Include="Display\TradeMenu.cs" />
@@ -59,12 +59,12 @@
     <Compile Include="Display\Camera.cs" />
     <Compile Include="Objects\Door.cs" />
     <Compile Include="Objects\Item.cs" />
-    <Compile Include="Characters\Character.cs" />
-    <Compile Include="Characters\Enemy.cs" />
+    <Compile Include="Objects\Characters\Character.cs" />
+    <Compile Include="Objects\Characters\Enemy.cs" />
     <Compile Include="Managers\GameManager.cs" />
     <Compile Include="Objects\Object.cs" />
     <Compile Include="Display\Map.cs" />
-    <Compile Include="Characters\Player.cs" />
+    <Compile Include="Objects\Characters\Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Managers\Toolkit.cs" />

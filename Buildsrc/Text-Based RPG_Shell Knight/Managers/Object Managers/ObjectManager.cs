@@ -7,6 +7,6 @@ using System.Threading.Tasks;
 namespace Text_Based_RPG_Shell_Knight
 {
     abstract class ObjectManager
-    { // this is to tie all the managers together
+    { // this is a parent class to tie all the managers together
     }
 }
