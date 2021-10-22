@@ -8,7 +8,6 @@ namespace Text_Based_RPG_Shell_Knight
 {
     class ItemManager:ObjectManager
     {
-
         public List<Item> Init(string[] itemInfo) // init of items in a for loop
         {
             List<Item> items = new List<Item>();

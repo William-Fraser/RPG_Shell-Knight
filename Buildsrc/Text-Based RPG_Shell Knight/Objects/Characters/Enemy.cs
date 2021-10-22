@@ -19,16 +19,25 @@ using System.Threading.Tasks;
 
 namespace Text_Based_RPG_Shell_Knight
 {
+    // Enemy type enum
+    public enum ENEMY
+    {
+        SPIDER,
+        GOBLIN,
+        KNIGHT,
+        KING,
+        TOTALENEMIES
+    }
+    // State enunm for AI
+    public enum AI
+    {
+        CHASE,
+        FLEE,
+        FLEEANDCHASE,
+        IDLEANDCHASE
+    }
     class Enemy : Character
     {
-        // State machine for AI
-        private enum AI
-        {
-            CHASE,
-            FLEE,
-            FLEEANDCHASE,
-            IDLEANDCHASE
-        }
         private AI _ai;
         //constructor
         public Enemy(string enemyInfo, string name = "errBlank", char avatar = '!') : base(name, avatar, 0) 
@@ -39,6 +48,7 @@ namespace Text_Based_RPG_Shell_Knight
         // ----- private methods
         private void ReadEnemyInfo(string enemyInfo) // Constructor child: distinguishes all enemies available to print on map
         {
+            /// split enemy info into identifyer and pos in manager then use parameters with enum and pos
             // parsing passed info
             string[] avatarAndPos = enemyInfo.Split(':');
             string avatarHold = avatarAndPos[0];
@@ -114,7 +124,7 @@ namespace Text_Based_RPG_Shell_Knight
             return identifyed;
         }
 
-        //AI
+        ///AI
         private void AIMoveChasePlayer(Player player) // chases player
         {/// needs revisioning to move to the top of player if they're close enough
 

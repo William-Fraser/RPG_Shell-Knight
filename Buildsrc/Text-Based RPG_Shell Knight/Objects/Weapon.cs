@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Text_Based_RPG_Shell_Knight
 {
-    public enum WEAPON//its important to note that if iterating through the actual number is off by 1
+    public enum WEAPON//its important to note that if iterating through the actual number is off by -1
     {
         FISTS,
         DAGGER,

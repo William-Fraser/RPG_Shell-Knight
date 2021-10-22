@@ -27,6 +27,9 @@ namespace Text_Based_RPG_Shell_Knight
         readonly Battle battle;
         readonly TradeMenu tradeMenu;
 
+        // Data init
+        readonly DataManager dataManager;
+
         // Character init
         readonly Player player; // controls the player
         List<Enemy> enemies; // List of Enemies in the current game world
@@ -47,6 +50,8 @@ namespace Text_Based_RPG_Shell_Knight
             _gameState = GAMESTATE.CHANGEMAP;
 
             //init fields
+            dataManager = new DataManager();
+
             map = new Map();
             camera = new Camera();
             battle = new Battle();

@@ -40,14 +40,14 @@ namespace Text_Based_RPG_Shell_Knight
         // constructor
         public Item(string itemInfo)
         {
-            ReadItemInfo(itemInfo);
+            LoadItemInfo(itemInfo);
 
             _pickedUpByPlayer = false;
             aliveInWorld = true;
         }
         
         // readInfo 
-        public void ReadItemInfo(string itemInfo)
+        public void LoadItemInfo(string itemInfo)
         {
             //recognize item info
             string[] avatarAndPos = itemInfo.Split(':');
