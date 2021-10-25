@@ -9,13 +9,13 @@ namespace Text_Based_RPG_Shell_Knight
     class EnemyManager:ObjectManager
     {
         private Random rnd = new Random();
-        public List<Enemy> Init(string[] enemyInfo) // init enemy group in a for loop
+        public List<Enemy> Init(string[] enemyInfo, DataLoader dataLoader) // init enemy group in a for loop
         {
             List<Enemy> enemies = new List<Enemy>();
 
             for (int i = 0; i < enemyInfo.Length; i++)
             {
-                Enemy listObject = new Enemy(enemyInfo[i]);
+                Enemy listObject = new Enemy(enemyInfo[i], dataLoader);
                 enemies.Add(listObject);
             }
 

@@ -40,44 +40,44 @@ namespace Text_Based_RPG_Shell_Knight
     {
         private AI _ai;
         //constructor
-        public Enemy(string enemyInfo, string name = "errBlank", char avatar = '!') : base(name, avatar, 0) 
+        public Enemy(string enemyInfo, DataLoader dataLoader, string name = "errBlank", char avatar = '!') : base(name, avatar, 0) 
         {
-            ReadEnemyInfo(enemyInfo);
+            ReadEnemyInfo(enemyInfo, dataLoader);
         }
 
         // ----- private methods
-        private void ReadEnemyInfo(string enemyInfo) // Constructor child: distinguishes all enemies available to print on map
+        private void ReadEnemyInfo(string enemyInfo, DataLoader dataLoader) // Constructor child: distinguishes all enemies available to print on map
         {
-            /// split enemy info into identifyer and pos in manager then use parameters with enum and pos
-            // parsing passed info
-            string[] avatarAndPos = enemyInfo.Split(':');
-            string avatarHold = avatarAndPos[0];
-            string posHold = avatarAndPos[1];
+            // parsing passed map info 
+            string[] identityAndPos = enemyInfo.Split(':');
+            ENEMY identity;
+            if (Enum.TryParse(identityAndPos[0], out identity))
+            {
+                //success   
+            }
+            else { } // err
 
-            // reading identity for creating
-            char identity = avatarHold[0];
-            string[] identifyed = RecognizeInfo(identity).Split(';');
+            // set position
+            int[] setPos = dataLoader.TryParseXYFromString(identityAndPos[1]);
+            x = setPos[(int)AXIS.X];
+            y = setPos[(int)AXIS.Y];
 
-            // creating enemy form identity
-            
+
+            // creating enemy from identity
+
             //init of fields
-            _avatar = avatarHold[0];
-            _name = identifyed[0];
-            string[] setHealth = identifyed[1].Split(',');
-            string[] setDamage = identifyed[2].Split(',');
+            _avatar = dataLoader.GetEnemyAvatar(identity);
+            _name = dataLoader.GetEnemyName(identity);
+            _damage = dataLoader.GetEnemyDamageRange(identity);
             for (int i = 0; i < 2; i++)
             {
-                _health[i] = Int32.Parse(setHealth[i]);
-                _damage[i] = Int32.Parse(setDamage[i]);
+                _health[i] = dataLoader.GetEnemyHealth(identity);
             }
 
             // setting AI
-            _ai = (AI)Int32.Parse(identifyed[3]);
+            _ai = dataLoader.GetEnemyEnemyAI(identity);
 
-            // set position
-            string[] setPos = posHold.Split(',');
-            x = Int32.Parse(setPos[0]);
-            y = Int32.Parse(setPos[1]);
+            
             //int[] _XYHolder = new int[] { x, y };
 
             aliveInWorld = true;
@@ -85,7 +85,7 @@ namespace Text_Based_RPG_Shell_Knight
             _directionMoving = DIRECTION.NULL;
         }
         private string RecognizeInfo(char identity) // read enemy info child: Holds the init info for all enemy types
-        { // THIS IS WHAT DEFINES ^^^Enemy Avatars^^^ NOT THE OTHER WAY AROUND
+        {                                                                                                               // Obsolete, change to be read from file, load enum too
             string identifyed = "";
             /// identifyed string order
             /// NAME

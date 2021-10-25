@@ -28,7 +28,7 @@ namespace Text_Based_RPG_Shell_Knight
         readonly TradeMenu tradeMenu;
 
         // Data init
-        readonly DataManager dataManager;
+        readonly DataLoader dataLoader;
 
         // Character init
         readonly Player player; // controls the player
@@ -50,7 +50,7 @@ namespace Text_Based_RPG_Shell_Knight
             _gameState = GAMESTATE.CHANGEMAP;
 
             //init fields
-            dataManager = new DataManager();
+            dataLoader = new DataLoader();
 
             map = new Map();
             camera = new Camera();
@@ -127,7 +127,7 @@ namespace Text_Based_RPG_Shell_Knight
                     camera.DrawBorder();
                     hud.DrawTextBox();
                     // creating object managers
-                    enemies = manageEnemies.Init(map.getEnemyHold().Split('|'));
+                    enemies = manageEnemies.Init(map.getEnemyHold().Split('|'), dataLoader);
                     items = (manageObjects[(int)OBJECTS.ITEM] as ItemManager).Init(map.getItemHold().Split('|'));
                     doors = (manageObjects[(int)OBJECTS.DOOR] as DoorManager).Init(map.getDoorHold().Split('|'));
                     vendors = manageVendors.Init(map.getVendorHold().Split('|'));

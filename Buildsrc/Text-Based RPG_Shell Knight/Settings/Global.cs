@@ -6,6 +6,11 @@ using System.Threading.Tasks;
 
 namespace Text_Based_RPG_Shell_Knight
 {
+    enum AXIS 
+    { 
+        X,
+        Y
+    } //Z
     class Global
     { 
         //Characters

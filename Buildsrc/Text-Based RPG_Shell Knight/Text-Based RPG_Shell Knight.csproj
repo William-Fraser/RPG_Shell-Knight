@@ -55,6 +55,7 @@
     <Compile Include="Managers\Object Managers\ObjectManager.cs" />
     <Compile Include="Managers\Object Managers\VendorManager.cs" />
     <Compile Include="Objects\Weapon.cs" />
+    <Compile Include="Settings\DataLoader.cs" />
     <Compile Include="Settings\Global.cs" />
     <Compile Include="Display\Camera.cs" />
     <Compile Include="Objects\Door.cs" />
