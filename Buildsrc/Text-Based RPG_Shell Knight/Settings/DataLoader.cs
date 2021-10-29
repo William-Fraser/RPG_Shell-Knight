@@ -35,7 +35,7 @@ namespace Text_Based_RPG_Shell_Knight
             for (int i = 1; i <= loadedIDs.Length; i++)
             {
                 string[] loadedValues = loadedData[i].Split(';');
-                for (int j = 0; j < loadedValues.Length-1; j++) // -1 due to 
+                for (int j = 0; j < loadedValues.Length-1; j++) // -1 due to each value containing an extra empty space from parsing
                 {
                     string loadedAvatar = ConfigLabelRemover(loadedValues[1]);
                     int loadedHealth = Int32.Parse(ConfigLabelRemover(loadedValues[2]));
@@ -92,24 +92,29 @@ namespace Text_Based_RPG_Shell_Knight
 
             for (int i = 0; i < loadedIDs.Length; i++)
             {
-                Global.globalAccess.itemIDs.Add(loadedIDs[i], i);
+                Global.globalAccess.itemIDs.Add(i.ToString(), i);
             }
 
             for (int i = 1; i <= loadedIDs.Length; i++)
             {
                 string[] loadedValues = loadedData[i].Split(';');
-                char loadedAvatar = ConfigLabelRemover(loadedValues[1])[0];
-                int loadedPower = Int32.Parse(ConfigLabelRemover(loadedValues[3]));
+                for (int j = 0; j < loadedValues.Length - 1; j++) // -1 due to each value containing an extra empty space from parsing
+                {
+                    char loadedAvatar = ConfigLabelRemover(loadedValues[1])[0];
+                    int loadedPower = Int32.Parse(ConfigLabelRemover(loadedValues[3]));
 
-                itemValues.names.Add(ConfigLabelRemover(loadedValues[0]));
-                itemValues.avatars.Add(loadedAvatar);
-                itemValues.effects.Add(ConfigLabelRemover(loadedValues[2]));
-                itemValues.powers.Add(loadedPower);
-                itemValues.textSuccess.Add(ConfigLabelRemover(loadedValues[4]));
-                itemValues.textFailure.Add(ConfigLabelRemover(loadedValues[5]));
+                    itemValues.names.Add(ConfigLabelRemover(loadedValues[0]));
+                    itemValues.avatars.Add(loadedAvatar);
+                    itemValues.effects.Add(ConfigLabelRemover(loadedValues[2]));
+                    itemValues.powers.Add(loadedPower);
+                    itemValues.desc.Add(ConfigLabelRemover(loadedValues[4]));
+                    itemValues.textSuccess.Add(ConfigLabelRemover(loadedValues[5]));
+                    itemValues.textFailure.Add(ConfigLabelRemover(loadedValues[6]));
+                }
             }
 
             Global.globalAccess.ItemValues = itemValues;
+            //Console.ReadKey(true);
         }
         private bool loadingString = false;
         private string ParseDataFile(string DataDotTxtFile)

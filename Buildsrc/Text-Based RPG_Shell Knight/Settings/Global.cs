@@ -29,7 +29,7 @@ namespace Text_Based_RPG_Shell_Knight
         //get/set
         public EnemyValues EnemyValues { set { enemyValues = value; } }
         public WeaponValues WeaponValues { set { weaponValues = value; } }
-        public ItemValues ItemValues { get; set; }
+        public ItemValues ItemValues { get{ return itemValues; } set{ itemValues = value; } }
 
 
         // values are string to pertain to loading order from DataLoader, they are parameters for a ID Dictionary

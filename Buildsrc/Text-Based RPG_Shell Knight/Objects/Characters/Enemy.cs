@@ -42,11 +42,11 @@ namespace Text_Based_RPG_Shell_Knight
         //constructor
         public Enemy(string enemyInfo, DataLoader dataLoader, string name = "errBlank", char avatar = '!') : base(name, avatar, 0) 
         {
-            ReadEnemyInfo(enemyInfo, dataLoader);
+            LoadEnemyInfo(enemyInfo, dataLoader);
         }
 
         // ----- private methods
-        private void ReadEnemyInfo(string enemyInfo, DataLoader dataLoader) // Constructor child: distinguishes all enemies available to print on map
+        private void LoadEnemyInfo(string enemyInfo, DataLoader dataLoader) // Constructor child: distinguishes all enemies available to print on map
         {
             string[] identifyerAndPos = enemyInfo.Split(':'); // parsing passed map info // 0 identifies and 1 is position
             string identity = identifyerAndPos[0]; 
@@ -59,7 +59,7 @@ namespace Text_Based_RPG_Shell_Knight
 
             // creating enemy from identity
 
-            //init of fields
+            //inst of fields
             _avatar = Global.GetEnemyAvatar(identity);
             _name = Global.GetEnemyName(identity);
             _damage = Global.GetEnemyDamageRange(identity);

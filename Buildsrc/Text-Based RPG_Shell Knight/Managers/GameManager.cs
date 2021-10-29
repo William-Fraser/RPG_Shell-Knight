@@ -128,7 +128,7 @@ namespace Text_Based_RPG_Shell_Knight
                     hud.DrawTextBox();
                     // creating object managers
                     enemies = manageEnemies.Init(map.getEnemyHold().Split('|'), dataLoader);
-                    items = (manageObjects[(int)OBJECTS.ITEM] as ItemManager).Init(map.getItemHold().Split('|'));
+                    items = (manageObjects[(int)OBJECTS.ITEM] as ItemManager).Init(map.getItemHold().Split('|'), dataLoader);
                     doors = (manageObjects[(int)OBJECTS.DOOR] as DoorManager).Init(map.getDoorHold().Split('|'));
                     vendors = manageVendors.Init(map.getVendorHold().Split('|'));
 
