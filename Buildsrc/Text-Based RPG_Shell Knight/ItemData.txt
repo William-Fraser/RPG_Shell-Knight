@@ -1,0 +1,49 @@
+﻿
+//these ID's corrospond with map data to obtain position and are quantifying what object pertains to which numbers, order should match list below
+
+IDs: ö, ï, K, k 
+
+
+//each subject is started with a tilde (~), and each line must end with a semi-colon (;), this is for parsing in code
+
+//[TEXT] this category appends the name of the character in front of the dialogue, eg. (text: fell down >result> "{character} fell down")
+//[TEXT] it must also be encapulated in quotes (" ") else spaces will be auto removed
+
+//[EFFECTS] none, health, shield // used in item data to affect stats // IS STRING SHOULD BE CHANGED TO ENUM?
+
+
+~
+Name: Health Potion;
+Avatar: ö;
+Effect: health;
+Power of Effect: 50;
+Description: none
+Text Success: "drinks a Health Potion";
+Text Failure: "looked for a HealthPotion but found none";
+
+~
+Name: Shell Banding;
+Avatar: ï;
+Effect: shield;
+Power of Effect: 30;
+Description: none
+Text Success: "used some Shell Banding";
+Text Failure: "is fresh out of Shell Banding";
+
+~
+Name: Big Key;
+Avatar: K;
+Effect: none;
+Power of Effect: 0;
+Description: "A Big Key, for Big Problems, I mean Big Doors"
+Text Success: "opened the big door with the big key";
+Text Failure: "tried to open the big door, but it's sealed shut";
+
+~
+Name: Small Key;
+Avatar: k;
+Effect: none;
+Power of Effect: 0;
+Description: "A Small Key, it looks generic, I bet it would fit most locks"
+Text Success: "opened a small door with a small key";
+Text Failure: "tried to open the small door, but it was locked";

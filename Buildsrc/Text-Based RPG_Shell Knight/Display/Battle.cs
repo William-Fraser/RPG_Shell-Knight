@@ -43,12 +43,12 @@ namespace Text_Based_RPG_Shell_Knight
                 
                 if (battleDecision.Key == ConsoleKey.X)
                 {
-                    inventory.UseHealthPot(player, item, hud);
+                    inventory.UsePot(player, item, hud, "health");
                 }
 
                 if (battleDecision.Key == ConsoleKey.Z)
                 {
-                    inventory.UseShieldPot(player, item, hud);
+                    inventory.UsePot(player, item, hud, "shield");
                 }
                 turn = false;
             }

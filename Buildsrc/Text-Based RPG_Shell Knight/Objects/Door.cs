@@ -42,8 +42,27 @@ namespace Text_Based_RPG_Shell_Knight
         public void OpenDoor(Player player, HUD hud, Inventory inventory)
         {
             int[] stock = inventory.ItemStock ();
+            for (int i = 0; i < Global.globalAccess.itemIDs.Count; i++)
+            {
+                if (this._avatar == Global.globalAccess.ItemValues.avatars[i])
+                {
+                    string ID = i.ToString();
+                    if (stock[i] > 0)
+                    {
 
-            if (this._avatar == 'd')
+                        inventory.DecreaseStock(i);
+                        hud.Draw(); // updates visible inventory
+                        aliveInWorld = false;
+                        hud.DisplayText($"< {player.Name()} {Global.ITEM_TEXTSUCCESS(ID)} >", false);
+                        _opened = true;
+                    }
+                    else
+                    {
+                        hud.DisplayText($"<  { player.Name()} {Global.ITEM_TEXTFAILURE(ID)} >", false);
+                    }
+                }
+            }
+            /*if (this._avatar == 'd')
             {
                 if (stock[(int)ITEM.KEYSMALL] > 0)
                 {
@@ -73,7 +92,7 @@ namespace Text_Based_RPG_Shell_Knight
                 {
                     hud.DisplayText($"< {player.Name()} {Global.MESSAGE_DOORBIGLOCKED} >");
                 }
-            }
+            }*/
         }
     }
 }

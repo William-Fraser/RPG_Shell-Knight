@@ -38,37 +38,31 @@ namespace Text_Based_RPG_Shell_Knight
         private int _power; // value the item contains
 
         // constructor
-        public Item(string itemInfo)
+        public Item(string itemInfo, DataLoader dataLoader)
         {
-            LoadItemInfo(itemInfo);
+            LoadItemInfo(itemInfo, dataLoader);
 
             _pickedUpByPlayer = false;
             aliveInWorld = true;
         }
         
         // readInfo 
-        public void LoadItemInfo(string itemInfo)
+        public void LoadItemInfo(string itemInfo, DataLoader dataLoader)
         {
             //recognize item info
-            string[] avatarAndPos = itemInfo.Split(':');
-            string[] recognizedItem = RecognizeInfo(itemInfo[0]).Split(';'); ;
+            string[] identifyerAndPos = itemInfo.Split(':');
+            string identity = identifyerAndPos[0];
 
             //set item fields
-            _avatar = itemInfo[0];
-            _name = recognizedItem[0];
-            if (recognizedItem.Length > 1) { _power = Int32.Parse(recognizedItem[1]); }
+            int[] setPos = dataLoader.TryParseXYFromString(identifyerAndPos[1]);
+            x = setPos[(int)AXIS.X];
+            y = setPos[(int)AXIS.Y];
 
-            //set position
-            string[] posHold = avatarAndPos[1].Split(',');
-            int[] posXY = new int[2];
-            for (int i = 0; i < posHold.Length; i++)
-            { posXY[i] = Int32.Parse(posHold[i]); }
-            x = posXY[0];
-            y = posXY[1];
-
-            
+            _avatar = Global.ITEM_AVATAR(identity);
+            _name = Global.ITEM_NAME(identity);
+            //continue with all values if working submit?
         }
-        private string RecognizeInfo(char identity) ///holds extra Info for Items found in ^ItemAvatars^
+        /*private string RecognizeInfo(char identity) ///holds extra Info for Items found in ^ItemAvatars^
         {
             //1 name
             //2 power
@@ -96,7 +90,7 @@ namespace Text_Based_RPG_Shell_Knight
                 identifyed += Global.ITEM_NAME(ITEM.KEYBIG);
             }
             return identifyed; 
-        }
+        }*/
 
         // gets
         public bool PickedUpByPlayer()
