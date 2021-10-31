@@ -18,6 +18,9 @@ namespace Text_Based_RPG_Shell_Knight
     class GameManager
     {
         public GAMESTATE _gameState;
+        
+        // Dataloader init
+        public readonly DataLoader dataLoader;
 
         // display init
         readonly Camera camera; // frames the map for gameplay
@@ -26,9 +29,6 @@ namespace Text_Based_RPG_Shell_Knight
         readonly Inventory inventory; // changes game state to interactable inventory
         readonly Battle battle;
         readonly TradeMenu tradeMenu;
-
-        // Data init
-        readonly DataLoader dataLoader;
 
         // Character init
         readonly Player player; // controls the player

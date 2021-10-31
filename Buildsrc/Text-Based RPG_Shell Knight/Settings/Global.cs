@@ -12,9 +12,27 @@ namespace Text_Based_RPG_Shell_Knight
         Y
     } //Z
     class Global
-    { 
-        //Characters
-        public const char CHARACTER_DEADAVATAR = 'X';
+    {
+        // global reference
+        public static Global globalAccess = new Global(); // this is used to access important information loaded from files
+
+        //dictionaries
+        public IDictionary<string, int> enemyIDs = new Dictionary<string, int>();
+        public IDictionary<string, int> weaponIDs = new Dictionary<string, int>();
+        public IDictionary<string, int> itemIDs = new Dictionary<string, int>();
+
+        //values
+        private EnemyValues enemyValues;
+        private WeaponValues weaponValues;
+        //private ItemValues itemValues;
+
+        //get/set
+        public EnemyValues EnemyValues { set { enemyValues = value; } }
+        public WeaponValues WeaponValues { set { weaponValues = value; } }
+        //public ItemValues ItemValues { get; set; }
+
+
+        // values are string to pertain to loading order from DataLoader, they are parameters for a ID Dictionary
 
         //player
         public static readonly int[] PLAYER_SPAWNPOINT = { 9, 71 }; //X and Y  // should start player in house
@@ -25,28 +43,33 @@ namespace Text_Based_RPG_Shell_Knight
         public const int PLAYER_SHIELD = 77; // the value of the current and max shield
         public static readonly int[] PLAYER_DAMGERANGE = { 30, 67 }; // the range of damage the player can do, change to weapon system
 
-
-
         //Weapons
-        public static string WEAPON_NAME(WEAPON w)          { switch (w) { case WEAPON.FISTS: return "Fists";           case WEAPON.DAGGER: return "Dagger";            case WEAPON.SHORTSWORD: return "Short Sword";       case WEAPON.BROADSWORD: return "Broad Sword";       case WEAPON.LONGSWORD: return "Long Sword";             case WEAPON.CLAYMORE: return "Claymore";         case WEAPON.KALIBURN: return "Kaliburn";               default: return String.Empty; } }
-        public static string WEAPON_AVATAR(WEAPON w)        { switch (w) { case WEAPON.FISTS: return "@";               case WEAPON.DAGGER: return "┼──";               case WEAPON.SHORTSWORD: return "─┼═══─";            case WEAPON.BROADSWORD: return "──╬═════─";         case WEAPON.LONGSWORD: return "o────╬■■■▄▄▄▄▄▄■■■■▀▀";  case WEAPON.CLAYMORE: return "├═┼══╣█████████■"; case WEAPON.KALIBURN: return "╔──┼──╬■■█■■■■■■▄▄▄_";   default: return String.Empty; } }
-        public static int[] WEAPON_DAMAGERANGE(WEAPON w)    { switch (w) { case WEAPON.FISTS: return fistsRange;        case WEAPON.DAGGER: return daggerRange;         case WEAPON.SHORTSWORD: return shortswordRange;     case WEAPON.BROADSWORD: return broadswordRange;     case WEAPON.LONGSWORD: return longswordRange;           case WEAPON.CLAYMORE: return claymoreRange;      case WEAPON.KALIBURN: return kaliburnRange;            default: return null; } }
-                                                                    public static int[] fistsRange = { 5, 10 };  public static int[] daggerRange = { 7, 17 };    public static int[] shortswordRange = { 20, 32 };   public static int[] broadswordRange = { 27, 40 };   public static int[] longswordRange = { 40, 57 };        public static int[] claymoreRange = { 55, 68 };  public static int[] kaliburnRange = { 70, 100 };
+        public static string WEAPON_NAME(string wID) { return globalAccess.weaponValues.names[globalAccess.weaponIDs[wID]]; }
+        public static string WEAPON_AVATAR(string wID) { return globalAccess.weaponValues.avatars[globalAccess.weaponIDs[wID]]; }
+        public static int[] WEAPON_DAMAGERANGE(string wID) { return globalAccess.weaponValues.damages[globalAccess.weaponIDs[wID]]; }
+
+        //Enemy 
+        public static string GetEnemyName(string eID) { return Global.globalAccess.enemyValues.names[Global.globalAccess.enemyIDs[eID]]; }
+        public static char GetEnemyAvatar(string eID) { return Global.globalAccess.enemyValues.avatars[Global.globalAccess.enemyIDs[eID]]; }
+        public static int GetEnemyHealth(string eID) { return Global.globalAccess.enemyValues.healths[Global.globalAccess.enemyIDs[eID]]; }
+        public static int[] GetEnemyDamageRange(string eID) { return Global.globalAccess.enemyValues.damages[Global.globalAccess.enemyIDs[eID]]; }
+        public static AI GetEnemyEnemyAI(string eID) { return Global.globalAccess.enemyValues.aIs[Global.globalAccess.enemyIDs[eID]]; }
+
+        //messages
+        //general
+        public const string START_SCREEN_TITLE = "@ SHELL KNIGHT                                    By William.Fr";
+        public const string MESSAGE_GAMEOVER = " > GAME OVER < ";
+        public const string MESSAGE_PLAYERVICTORY = "The King has been userped, A new Lord has been crowned!";
+        
         //Items
         public static string ITEM_NAME(ITEM i) { switch (i) { case ITEM.POTHEAL: return "Health Potion"; case ITEM.POTSHELL: return "Shell Banding"; case ITEM.KEYBIG: return "Big Key"; case ITEM.KEYSMALL: return "Small Key"; default: return String.Empty; } }
         public static char ITEM_AVATAR(ITEM i) { switch (i) { case ITEM.POTHEAL: return 'ö'; case ITEM.POTSHELL: return 'ï'; case ITEM.KEYBIG: return 'K'; case ITEM.KEYSMALL: return 'k'; default: return String.Empty[0]; } }
         public static int ITEM_POWER(ITEM i) { switch (i) { case ITEM.POTHEAL: return 50; case ITEM.POTSHELL: return 30; default: return 0; } }
         
-        //messages
-            //general
-        public const string START_SCREEN_TITLE = "@ SHELL KNIGHT                                    By William.Fr";
-        public const string MESSAGE_GAMEOVER = " > GAME OVER < ";
-        public const string MESSAGE_PLAYERVICTORY = "The King has been userped, A new Lord has been crowned!";
-
+        //general
+        public const char CHARACTER_DEADAVATAR = 'X';
         // messages below start with characters name and <> is already included /// 90 CHARACTER LIMIT OTHERWISE EXPECT BUGS
-            //general
         public const string MESSAGE_SLAIN = "has been slain";
-            //items
         public const string MESSAGE_POTHEALTHDRINK = "drinks a Health Potion";
         public const string MESSAGE_POTHEALTHMISSING = "looked for a HealthPotion but found none";
         public const string MESSAGE_POTSHIELDDRINK = "used some Shell Banding";
@@ -55,5 +78,30 @@ namespace Text_Based_RPG_Shell_Knight
         public const string MESSAGE_DOORSMALLLOCKED = "tried to open the small door, but it was locked";
         public const string MESSAGE_DOORBIGOPEN = "opened the big door with the big key";
         public const string MESSAGE_DOORBIGLOCKED = "tried to open the big door, but it's sealed shut";
+        
     }
+    class EnemyValues
+    {
+        public List<string> names = new List<string>();
+        public List<char> avatars = new List<char>();
+        public List<int> healths = new List<int>();
+        public List<int[]> damages = new List<int[]>();
+        public List<AI> aIs = new List<AI>();
+    }
+    class WeaponValues
+    {
+        public List<string> names = new List<string>();
+        public List<string> avatars = new List<string>();
+        public List<int[]> damages = new List<int[]>();
+    }
+    /*class ItemValues
+    {
+        public List<string> names = new List<string>();
+        public List<char> avatars = new List<char>();
+        public List<string> effects = new List<string>();
+        public List<int> powers = new List<int>();
+        public List<string> desc = new List<string>();
+        public List<string> textSuccess = new List<string>();
+        public List<string> textFailure = new List<string>();
+    }*/
 }

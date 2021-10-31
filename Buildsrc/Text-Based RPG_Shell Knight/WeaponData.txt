@@ -1,0 +1,37 @@
+﻿
+//each subject is started with a tilde (~), and each line must end with a semi-colon (;), this is for parsing in code
+
+~
+Name:Fists;
+Avatar:@;
+Damage Range:5,10;
+
+~
+Name:Dagger;
+Avatar:┼──;
+Damage Range:7,17;
+
+~
+Name:Short Sword;
+Avatar:─┼═══─;
+Damage Range:20,32;
+
+~
+Name:Broad Sword;
+Avatar:──╬═════─;         
+Damage Range:27,40;
+
+~               
+Name:Long Sword;             
+Avatar:o────╬■■■▄▄▄▄▄▄■■■■▀▀;  
+Damage Range:40,57;        
+
+~               
+Name:Claymore;         
+Avatar:├═┼══╣█████████■■-; 
+Damage Range:55,68;  
+
+~                
+Name:Kaliburn;               
+Avatar:╔──┼──╬■■█■■■■■■▄▄▄_];   
+Damage Range:70,100;

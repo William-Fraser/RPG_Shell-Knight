@@ -17,7 +17,7 @@ namespace Text_Based_RPG_Shell_Knight
         public List<string> doorHold = new List<string>();
         public List<string> vendorHold = new List<string>();
 
-        // Map File Lines/Info Readers
+        // Map File Lines /Info Readers
         private string[] allRowsAndInfo = File.ReadAllLines("Map_test.txt");// this changes to string constant is _test for now
         private string[] allRows;
         private char[] row;

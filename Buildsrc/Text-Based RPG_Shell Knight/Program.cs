@@ -16,6 +16,8 @@ namespace Text_Based_RPG_Shell_Knight
         
         static void Main()
         {
+            game = new GameManager();
+
             PROGRAMSTATE _programState = PROGRAMSTATE.START;
             bool play = true;
 
@@ -25,7 +27,6 @@ namespace Text_Based_RPG_Shell_Knight
                 {
                     case PROGRAMSTATE.START:
                         //create new game instace on start // handles fast reset / change for saveloading
-                        game = new GameManager();
                         string mainMenu = Global.START_SCREEN_TITLE;
                         //Display Main Menu and obtain choice
                         _programState = (PROGRAMSTATE)Toolkit.TwoOptionMenu(mainMenu, (int)_programState, 
@@ -33,6 +34,7 @@ namespace Text_Based_RPG_Shell_Knight
                         break;
                     
                     case PROGRAMSTATE.PLAYGAME:
+
                         game.Game();
 
                         //game ends

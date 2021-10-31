@@ -1,0 +1,38 @@
+﻿
+//these ID's corrospond with map data to obtain position and are quantifying what object pertains to which numbers, order should match list below
+ID's:#,&,%,$
+
+
+//each subject is started with a tilde (~), and each line must end with a semi-colon (;), this is for parsing in code
+
+// 1
+~
+Name:Spider;
+Avatar:#;
+Health:20;
+Damage range:7,17;
+AI:FLEEANDCHASE;
+
+//2
+~
+Name:Goblin;
+Avatar:&;
+Health:70;
+Damage range:9,25;
+AI:CHASE;
+
+//3
+~
+Name:Knight;
+Avatar:%;
+Health:150;
+Damage range:17,40;
+AI:IDLEANDCHASE;
+
+//4
+~
+Name:King;
+Avatar:$;
+Health:275;
+Damage range:20,50;
+AI:IDLEANDCHASE;

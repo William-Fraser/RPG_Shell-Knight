@@ -19,7 +19,7 @@ namespace Text_Based_RPG_Shell_Knight
         public Player(string name, char avatar) : base(name, avatar, Global.PLAYER_HEALTH)
         {
             //init fields
-            equipedWeapon = new Weapon(WEAPON.FISTS);
+            equipedWeapon = new Weapon("0");
             int[] damageRange = equipedWeapon.DamageRange();
             _shield = new int[] { Global.PLAYER_SHIELD, Global.PLAYER_SHIELD };
             _damage = new int[] { damageRange[(int)RANGE.LOW], damageRange[(int)RANGE.HIGH] };
@@ -38,7 +38,7 @@ namespace Text_Based_RPG_Shell_Knight
         {
             return equipedWeapon;
         }
-        public void EquipWeapon(WEAPON w)
+        public void EquipWeapon(string w)
         {
             equipedWeapon.IdentifyAndEquip(w);
             _damage = equipedWeapon.DamageRange();
@@ -120,7 +120,7 @@ namespace Text_Based_RPG_Shell_Knight
         {
             int[] health = Health();
             //different messages for buffed items, if there are no buffed items, then regular message is displayed 
-            if (inventory.buffedHealthPotions <= 0) { health[(int)STATUS.CURRENT] += value; hud.DisplayText($"< {Name()} {Global.MESSAGE_POTHEALTHDRINK} [+" + value + "] >", false); }
+            if (inventory.buffedHealthPotions <= 0) { health[(int)STATUS.CURRENT] += value; hud.DisplayText($"< {Name()} {Global.MESSAGE_POTHEALTHMISSING} [+" + value + "] >", false); }
             else { health[(int)STATUS.CURRENT] += value * effectMultiplier; inventory.buffedHealthPotions--; hud.DisplayText($"< {Name()} {Global.MESSAGE_POTHEALTHDRINK} [+" + value + " X" + effectMultiplier + "] >", false); }
             health[(int)STATUS.CURRENT] = SetStatToLimits(health[(int)STATUS.CURRENT], health[(int)STATUS.MAX]);
         }
@@ -128,7 +128,7 @@ namespace Text_Based_RPG_Shell_Knight
         {
             int[] shield = Shield();
             // bug temporarly patched shield used to heal 50 points instead of desired 30....
-            if (inventory.buffedShellHeal <= 0) { shield[(int)STATUS.CURRENT] += (value - 20); hud.DisplayText($"< {Name()} {Global.MESSAGE_POTSHIELDDRINK} [+" + (value-20) + "] >", false);}
+            if (inventory.buffedShellHeal <= 0) { shield[(int)STATUS.CURRENT] += (value - 20); hud.DisplayText($"< {Name()} {Global.MESSAGE_POTSHIELDMISSING} [+" + (value-20) + "] >", false);}
             else { shield[(int)STATUS.CURRENT] += (value - 20) * effectMultiplier; inventory.buffedShellHeal--; hud.DisplayText($"< {Name()} {Global.MESSAGE_POTSHIELDDRINK} [+" + (value-20) + " X" + effectMultiplier + "] >", false); }
             shield[(int)STATUS.CURRENT] = SetStatToLimits(shield[(int)STATUS.CURRENT], shield[(int)STATUS.MAX]);
             

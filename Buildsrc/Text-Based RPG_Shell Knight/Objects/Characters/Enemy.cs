@@ -20,14 +20,14 @@ using System.Threading.Tasks;
 namespace Text_Based_RPG_Shell_Knight
 {
     // Enemy type enum
-    public enum ENEMY
+    /*public enum ENEMY // depricated / replaced by loaded dictionary
     {
         SPIDER,
         GOBLIN,
         KNIGHT,
         KING,
         TOTALENEMIES
-    }
+    }*/
     // State enunm for AI
     public enum AI
     {
@@ -48,17 +48,11 @@ namespace Text_Based_RPG_Shell_Knight
         // ----- private methods
         private void ReadEnemyInfo(string enemyInfo, DataLoader dataLoader) // Constructor child: distinguishes all enemies available to print on map
         {
-            // parsing passed map info 
-            string[] identityAndPos = enemyInfo.Split(':');
-            ENEMY identity;
-            if (Enum.TryParse(identityAndPos[0], out identity))
-            {
-                //success   
-            }
-            else { } // err
+            string[] identifyerAndPos = enemyInfo.Split(':'); // parsing passed map info // 0 identifies and 1 is position
+            string identity = identifyerAndPos[0]; 
 
             // set position
-            int[] setPos = dataLoader.TryParseXYFromString(identityAndPos[1]);
+            int[] setPos = dataLoader.TryParseXYFromString(identifyerAndPos[1]);
             x = setPos[(int)AXIS.X];
             y = setPos[(int)AXIS.Y];
 
@@ -66,16 +60,16 @@ namespace Text_Based_RPG_Shell_Knight
             // creating enemy from identity
 
             //init of fields
-            _avatar = dataLoader.GetEnemyAvatar(identity);
-            _name = dataLoader.GetEnemyName(identity);
-            _damage = dataLoader.GetEnemyDamageRange(identity);
+            _avatar = Global.GetEnemyAvatar(identity);
+            _name = Global.GetEnemyName(identity);
+            _damage = Global.GetEnemyDamageRange(identity);
             for (int i = 0; i < 2; i++)
             {
-                _health[i] = dataLoader.GetEnemyHealth(identity);
+                _health[i] = Global.GetEnemyHealth(identity);
             }
 
             // setting AI
-            _ai = dataLoader.GetEnemyEnemyAI(identity);
+            _ai = Global.GetEnemyEnemyAI(identity);
 
             
             //int[] _XYHolder = new int[] { x, y };
@@ -84,8 +78,12 @@ namespace Text_Based_RPG_Shell_Knight
 
             _directionMoving = DIRECTION.NULL;
         }
+        private void IdentifyAndCreateEnemy() 
+        {
+        
+        }
         private string RecognizeInfo(char identity) // read enemy info child: Holds the init info for all enemy types
-        {                                                                                                               // Obsolete, change to be read from file, load enum too
+        {// Obsolete, change to be read from file, load enum too
             string identifyed = "";
             /// identifyed string order
             /// NAME

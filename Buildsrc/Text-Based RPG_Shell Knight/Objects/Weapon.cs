@@ -24,9 +24,9 @@ namespace Text_Based_RPG_Shell_Knight
         private int[] _damageRange;
 
         // sets first Weapon / usually fists
-        public Weapon(WEAPON w)
+        public Weapon(string wID)
         {
-            IdentifyAndEquip(w);
+            IdentifyAndEquip(wID);
         }
 
         // ----- gets/ sets
@@ -36,11 +36,11 @@ namespace Text_Based_RPG_Shell_Knight
         // ----- public methods
 
         // set item stats when equiping item
-        public void IdentifyAndEquip(WEAPON w) // used in Inventory // remodel other object accessors after this
+        public void IdentifyAndEquip(string wID) // used in Inventory // remodel other object accessors after this
         {
-            _name = Global.WEAPON_NAME(w);
-            _avatarWeapon = Global.WEAPON_AVATAR(w);
-            _damageRange = Global.WEAPON_DAMAGERANGE(w);
+            _name = Global.WEAPON_NAME(wID);
+            _avatarWeapon = Global.WEAPON_AVATAR(wID);
+            _damageRange = Global.WEAPON_DAMAGERANGE(wID);
         }
     }
 }
